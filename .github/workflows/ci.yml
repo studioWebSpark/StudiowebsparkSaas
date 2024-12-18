@@ -1,0 +1,59 @@
+name: CI Laravel Vue.js 
+
+on:
+  push:
+    branches:
+      - version-1
+  pull_request:
+    branches:
+      - version-1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, pdo, pdo_mysql, bcmath, json, curl
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+
+    - name: Cache Node.js dependencies
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'latest'
+
+    - name: Install Node.js dependencies
+      run: npm install
+
+    - name: Build assets
+      run: npm run build
+
+    - name: Set up .env file
+      run: cp .env.example .env
+
+    - name: Generate Laravel app key
+      run: php artisan key:generate
