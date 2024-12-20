@@ -31,7 +31,7 @@ import Pricing from './componentsHome/Pricing.vue';
 import Hero from './componentsHome/Hero.vue';
 import Step from './componentsHome/Step.vue';
 
-const isDarkMode = ref(false);
+const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);
 const showCategories = ref(false);
 const isMobile = ref(false);
@@ -45,6 +45,11 @@ const checkIfMobile = () => {
 onMounted(() => {
     checkIfMobile();
     window.addEventListener('resize', checkIfMobile);
+    
+    // Appliquer le mode sombre au document si nécessaire
+    if (isDarkMode.value) {
+        document.documentElement.classList.add('dark');
+    }
 });
 
 onUnmounted(() => {
@@ -54,6 +59,14 @@ onUnmounted(() => {
 // Fonctions de toggle
 const toggleDarkMode = () => {
     isDarkMode.value = !isDarkMode.value;
+    localStorage.setItem('darkMode', isDarkMode.value);
+    
+    // Mettre à jour la classe sur l'élément HTML
+    if (isDarkMode.value) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
 };
 
 const toggleMenu = () => {
