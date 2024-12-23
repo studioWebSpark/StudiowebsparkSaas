@@ -13,7 +13,7 @@
         />
         <Hero />
         <Brands />
-        <Step />
+        <Process />
         <Consept />
         <Pricing />
         <Footer />
@@ -29,7 +29,8 @@ import Consept from './componentsHome/Consept.vue';
 import Brands from './componentsHome/Brands.vue';
 import Pricing from './componentsHome/Pricing.vue';
 import Hero from './componentsHome/Hero.vue';
-import Step from './componentsHome/Step.vue';
+
+import Process from './componentsAbout/Process.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);

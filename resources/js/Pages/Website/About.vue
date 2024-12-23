@@ -1,43 +1,36 @@
 <template>
     <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
-        <Header 
-            :is-dark-mode="isDarkMode" 
-            :is-menu-open="isMenuOpen"
-            :is-mobile="isMobile"
-            :show-categories="showCategories"
-            @toggle-dark-mode="toggleDarkMode"
-            @toggle-menu="toggleMenu"
-            @toggle-categories="toggleCategories"
-            @show-categories="showCategories = true"
-            @hide-categories="hideCategories"
-        />
-        <!-- ... reste du contenu ... -->
-    </div>
+        <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
+            :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
+            @toggle-categories="toggleCategories" @show-categories="showCategories = true"
+            @hide-categories="hideCategories" />
 
-    <History />
-    <Team />
-    <Values />
-    <Tech />
-    <Stats />
-    <Testimonial />
-    <Footer />
+        <Vision />
+        <Market />
+        <Solution />
+        <Process />
+        <MarketEvo />
+        <Services />
+        <Cta />
+        <Footer />
+    </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import Header from './componentsHome/Header.vue';
-import History from './componentsAbout/History.vue';
-import Team from './componentsAbout/Team.vue';
-import Values from './componentsAbout/Values.vue';
-import Tech from './componentsAbout/Tech.vue';
-import Stats from './componentsAbout/Stats.vue';
-import Testimonial from './componentsAbout/Testimonial.vue';
+import Cta from './componentsAbout/Cta.vue';
+import Market from './componentsAbout/Market.vue';
+import MarketEvo from './componentsAbout/MarketEvo.vue';
+import Process from './componentsAbout/Process.vue';
+import Solution from './componentsAbout/Solution.vue';
+import Vision from './componentsAbout/Vision.vue';
 import Footer from './componentsHome/Footer.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);
-const showCategories = ref(false);
 const isMobile = ref(false);
+const showCategories = ref(false);
 
 // Fonction pour détecter si on est sur mobile
 const checkIfMobile = () => {
@@ -48,7 +41,7 @@ const checkIfMobile = () => {
 onMounted(() => {
     checkIfMobile();
     window.addEventListener('resize', checkIfMobile);
-    
+
     // Appliquer le mode sombre au document si nécessaire
     if (isDarkMode.value) {
         document.documentElement.classList.add('dark');
@@ -63,8 +56,7 @@ onUnmounted(() => {
 const toggleDarkMode = () => {
     isDarkMode.value = !isDarkMode.value;
     localStorage.setItem('darkMode', isDarkMode.value);
-    
-    // Mettre à jour la classe sur l'élément HTML
+
     if (isDarkMode.value) {
         document.documentElement.classList.add('dark');
     } else {
@@ -76,6 +68,7 @@ const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value;
 };
 
+// Ajout des fonctions manquantes pour la gestion des catégories
 const toggleCategories = () => {
     showCategories.value = !showCategories.value;
 };
