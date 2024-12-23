@@ -13,7 +13,7 @@
                 <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     * TVA non applicable, art. 293 B du CGI
                 </p>
-            </div>
+            </div>I think for the Forte to realize exactly all the other template things.
 
             <div
                 class="grid max-w-sm grid-cols-1 gap-6 mx-auto mt-8 md:text-left md:mt-16 lg:max-w-none lg:grid-cols-3 lg:gap-8 ">

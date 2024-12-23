@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -43,3 +45,28 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
+
+// Routes pour les services
+Route::get('/web-creation', function () {
+    return Inertia::render('Website/componentsService/WebCreation');
+})->name('web-creation');
+
+Route::get('/marketing-digital', function () {
+    return Inertia::render('Website/componentsService/Marketing');
+})->name('marketing-digital');
+
+Route::get('/maintenance-support', function () {
+    return Inertia::render('Website/componentsService/Maintenance');
+})->name('maintenance-support');
+
+Route::get('/conseil', function () {
+    return Inertia::render('Website/componentsService/Conseil');
+})->name('conseil');
+
+// Route pour le wizard de projet
+Route::get('/demarrer-projet', [ProjectController::class, 'wizard'])
+    ->name('project.wizard');
+
+// Route pour soumettre le projet
+Route::post('/demarrer-projet', [ProjectController::class, 'store'])
+    ->name('project.store');

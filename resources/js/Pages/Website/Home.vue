@@ -16,6 +16,7 @@
         <Process />
         <Consept />
         <Pricing />
+        <Cta />
         <Footer />
 
     </div>
@@ -31,6 +32,7 @@ import Pricing from './componentsHome/Pricing.vue';
 import Hero from './componentsHome/Hero.vue';
 
 import Process from './componentsAbout/Process.vue';
+import Cta from './componentsAbout/Cta.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);

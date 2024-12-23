@@ -10,22 +10,26 @@
                 </h2>
             </div>
 
-            <div class="grid grid-cols-1 mt-10 text-center md:mt-20 md:max-w-full sm:max-w-sm sm:mx-auto gap-y-10 md:grid-cols-3 md:gap-x-6 lg:gap-x-16 md:text-left">
-                <div class="relative p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg transition-transform hover:scale-105">
-                    <div class="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            <div
+                class="grid grid-cols-1 mt-10 text-center md:mt-20 md:max-w-full sm:max-w-sm sm:mx-auto gap-y-10 md:grid-cols-3 md:gap-x-6 lg:gap-x-16 md:text-left">
+                <div
+                    class="relative p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg transition-transform hover:scale-105">
+                    <div
+                        class="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                         1
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 font-pj dark:text-white">
                         Consultation Gratuite
                     </h3>
                     <p class="mt-4 text-base leading-7 text-gray-600 font-pj dark:text-gray-300">
-                        Discussion de vos besoins et objectifs. Définition de la structure et des fonctionnalités de votre site.
+                        Discussion de vos besoins et objectifs. Définition de la structure et des fonctionnalités de
+                        votre site.
                     </p>
 
                     <img class="object-cover w-full mx-auto mt-6 rounded-xl md:mx-0 shadow-md"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature.png" 
+                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature.png"
                         alt="Consultation et analyse des besoins" />
-                    
+
                     <ul class="mt-6 space-y-2 text-gray-600 dark:text-gray-400">
                         <li class="flex items-center">
                             <i class='bx bx-check-circle text-green-500 dark:text-green-400 mr-2'></i>
@@ -38,8 +42,10 @@
                     </ul>
                 </div>
 
-                <div class="relative p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg transition-transform hover:scale-105">
-                    <div class="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                <div
+                    class="relative p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg transition-transform hover:scale-105">
+                    <div
+                        class="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                         2
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 font-pj dark:text-white">
@@ -50,9 +56,9 @@
                     </p>
 
                     <img class="object-cover w-full mx-auto mt-6 rounded-xl md:mx-0 shadow-md"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature2.png" 
+                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature2.png"
                         alt="Développement et design" />
-                    
+
                     <ul class="mt-6 space-y-2 text-gray-600 dark:text-gray-400">
                         <li class="flex items-center">
                             <i class='bx bx-check-circle text-green-500 dark:text-green-400 mr-2'></i>
@@ -65,8 +71,10 @@
                     </ul>
                 </div>
 
-                <div class="relative p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg transition-transform hover:scale-105">
-                    <div class="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                <div
+                    class="relative p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg transition-transform hover:scale-105">
+                    <div
+                        class="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                         3
                     </div>
                     <h3 class="text-2xl font-bold text-gray-900 font-pj dark:text-white">
@@ -77,9 +85,9 @@
                     </p>
 
                     <img class="object-cover w-full mx-auto mt-6 md:mx-0 rounded-xl shadow-md"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature3.png" 
+                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature3.png"
                         alt="Livraison et support" />
-                    
+
                     <ul class="mt-6 space-y-2 text-gray-600 dark:text-gray-400">
                         <li class="flex items-center">
                             <i class='bx bx-check-circle text-green-500 dark:text-green-400 mr-2'></i>
