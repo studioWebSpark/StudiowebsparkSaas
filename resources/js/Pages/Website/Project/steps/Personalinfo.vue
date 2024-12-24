@@ -1,26 +1,51 @@
 <template>
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 sm:p-6">
+        <!-- Bouton Modifier -->
+        <div v-if="!isEditing && formData.personal.isValidated" class="mb-4 flex justify-end">
+            <button type="button" @click="startEditing"
+                class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center">
+                <i class='bx bx-edit mr-2'></i>
+                Modifier mes informations
+            </button>
+        </div>
+
         <form @submit.prevent="validateForm" class="space-y-4 sm:space-y-6">
             <!-- Type de client -->
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Vous êtes ? *
-                </label>
-                <div class="flex flex-wrap gap-4">
-                    <label class="relative flex items-center p-3 rounded-lg border cursor-pointer focus:outline-none"
-                        :class="[localFormData.clientType === 'individual' ? 'bg-blue-50 border-blue-200 z-10' : 'border-gray-200']">
-                        <input type="radio" v-model="localFormData.clientType" value="individual" class="sr-only">
-                        <span class="ml-2 text-sm font-medium text-gray-900">Un particulier</span>
-                        <i v-if="localFormData.clientType === 'individual'"
-                            class="bx bx-check text-blue-600 text-xl ml-2"></i>
+            <div class="grid grid-cols-1 gap-4">
+                <!-- Type de client -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Vous êtes ? *
                     </label>
-                    <label class="relative flex items-center p-3 rounded-lg border cursor-pointer focus:outline-none"
-                        :class="[localFormData.clientType === 'professional' ? 'bg-blue-50 border-blue-200 z-10' : 'border-gray-200']">
-                        <input type="radio" v-model="localFormData.clientType" value="professional" class="sr-only">
-                        <span class="ml-2 text-sm font-medium text-gray-900">Un professionnel</span>
-                        <i v-if="localFormData.clientType === 'professional'"
-                            class="bx bx-check text-blue-600 text-xl ml-2"></i>
-                    </label>
+                    <div class="relative">
+                        <div class="flex gap-4">
+                            <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer" :class="{
+                                'border-gray-300': !touchedFields.clientType,
+                                'border-red-300': formErrors.clientType,
+                                'border-green-500 ': isFieldValid.clientType && touchedFields.clientType,
+                                'border': true
+                            }">
+                                <input type="radio" v-model="localFormData.clientType" value="individual"
+                                    class="sr-only" @change="validateField('clientType')">
+                                <span class="text-sm font-medium text-gray-900">Un particulier</span>
+                                <i v-if="localFormData.clientType === 'individual'"
+                                    class="bx bx-check text-green-500 text-xl ml-2"></i>
+                            </label>
+                            <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer" :class="{
+                                'border-gray-300': !touchedFields.clientType,
+                                'border-red-300': formErrors.clientType,
+                                'border-green-500 ': isFieldValid.clientType && touchedFields.clientType,
+                                'border': true
+                            }">
+                                <input type="radio" v-model="localFormData.clientType" value="professional"
+                                    class="sr-only" @change="validateField('clientType')">
+                                <span class="text-sm font-medium text-gray-900">Un professionnel</span>
+                                <i v-if="localFormData.clientType === 'professional'"
+                                    class="bx bx-check text-green-500 text-xl ml-2"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <p v-if="formErrors.clientType" class="mt-1 text-sm text-red-600">{{ formErrors.clientType }}</p>
                 </div>
             </div>
 
@@ -28,16 +53,17 @@
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <!-- Nom -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Nom *
                     </label>
                     <div class="relative">
-                        <input type="text" v-model="localFormData.lastName" @input="validateField('lastName')"
-                            class="mt-1 block w-full pr-10 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            :class="{
+                        <input :disabled="!isEditing" type="text" v-model="localFormData.lastName"
+                            @input="validateField('lastName')"
+                            class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                 'border-gray-300': !touchedFields.lastName,
                                 'border-red-300': formErrors.lastName,
-                                'border-green-500': isFieldValid.lastName && touchedFields.lastName
+                                'border-green-500': isFieldValid.lastName && touchedFields.lastName,
+                                'opacity-75': !isEditing
                             }" required>
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                             <i v-if="isFieldValid.lastName && touchedFields.lastName"
@@ -50,16 +76,17 @@
 
                 <!-- Prénom -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Prénom *
                     </label>
                     <div class="relative">
-                        <input type="text" v-model="localFormData.firstName" @input="validateField('firstName')"
-                            class="mt-1 block w-full pr-10 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            :class="{
+                        <input :disabled="!isEditing" type="text" v-model="localFormData.firstName"
+                            @input="validateField('firstName')"
+                            class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                 'border-gray-300': !touchedFields.firstName,
                                 'border-red-300': formErrors.firstName,
-                                'border-green-500': isFieldValid.firstName && touchedFields.firstName
+                                'border-green-500': isFieldValid.firstName && touchedFields.firstName,
+                                'opacity-75': !isEditing
                             }" required>
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                             <i v-if="isFieldValid.firstName && touchedFields.firstName"
@@ -72,16 +99,17 @@
 
                 <!-- Email -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Email *
                     </label>
                     <div class="relative">
-                        <input type="email" v-model="localFormData.email" @input="validateField('email')"
-                            class="mt-1 block w-full pr-10 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            :class="{
+                        <input :disabled="!isEditing" type="email" v-model="localFormData.email"
+                            @input="validateField('email')"
+                            class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                 'border-gray-300': !touchedFields.email,
                                 'border-red-300': formErrors.email,
-                                'border-green-500': isFieldValid.email && touchedFields.email
+                                'border-green-500': isFieldValid.email && touchedFields.email,
+                                'opacity-75': !isEditing
                             }" required>
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                             <i v-if="isFieldValid.email && touchedFields.email"
@@ -94,16 +122,17 @@
 
                 <!-- Téléphone -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Téléphone *
                     </label>
                     <div class="relative">
-                        <input type="tel" v-model="localFormData.phone" @input="validateField('phone')"
-                            class="mt-1 block w-full pr-10 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            :class="{
+                        <input :disabled="!isEditing" type="tel" v-model="localFormData.phone"
+                            @input="validateField('phone')"
+                            class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                 'border-gray-300': !touchedFields.phone,
                                 'border-red-300': formErrors.phone,
-                                'border-green-500': isFieldValid.phone && touchedFields.phone
+                                'border-green-500': isFieldValid.phone && touchedFields.phone,
+                                'opacity-75': !isEditing
                             }" required>
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                             <i v-if="isFieldValid.phone && touchedFields.phone"
@@ -147,12 +176,13 @@
                         </label>
                         <div class="relative">
                             <input type="text" v-model="localFormData.siren" @input="validateSiren" maxlength="9"
-                                class="mt-1 block w-full pr-10 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                :disabled="!isEditing" class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white"
                                 :class="{
                                     'border-gray-300': !touchedFields.siren,
                                     'border-red-300': sirenError,
-                                    'border-green-500': isValidSiren
-                                }" :disabled="selectedCompany" required>
+                                    'border-green-500': isValidSiren,
+                                    'opacity-75': !isEditing
+                                }" required>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                 <i v-if="isValidSiren" class="bx bx-check text-green-500 text-xl"></i>
                                 <i v-if="sirenError" class="bx bx-x text-red-500 text-xl"></i>
@@ -163,28 +193,20 @@
                 </div>
 
                 <!-- Informations de l'entreprise -->
-                <div v-if="isValidSiren && companyDetails"
-                    class="mt-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                <div v-if="isValidSiren && companyDetails" class="mt-6 p-6 rounded-md border bg-white cursor-pointer"
+                    :class="{
+                        'border-gray-300': !selectedCompany,
+                        'border-green-500': selectedCompany
+                    }" @click="!selectedCompany && confirmCompanyDetails()">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-900">
-                            Informations de l'entreprise
-                        </h3>
-                        <div class="flex items-center gap-4">
-                            <span :class="[
-                                'px-3 py-1 rounded-full text-sm font-medium',
-                                selectedCompany ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                            ]">
-                                {{ selectedCompany ? 'Entreprise confirmée' : 'En attente de sélection' }}
-                            </span>
-                            <button v-if="selectedCompany" type="button" @click="resetSirenSelection"
-                                class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-                                <i class="bx bx-edit mr-1"></i>
-                                Modifier
-                            </button>
-                        </div>
+                        <h3 class="text-sm font-medium text-gray-700">Informations de l'entreprise</h3>
+                        <span class="px-3 py-1 rounded-full text-sm font-medium"
+                            :class="selectedCompany ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                            {{ selectedCompany ? 'Entreprise confirmée' : 'Cliquez pour confirmer' }}
+                        </span>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <p class="text-sm font-medium text-gray-500">Dénomination</p>
                             <p class="mt-1 text-base text-gray-900">{{ companyDetails.denomination }}</p>
@@ -207,23 +229,25 @@
                             <p class="mt-1 text-base text-gray-900">{{ companyDetails.siret }}</p>
                         </div>
                     </div>
-
-                    <div class="mt-6">
-                        <button type="button" @click="confirmCompanyDetails"
-                            class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white transition-colors duration-200"
-                            :class="[
-                                selectedCompany
-                                    ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
-                                    : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
-                            ]" :disabled="selectedCompany">
-                            <i class="bx bx-check-circle mr-2 text-xl"></i>
-                            {{ selectedCompany ? 'Entreprise confirmée' : 'Sélectionner cette entreprise' }}
-                        </button>
-                    </div>
                 </div>
             </template>
         </form>
+
+        <!-- Bouton Suivant/Valider avec transition -->
+        <transition enter-active-class="transition ease-out duration-200"
+            enter-from-class="transform opacity-0 translate-y-4" enter-to-class="transform opacity-100 translate-y-0"
+            leave-active-class="transition ease-in duration-150" leave-from-class="transform opacity-100 translate-y-0"
+            leave-to-class="transform opacity-0 translate-y-4">
+            <div v-if="isFormComplete && isEditing" class="mt-6">
+                <button type="button" @click="validateForm"
+                    class="w-full sm:w-auto px-6 py-3 text-base lg:text-lg font-medium text-white bg-blue-600 border border-transparent rounded-xl shadow-sm hover:bg-blue-700 transition-colors">
+                    {{ formData.personal.isValidated ? 'Valider les modifications' : 'Suivant' }}
+                    <i class='bx bx-check ml-2'></i>
+                </button>
+            </div>
+        </transition>
     </div>
+
 </template>
 
 <script setup>
@@ -238,8 +262,8 @@ const formErrors = ref({
     phone: '',
     activity: '',
     siren: '',
-    company: ''
-})
+    clientType: ''
+});
 
 const isFieldValid = ref({
     lastName: false,
@@ -247,8 +271,9 @@ const isFieldValid = ref({
     email: false,
     phone: false,
     activity: false,
-    siren: false
-})
+    siren: false,
+    clientType: false
+});
 
 const touchedFields = ref({
     lastName: false,
@@ -256,15 +281,13 @@ const touchedFields = ref({
     email: false,
     phone: false,
     activity: false,
-    siren: false
-})
+    siren: false,
+    clientType: false
+});
 
 const sirenError = ref('')
 const isValidSiren = ref(false)
 const isCheckingSiren = ref(false)
-const companyDetails = ref(null)
-const selectedCompany = ref(false)
-const showErrors = ref(false)
 let sirenTimeout = null
 
 const props = defineProps({
@@ -280,13 +303,18 @@ const props = defineProps({
                 phone: '',
                 activity: '',
                 siren: '',
-                companyName: ''
+                companyName: '',
+                companyDetails: null,
+                isValidated: false
             }
         })
     }
-})
+});
 
-// S'assurer que localFormData est initialisé avec des valeurs par défaut
+// Une seule déclaration pour companyDetails et selectedCompany
+const companyDetails = ref(props.formData?.personal?.companyDetails || null);
+const selectedCompany = ref(!!props.formData?.personal?.companyDetails);
+
 const localFormData = ref({
     clientType: props.formData?.personal?.clientType || 'individual',
     firstName: props.formData?.personal?.firstName || '',
@@ -296,9 +324,9 @@ const localFormData = ref({
     activity: props.formData?.personal?.activity || '',
     siren: props.formData?.personal?.siren || '',
     companyName: props.formData?.personal?.companyName || ''
-})
+});
 
-const emit = defineEmits(['update:formData', 'stepValidated'])
+const emit = defineEmits(['update:formData', 'stepValidated', 'next']);
 
 // Validation du formulaire
 const isFormValid = computed(() => {
@@ -328,6 +356,7 @@ const validateSiren = async () => {
         }
         isValidSiren.value = false;
         companyDetails.value = null;
+        selectedCompany.value = false;
         return;
     }
 
@@ -336,36 +365,24 @@ const validateSiren = async () => {
         isCheckingSiren.value = true;
 
         try {
-            // Utilisation de l'URL complète
-            const response = await axios.post('/api/verify-siren', {
-                siren: siren  // S'assurer que le paramètre est 'siren'
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
+            const response = await axios.post('/api/verify-siren', { siren });
             if (response.data.success && response.data.company) {
                 const uniteLegale = response.data.company.uniteLegale;
-
                 companyDetails.value = {
                     denomination: uniteLegale.denominationUniteLegale,
                     siren: uniteLegale.siren,
                     siret: uniteLegale.siret,
                     dateCreation: uniteLegale.dateCreationUniteLegale
                 };
-
                 isValidSiren.value = true;
                 selectedCompany.value = false;
                 sirenError.value = '';
-                console.log('Données entreprise reçues:', companyDetails.value);
             }
         } catch (error) {
             console.error('Erreur détaillée:', error);
             isValidSiren.value = false;
             companyDetails.value = null;
+            selectedCompany.value = false;
 
             if (error.response?.status === 404) {
                 sirenError.value = 'Entreprise non trouvée';
@@ -404,14 +421,18 @@ onUnmounted(() => {
 
 const confirmCompanyDetails = () => {
     if (!companyDetails.value) return;
-
     selectedCompany.value = true;
-    localFormData.value = {
-        ...localFormData.value,
-        companyName: companyDetails.value.denomination,
-        siren: companyDetails.value.siren,
-        siret: companyDetails.value.siret
-    };
+
+    // Émettre les données mises à jour
+    emit('update:formData', {
+        personal: {
+            ...localFormData.value,
+            companyDetails: companyDetails.value,
+            companyName: companyDetails.value.denomination,
+            siren: companyDetails.value.siren,
+            siret: companyDetails.value.siret
+        }
+    });
 };
 
 const resetSirenSelection = () => {
@@ -419,6 +440,7 @@ const resetSirenSelection = () => {
     isValidSiren.value = false;
     companyDetails.value = null;
     sirenError.value = '';
+    localFormData.value.siren = '';
 };
 
 // Fonction pour formater la date
@@ -427,43 +449,108 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('fr-FR')
 }
 
+// État d'édition initialisé en fonction de la validation précédente
+const isEditing = ref(!props.formData?.personal?.isValidated);
+
+const startEditing = () => {
+    isEditing.value = true;
+    // Réinitialiser les validations
+    Object.keys(touchedFields.value).forEach(field => {
+        touchedFields.value[field] = true;
+        isFieldValid.value[field] = true;
+    });
+
+    emit('stepValidated', false);
+};
+
 const validateForm = () => {
-    showErrors.value = true
+    if (isFormComplete.value) {
+        isEditing.value = false;
+        const formDataToEmit = {
+            personal: {
+                ...localFormData.value,
+                companyDetails: companyDetails.value,
+                isValidated: true
+            }
+        };
 
-    if (!isFormValid.value) {
-        return false
+        console.log('Données du formulaire :', formDataToEmit);
+        emit('update:formData', formDataToEmit);
+        emit('stepValidated', true);
+        emit('next');
+        return true;
     }
+    return false;
+};
 
-    emit('update:formData', { personal: localFormData.value })
-    emit('stepValidated', true)
-    return true
-}
+// Surveiller les changements de route/étape
+watch(
+    () => props.formData,
+    (newValue) => {
+        // Réinitialiser l'état d'édition si on revient sur cette étape
+        if (!newValue?.personal?.isValidated) {
+            isEditing.value = true;
+        }
+    },
+    { deep: true }
+);
 
-const validateField = (fieldName) => {
-    touchedFields.value[fieldName] = true
+// Réinitialiser l'état d'édition quand on revient sur le composant
+onMounted(() => {
+    if (!props.formData?.personal?.isValidated) {
+        isEditing.value = true;
+    }
+});
 
-    switch (fieldName) {
+const validateField = (field) => {
+    touchedFields.value[field] = true;
+
+    switch (field) {
+        case 'clientType':
+            isFieldValid.value[field] = !!localFormData.value[field];
+            formErrors.value[field] = !isFieldValid.value[field] ? 'Veuillez sélectionner votre type de client' : '';
+            break;
         case 'lastName':
         case 'firstName':
-            isFieldValid.value[fieldName] = localFormData.value[fieldName].length >= 2
-            formErrors.value[fieldName] = isFieldValid.value[fieldName] ? '' : 'Ce champ est requis (minimum 2 caractères)'
-            break
+            isFieldValid.value[field] = localFormData.value[field].length >= 2;
+            formErrors.value[field] = !isFieldValid.value[field] ? 'Ce champ est obligatoire' : '';
+            break;
         case 'email':
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-            isFieldValid.value[fieldName] = emailRegex.test(localFormData.value[fieldName])
-            formErrors.value[fieldName] = isFieldValid.value[fieldName] ? '' : 'Veuillez saisir une adresse email valide'
-            break
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            isFieldValid.value[field] = emailRegex.test(localFormData.value[field]);
+            formErrors.value[field] = !isFieldValid.value[field] ? 'Veuillez saisir une adresse email valide' : '';
+            break;
         case 'phone':
-            const phoneRegex = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/
-            isFieldValid.value[fieldName] = phoneRegex.test(localFormData.value[fieldName])
-            formErrors.value[fieldName] = isFieldValid.value[fieldName] ? '' : 'Veuillez saisir un numéro de téléphone valide'
-            break
+            const phoneRegex = /^[0-9+\s-]{10,}$/;
+            isFieldValid.value[field] = phoneRegex.test(localFormData.value[field]);
+            formErrors.value[field] = !isFieldValid.value[field] ? 'Veuillez saisir un numéro de téléphone valide' : '';
+            break;
         case 'activity':
-            isFieldValid.value[fieldName] = localFormData.value[fieldName].length >= 3
-            formErrors.value[fieldName] = isFieldValid.value[fieldName] ? '' : 'Veuillez indiquer votre activité'
-            break
+            isFieldValid.value[field] = localFormData.value[field].length >= 3;
+            formErrors.value[field] = !isFieldValid.value[field] ? 'Ce champ est obligatoire' : '';
+            break;
+        case 'siren':
+            isFieldValid.value[field] = localFormData.value[field].length === 9;
+            formErrors.value[field] = !isFieldValid.value[field] ? 'Le numéro SIREN doit contenir 9 chiffres' : '';
+            break;
     }
-}
+};
+
+const isFormComplete = computed(() => {
+    const isPersonalInfoValid = isFieldValid.value.lastName &&
+        isFieldValid.value.firstName &&
+        isFieldValid.value.email &&
+        isFieldValid.value.phone;
+
+    if (localFormData.value.clientType === 'professional') {
+        return isPersonalInfoValid &&
+            isFieldValid.value.activity &&
+            isValidSiren.value &&
+            selectedCompany.value;
+    }
+
+    return isPersonalInfoValid;
+});
 </script>
 
 <style scoped>

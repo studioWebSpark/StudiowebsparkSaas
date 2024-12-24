@@ -68,19 +68,8 @@
                 <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
                     <transition name="fade" mode="out-in">
                         <div class="py-6 lg:py-8">
-                            <PersonalInfo v-if="currentStep === 0" :form-data="formData"
-                                @update:form-data="updateFormData" />
-
-                            <ProjectDetails v-if="currentStep === 1" :form-data="formData"
-                                @update:form-data="updateFormData" />
-
-                            <TemplateSelection v-if="currentStep === 2" :form-data="formData"
-                                @update:form-data="updateFormData" />
-
-                            <AdditionalOptions v-if="currentStep === 3" :form-data="formData"
-                                @update:form-data="updateFormData" />
-
-                            <OrderSummary v-if="currentStep === 4" :form-data="formData" @submit="submitForm" />
+                            <component :is="currentComponent" v-model:formData="formData"
+                                @stepValidated="handleStepValidation" @next="nextStep" />
                         </div>
                     </transition>
                 </div>
@@ -93,12 +82,7 @@
                             <i class='bx bx-left-arrow-alt mr-2'></i>
                             Précédent
                         </button>
-                        <button v-if="currentStep < steps.length - 1" @click="nextStep"
-                            class="w-full sm:w-auto px-6 py-3 text-base lg:text-lg font-medium text-white bg-blue-600 border border-transparent rounded-xl shadow-sm hover:bg-blue-700 transition-colors">
-                            Suivant
-                            <i class='bx bx-right-arrow-alt ml-2'></i>
-                        </button>
-                        <button v-else @click="submitForm"
+                        <button v-if="currentStep === steps.length - 1" @click="submitForm"
                             class="w-full sm:w-auto px-6 py-3 text-base lg:text-lg font-medium text-white bg-green-600 border border-transparent rounded-xl shadow-sm hover:bg-green-700 transition-colors">
                             Finaliser la commande
                             <i class='bx bx-check ml-2'></i>
@@ -111,8 +95,7 @@
 </template>
 
 <script setup>
-
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import PersonalInfo from './steps/Personalinfo.vue'
 import ProjectDetails from './steps/ProjectDetails.vue'
 import TemplateSelection from './steps/TemplateSelection.vue'
@@ -121,21 +104,27 @@ import OrderSummary from './steps/OrderSummary.vue'
 import Header from '../componentsHome/Header.vue'
 
 const steps = [
-    { title: 'Informations' },
-    { title: 'Projet' },
-    { title: 'Template' },
-    { title: 'Options' },
-    { title: 'Validation' }
-]
+    { title: 'Informations', component: PersonalInfo },
+    { title: 'Projet', component: ProjectDetails },
+    { title: 'Template', component: TemplateSelection },
+    { title: 'Options', component: AdditionalOptions },
+    { title: 'Validation', component: OrderSummary }
+];
 
-const currentStep = ref(0)
+const currentStep = ref(0);
+
+// Ajout de la computed property pour currentComponent
+const currentComponent = computed(() => {
+    return steps[currentStep.value].component;
+});
+
 const formData = ref({
     personal: {},
     project: {},
     template: null,
     options: [],
     total: 0
-})
+});
 
 const updateFormData = (newData) => {
     formData.value = { ...formData.value, ...newData }
@@ -214,6 +203,14 @@ const hideCategories = () => {
     showCategories.value = false;
 };
 
+// Exposer la fonction nextStep aux composants enfants
+defineExpose({
+    nextStep
+})
+
+const handleStepValidation = (isValid) => {
+    console.log('Étape validée:', isValid);
+};
 
 </script>
 
