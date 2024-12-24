@@ -113,7 +113,7 @@
 <script setup>
 
 import { ref, onMounted, onUnmounted } from 'vue';
-import PersonalInfo from './steps/PersonalInfo.vue'
+import PersonalInfo from './steps/Personalinfo.vue'
 import ProjectDetails from './steps/ProjectDetails.vue'
 import TemplateSelection from './steps/TemplateSelection.vue'
 import AdditionalOptions from './steps/AdditionalOptions.vue'

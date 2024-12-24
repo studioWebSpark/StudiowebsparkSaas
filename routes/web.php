@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SirenController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -70,3 +71,5 @@ Route::get('/demarrer-projet', [ProjectController::class, 'wizard'])
 // Route pour soumettre le projet
 Route::post('/demarrer-projet', [ProjectController::class, 'store'])
     ->name('project.store');
+    
+

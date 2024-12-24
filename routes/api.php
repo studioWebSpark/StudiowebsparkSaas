@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\SirenController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('api')->group(function () {
+    Route::post('/verify-siren', [SirenController::class, 'verify'])->name('api.verify-siren');
+});
+// Route::get('/marketing-digital', function () {

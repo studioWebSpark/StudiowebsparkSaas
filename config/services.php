@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'insee' => [
+        'token' => env('INSEE_API_TOKEN')
+        
+    ],
+
 ];
