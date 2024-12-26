@@ -192,7 +192,6 @@
         </div>
     </div>
 </template>
-
 <script setup>
 import { computed, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
@@ -354,7 +353,31 @@ const register = () => {
 }
 
 const handleSubmit = () => {
-    if (!isAuthenticated.value) return
-    emit('submit')
-}
+    if (!isAuthenticated.value) return;
+
+    // Ajout du log des données finales
+    console.log('Récapitulatif final de la commande :', {
+        forfait: {
+            nom: selectedForfait.value?.name,
+            prix: selectedForfait.value?.price
+        },
+        options: {
+            selections: selectedOptions.value.map(opt => ({
+                nom: opt.name,
+                prix: opt.price
+            })),
+            maintenance: {
+                plan: selectedMaintenancePlan.value?.name,
+                prix: selectedMaintenancePlan.value?.price
+            }
+        },
+        total: totalPrice.value,
+        client: {
+            authentifie: isAuthenticated.value,
+            utilisateur: page.props.auth?.user
+        }
+    });
+
+    emit('submit');
+};
 </script>

@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 
 const props = defineProps({
     formData: {
@@ -88,7 +88,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(['update:formData', 'stepValidated'])
 
 const selectedCategory = ref('Tous')
 
@@ -171,7 +171,133 @@ const selectTemplate = (template) => {
     }
 }
 
+const validateForm = () => {
+    const formDataToEmit = {
+        ...props.formData,
+        options: {
+            ...localFormData.value,
+            isValidated: true
+        }
+    }
+
+    // Log détaillé des options additionnelles
+    console.log('Données du formulaire Options :', {
+        previousData: props.formData?.options,
+        currentData: {
+            selectedOptions: localFormData.value.selectedOptions,
+            customRequests: localFormData.value.customRequests,
+            isValidated: true
+        },
+        totals: {
+            numberOfOptions: localFormData.value.selectedOptions?.length || 0,
+            totalPrice: calculateTotal()
+        },
+        changes: {
+            optionsChanged: JSON.stringify(props.formData?.options?.selectedOptions) !==
+                JSON.stringify(localFormData.value.selectedOptions),
+            requestsChanged: props.formData?.options?.customRequests !==
+                localFormData.value.customRequests
+        }
+    });
+
+    emit('update:formData', formDataToEmit)
+    emit('stepValidated', true)
+}
+
 watch(localFormData, (newValue) => {
-    emit('update:formData', { template: newValue })
-}, { deep: true })
+    try {
+        // Sauvegarder dans le localStorage
+        const dataToSave = {
+            ...JSON.parse(localStorage.getItem('projectWizardData') || '{}'),
+            personal: {
+                ...newValue,
+                lastUpdated: new Date().toISOString()
+            }
+        };
+        localStorage.setItem('projectWizardData', JSON.stringify(dataToSave));
+
+        // Validation des champs
+        Object.keys(touchedFields.value).forEach(field => {
+            if (touchedFields.value[field]) {
+                validateField(field);
+            }
+        });
+    } catch (error) {
+        console.error('Erreur dans le watcher:', error);
+    }
+}, { deep: true });
+
+const saveStepData = () => {
+    const stepData = {
+        ...props.formData,
+        options: {
+            ...localFormData.value,
+            isValidated: true
+        }
+    }
+
+    console.log('Options additionnelles sauvegardées:', {
+        options: stepData.options.selectedOptions,
+        requests: stepData.options.customRequests,
+        notes: stepData.options.additionalNotes
+    });
+
+    emit('update:formData', stepData)
+
+    return stepData.options;
+}
+
+defineExpose({
+    saveStepData
+})
+
+onMounted(() => {
+    try {
+        // Récupération des données du localStorage
+        const savedData = localStorage.getItem('projectWizardData');
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            if (parsedData.options) {
+                localFormData.value = {
+                    ...localFormData.value,
+                    ...parsedData.options
+                };
+                console.log('Données options récupérées du localStorage:', parsedData.options);
+            }
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des données options:', error);
+    }
+});
+
+const handleNext = () => {
+    if (!isFormComplete.value) {
+        Object.keys(touchedFields.value).forEach(field => {
+            validateField(field);
+        });
+        return;
+    }
+
+    // Log détaillé des données des options additionnelles
+    console.log('Données du formulaire Options :', {
+        previousData: props.formData?.options,
+        currentData: {
+            additionalOptions: localFormData.value.additionalOptions,
+            customizations: localFormData.value.customizations,
+            isValidated: true
+        }
+    });
+
+    const formDataToEmit = {
+        ...props.formData,
+        options: {
+            ...localFormData.value,
+            isValidated: true
+        }
+    };
+
+    emit('update:formData', formDataToEmit);
+    emit('stepValidated', true);
+    emit('next');
+};
 </script>

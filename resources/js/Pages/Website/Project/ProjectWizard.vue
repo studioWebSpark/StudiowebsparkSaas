@@ -63,29 +63,25 @@
                 </div>
             </div>
 
-            <!-- Contenu des étapes avec padding adaptatif -->
+            <!-- Contenu des étapes avec transition -->
             <div class="w-full">
                 <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-                    <transition name="fade" mode="out-in">
-                        <div class="py-6 lg:py-8">
-                            <component :is="currentComponent" v-model:formData="formData"
-                                @stepValidated="handleStepValidation" @next="nextStep" />
-                        </div>
+                    <transition name="fade" mode="out-in" @before-leave="handleBeforeLeave"
+                        @after-enter="handleAfterEnter">
+                        <component :is="currentComponent" :form-data="formData" @update:form-data="updateFormData"
+                            @step-validated="handleStepValidation" @next="nextStep" @previous="previousStep"
+                            :key="currentStep" :class="{ 'pointer-events-none': isNavigating }" />
                     </transition>
-                </div>
 
-                <!-- Navigation responsive -->
-                <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-                    <div class="flex flex-col sm:flex-row justify-between gap-4">
+                    <!-- Navigation -->
+                    <div class="mt-8 mb-8 flex justify-between">
                         <button v-if="currentStep > 0" @click="previousStep"
-                            class="w-full sm:w-auto px-6 py-3 text-base lg:text-lg font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class='bx bx-left-arrow-alt mr-2'></i>
+                            class="px-6 py-3 text-base lg:text-lg font-medium text-gray-700 bg-gray-100 border border-transparent rounded-xl shadow-sm hover:bg-gray-200 transition-all duration-200">
                             Précédent
                         </button>
-                        <button v-if="currentStep === steps.length - 1" @click="submitForm"
-                            class="w-full sm:w-auto px-6 py-3 text-base lg:text-lg font-medium text-white bg-green-600 border border-transparent rounded-xl shadow-sm hover:bg-green-700 transition-colors">
-                            Finaliser la commande
-                            <i class='bx bx-check ml-2'></i>
+                        <button v-if="currentStep > 0 && currentStep < steps.length - 1" @click="nextStep"
+                            class="px-6 py-3 text-base lg:text-lg font-medium text-white bg-blue-600 border border-transparent rounded-xl shadow-sm hover:bg-blue-700 transition-all duration-200">
+                            Suivant
                         </button>
                     </div>
                 </div>
@@ -95,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick, onBeforeUnmount, watch } from 'vue';
 import PersonalInfo from './steps/Personalinfo.vue'
 import ProjectDetails from './steps/ProjectDetails.vue'
 import TemplateSelection from './steps/TemplateSelection.vue'
@@ -112,35 +108,69 @@ const steps = [
 ];
 
 const currentStep = ref(0);
+const stepsValidation = ref({});
 
 // Ajout de la computed property pour currentComponent
 const currentComponent = computed(() => {
     return steps[currentStep.value].component;
 });
 
-const formData = ref({
-    personal: {},
-    project: {},
-    template: null,
-    options: [],
-    total: 0
-});
+const formData = ref({});
 
 const updateFormData = (newData) => {
-    formData.value = { ...formData.value, ...newData }
-}
+    formData.value = newData;
+};
 
-const nextStep = () => {
-    if (currentStep.value < steps.length - 1) {
-        currentStep.value++
-    }
-}
+const handleStepValidation = (isValid) => {
+    stepsValidation.value[currentStep.value] = isValid;
+};
+
+const isNavigating = ref(false);
 
 const previousStep = () => {
-    if (currentStep.value > 0) {
-        currentStep.value--
+    if (isNavigating.value || currentStep.value <= 0) return;
+
+    isNavigating.value = true;
+
+    // Désactiver temporairement les transitions
+    const currentTransition = document.querySelector('.fade-transition');
+    if (currentTransition) {
+        currentTransition.style.transition = 'none';
     }
-}
+
+    // Changer l'étape
+    currentStep.value--;
+
+    // Réactiver les transitions après le changement d'étape
+    setTimeout(() => {
+        if (currentTransition) {
+            currentTransition.style.transition = '';
+        }
+        isNavigating.value = false;
+    }, 100);
+};
+
+const nextStep = () => {
+    if (isNavigating.value || currentStep.value >= steps.length - 1) return;
+
+    const stepData = {
+        0: { key: 'personal', name: 'Personnel' },
+        1: { key: 'project', name: 'Projet' },
+        2: { key: 'template', name: 'Template' },
+        3: { key: 'options', name: 'Options' }
+    }[currentStep.value];
+
+    if (stepData) {
+        console.log(`Données du formulaire ${stepData.name} :`, formData.value[stepData.key]);
+    }
+
+    isNavigating.value = true;
+    currentStep.value++;
+
+    setTimeout(() => {
+        isNavigating.value = false;
+    }, 100);
+};
 
 const submitForm = async () => {
     try {
@@ -171,6 +201,16 @@ onMounted(() => {
     // Appliquer le mode sombre au document si nécessaire
     if (isDarkMode.value) {
         document.documentElement.classList.add('dark');
+    }
+
+    try {
+        const savedData = localStorage.getItem('projectWizardData');
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            formData.value = parsedData;
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
     }
 });
 
@@ -208,12 +248,104 @@ defineExpose({
     nextStep
 })
 
-const handleStepValidation = (isValid) => {
-    console.log('Étape validée:', isValid);
+// Computed property pour contrôler l'affichage du bouton Suivant
+const showNextButton = computed(() => {
+    switch (currentStep.value) {
+        case 0: // PersonalInfo
+            return formData.value?.personal?.firstName &&
+                formData.value?.personal?.lastName &&
+                formData.value?.personal?.email &&
+                formData.value?.personal?.phone;
+        case 2: // Template
+            return formData.value?.template?.selectedForfait;
+        default:
+            return true;
+    }
+});
+
+// Référence au composant actuel
+const getCurrentComponent = () => {
+    switch (currentStep.value) {
+        case 0:
+            return personalInfoRef;
+        case 1:
+            return projectDetailsRef;
+        case 2:
+            return templateSelectionRef;
+        case 3:
+            return additionalOptionsRef;
+        default:
+            return null;
+    }
+}
+
+// Références aux composants
+const personalInfoRef = ref(null);
+const projectDetailsRef = ref(null);
+const templateSelectionRef = ref(null);
+const additionalOptionsRef = ref(null);
+
+// Vérifier si l'étape actuelle est valide
+const isCurrentStepValid = () => {
+    switch (currentStep.value) {
+        case 0: // PersonalInfo
+            return formData.value?.personal?.firstName &&
+                formData.value?.personal?.lastName &&
+                formData.value?.personal?.email &&
+                formData.value?.personal?.phone;
+        case 1: // ProjectDetails
+            return formData.value?.project?.projectName;
+        case 2: // TemplateSelection
+            return formData.value?.template?.selectedForfait;
+        case 3: // AdditionalOptions
+            return true; // Optionnel
+        default:
+            return false;
+    }
+}
+
+// Gérer la transition entre les composants
+const handleBeforeLeave = (el) => {
+    el.style.opacity = 0;
 };
 
-</script>
+const handleAfterEnter = (el) => {
+    el.style.opacity = 1;
+};
 
+// Fonction pour définir la référence du composant
+const setComponentRef = (el) => {
+    switch (currentStep.value) {
+        case 0:
+            personalInfoRef.value = el
+            break
+        case 1:
+            projectDetailsRef.value = el
+            break
+        case 2:
+            templateSelectionRef.value = el
+            break
+        case 3:
+            additionalOptionsRef.value = el
+            break
+    }
+}
+
+// Ajouter un gestionnaire de nettoyage
+onBeforeUnmount(() => {
+    isNavigating.value = false;
+});
+
+watch(formData, (newValue) => {
+    try {
+        // Sauvegarde silencieuse dans le localStorage sans log
+        localStorage.setItem('projectWizardData', JSON.stringify(newValue));
+    } catch (error) {
+        console.error('Erreur lors de la sauvegarde:', error);
+    }
+}, { deep: true });
+
+</script>
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
