@@ -53,13 +53,11 @@
                                 Nom *
                             </label>
                             <div class="relative">
-                                <input :disabled="!isEditing" type="text" v-model="localFormData.lastName"
-                                    @input="validateField('lastName')"
+                                <input type="text" v-model="localFormData.lastName" @input="validateField('lastName')"
                                     class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                         'border-gray-300': !touchedFields.lastName,
                                         'border-red-300': formErrors.lastName,
-                                        'border-green-500': isFieldValid.lastName && touchedFields.lastName,
-                                        'opacity-75': !isEditing
+                                        'border-green-500': isFieldValid.lastName && touchedFields.lastName
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.lastName && touchedFields.lastName"
@@ -77,13 +75,11 @@
                                 Prénom *
                             </label>
                             <div class="relative">
-                                <input :disabled="!isEditing" type="text" v-model="localFormData.firstName"
-                                    @input="validateField('firstName')"
+                                <input type="text" v-model="localFormData.firstName" @input="validateField('firstName')"
                                     class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                         'border-gray-300': !touchedFields.firstName,
                                         'border-red-300': formErrors.firstName,
-                                        'border-green-500': isFieldValid.firstName && touchedFields.firstName,
-                                        'opacity-75': !isEditing
+                                        'border-green-500': isFieldValid.firstName && touchedFields.firstName
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.firstName && touchedFields.firstName"
@@ -101,13 +97,11 @@
                                 Email *
                             </label>
                             <div class="relative">
-                                <input :disabled="!isEditing" type="email" v-model="localFormData.email"
-                                    @input="validateField('email')"
+                                <input type="email" v-model="localFormData.email" @input="validateField('email')"
                                     class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                         'border-gray-300': !touchedFields.email,
                                         'border-red-300': formErrors.email,
-                                        'border-green-500': isFieldValid.email && touchedFields.email,
-                                        'opacity-75': !isEditing
+                                        'border-green-500': isFieldValid.email && touchedFields.email
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.email && touchedFields.email"
@@ -124,13 +118,11 @@
                                 Téléphone *
                             </label>
                             <div class="relative">
-                                <input :disabled="!isEditing" type="tel" v-model="localFormData.phone"
-                                    @input="validateField('phone')"
+                                <input type="tel" v-model="localFormData.phone" @input="validateField('phone')"
                                     class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
                                         'border-gray-300': !touchedFields.phone,
                                         'border-red-300': formErrors.phone,
-                                        'border-green-500': isFieldValid.phone && touchedFields.phone,
-                                        'opacity-75': !isEditing
+                                        'border-green-500': isFieldValid.phone && touchedFields.phone
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.phone && touchedFields.phone"
@@ -314,23 +306,24 @@ if (props.formData?.personal) {
 
 onMounted(() => {
     try {
-        // D'abord essayer de charger depuis les props
-        if (props.formData?.personal) {
-            localFormData.value = {
-                ...localFormData.value,
-                ...props.formData.personal
-            };
-        }
-        // Sinon, essayer de charger depuis le localStorage
-        else {
-            const savedData = localStorage.getItem('projectWizardData');
-            if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                if (parsedData.personal) {
-                    localFormData.value = {
-                        ...localFormData.value,
-                        ...parsedData.personal
-                    };
+        const savedData = localStorage.getItem('projectWizardData');
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            if (parsedData.personal) {
+                localFormData.value = {
+                    ...localFormData.value,
+                    ...parsedData.personal
+                };
+
+                // Marquer tous les champs comme touchés et valides
+                Object.keys(touchedFields.value).forEach(field => {
+                    touchedFields.value[field] = true;
+                    isFieldValid.value[field] = true;
+                });
+
+                // Si c'est un professionnel, valider le SIREN
+                if (parsedData.personal.clientType === 'professional' && parsedData.personal.siren) {
+                    validateSiren();
                 }
             }
         }

@@ -94,16 +94,16 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, onBeforeUnmount, watch } from 'vue';
 import PersonalInfo from './steps/Personalinfo.vue'
 import ProjectDetails from './steps/ProjectDetails.vue'
+import ForfaitSelection from './steps/ForfaitSelection.vue'
 import TemplateSelection from './steps/TemplateSelection.vue'
-import AdditionalOptions from './steps/AdditionalOptions.vue'
 import OrderSummary from './steps/OrderSummary.vue'
 import Header from '../componentsHome/Header.vue'
 
 const steps = [
     { title: 'Informations', component: PersonalInfo },
     { title: 'Projet', component: ProjectDetails },
+    { title: 'Forfait & Options', component: ForfaitSelection },
     { title: 'Template', component: TemplateSelection },
-    { title: 'Options', component: AdditionalOptions },
     { title: 'Validation', component: OrderSummary }
 ];
 
@@ -115,7 +115,115 @@ const currentComponent = computed(() => {
     return steps[currentStep.value].component;
 });
 
-const formData = ref({});
+// Structure correcte des données
+const formData = ref({
+    informations: {
+        clientType: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        companyName: '',
+        siren: '',
+        activity: '',
+        isValidated: false
+    },
+    project: {
+        projectType: '',
+        description: '',
+        selectedFeatures: [],
+        isValidated: false
+    },
+    forfait: {
+        selectedForfait: null,
+        forfaitDetails: null,
+        selectedOptions: [],
+        maintenancePlan: null,
+        isValidated: false
+    },
+    template: {
+        selectedTemplate: null,
+        customizations: [],
+        isValidated: false
+    }
+});
+
+// Référence vers le composant actif
+const currentStepComponent = ref(null);
+
+// Fonction pour mettre à jour une section spécifique
+const updateSection = (section, data) => {
+    formData.value[section] = {
+        ...formData.value[section],
+        ...data,
+        isValidated: true // Force la validation quand les données sont mises à jour
+    };
+
+    // Log de vérification
+    console.log(`Données du formulaire ${section} :`, {
+        ...formData.value[section],
+        isValidated: true
+    });
+
+    // Sauvegarder dans localStorage
+    saveToLocalStorage();
+};
+
+// Gérer la validation et la navigation
+const handleNextStep = async () => {
+    const currentSection = steps[currentStep.value].key;
+
+    if (currentStepComponent.value?.validate()) {
+        // Mettre à jour isValidated pour la section courante
+        formData.value[currentSection].isValidated = true;
+
+        // Sauvegarder et passer à l'étape suivante
+        saveToLocalStorage();
+        if (currentStep.value < steps.length - 1) {
+            currentStep.value++;
+        }
+    }
+};
+
+// Sauvegarder dans le localStorage
+const saveToLocalStorage = () => {
+    try {
+        localStorage.setItem('projectWizardData', JSON.stringify(formData.value));
+    } catch (error) {
+        console.error('Erreur lors de la sauvegarde:', error);
+    }
+};
+
+// Charger les données sauvegardées
+const loadSavedData = () => {
+    try {
+        const savedData = localStorage.getItem('projectWizardData');
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            formData.value = {
+                ...formData.value,
+                ...parsedData
+            };
+        }
+    } catch (error) {
+        console.error('Erreur lors du chargement:', error);
+    }
+};
+
+// Vérifier si toutes les étapes sont validées
+const isAllStepsValidated = computed(() => {
+    return steps.every(step => formData.value[step.key]?.isValidated === true);
+});
+
+// Charger les données au montage
+onMounted(() => {
+    loadSavedData();
+});
+
+// Watcher pour sauvegarder automatiquement
+watch(formData, () => {
+    saveToLocalStorage();
+}, { deep: true });
 
 const updateFormData = (newData) => {
     formData.value = newData;
@@ -156,8 +264,8 @@ const nextStep = () => {
     const stepData = {
         0: { key: 'personal', name: 'Personnel' },
         1: { key: 'project', name: 'Projet' },
-        2: { key: 'template', name: 'Template' },
-        3: { key: 'options', name: 'Options' }
+        2: { key: 'forfait', name: 'Forfait' },
+        3: { key: 'template', name: 'Template' }
     }[currentStep.value];
 
     if (stepData) {
@@ -273,7 +381,7 @@ const getCurrentComponent = () => {
         case 2:
             return templateSelectionRef;
         case 3:
-            return additionalOptionsRef;
+            return TemplateSelectionRef;
         default:
             return null;
     }
@@ -283,7 +391,7 @@ const getCurrentComponent = () => {
 const personalInfoRef = ref(null);
 const projectDetailsRef = ref(null);
 const templateSelectionRef = ref(null);
-const additionalOptionsRef = ref(null);
+const TemplateSelectionRef = ref(null);
 
 // Vérifier si l'étape actuelle est valide
 const isCurrentStepValid = () => {
@@ -297,7 +405,7 @@ const isCurrentStepValid = () => {
             return formData.value?.project?.projectName;
         case 2: // TemplateSelection
             return formData.value?.template?.selectedForfait;
-        case 3: // AdditionalOptions
+        case 3: // TemplateSelection
             return true; // Optionnel
         default:
             return false;
@@ -326,7 +434,7 @@ const setComponentRef = (el) => {
             templateSelectionRef.value = el
             break
         case 3:
-            additionalOptionsRef.value = el
+            TemplateSelectionRef.value = el
             break
     }
 }
@@ -335,15 +443,6 @@ const setComponentRef = (el) => {
 onBeforeUnmount(() => {
     isNavigating.value = false;
 });
-
-watch(formData, (newValue) => {
-    try {
-        // Sauvegarde silencieuse dans le localStorage sans log
-        localStorage.setItem('projectWizardData', JSON.stringify(newValue));
-    } catch (error) {
-        console.error('Erreur lors de la sauvegarde:', error);
-    }
-}, { deep: true });
 
 </script>
 <style scoped>

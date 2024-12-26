@@ -209,35 +209,32 @@ const startEditing = () => {
 };
 
 const validateForm = () => {
-    const formDataToEmit = {
-        ...props.formData,
-        project: {
-            ...localFormData.value,
-            isValidated: true
-        }
-    }
+    // Vérifier si le type de projet est sélectionné et la description n'est pas vide
+    const isValid =
+        localFormData.value.projectType &&
+        localFormData.value.description &&
+        localFormData.value.description.length >= 10; // Par exemple, minimum 10 caractères
 
-    // Log détaillé des données du projet
-    console.log('Données du formulaire Projet :', {
-        previousData: props.formData?.project,
-        currentData: {
-            projectName: localFormData.value.projectName,
-            projectType: localFormData.value.projectType,
-            projectDescription: localFormData.value.projectDescription,
-            deadline: localFormData.value.deadline,
-            isValidated: true
-        },
-        changes: {
-            nameChanged: props.formData?.project?.projectName !== localFormData.value.projectName,
-            typeChanged: props.formData?.project?.projectType !== localFormData.value.projectType,
-            descriptionChanged: props.formData?.project?.projectDescription !== localFormData.value.projectDescription,
-            deadlineChanged: props.formData?.project?.deadline !== localFormData.value.deadline
-        }
+    // Mettre à jour isValidated
+    localFormData.value.isValidated = isValid;
+
+    // Émettre la mise à jour
+    emit('update:formData', {
+        ...localFormData.value,
+        isValidated: isValid
     });
+};
 
-    emit('update:formData', formDataToEmit)
-    emit('stepValidated', true)
-}
+// Ajouter un watcher pour valider automatiquement quand les champs changent
+watch(
+    [
+        () => localFormData.value.projectType,
+        () => localFormData.value.description
+    ],
+    () => {
+        validateForm();
+    }
+);
 
 // Sauvegarder à chaque modification
 watch(localFormData, (newValue) => {

@@ -106,7 +106,7 @@ const features = [
     {
         name: "Statistiques réseaux sociaux",
         starter: false,
-        standard: false,
+        standard: true,
         premium: true
     },
     {
@@ -127,23 +127,18 @@ const features = [
         standard: false,
         premium: true
     },
-    {
-        name: "Maintenance annuelle",
-        starter: false,
-        standard: "1 mois offert",
-        premium: "3 mois offerts"
-    },
+    
     {
         name: "Audit marketing",
         starter: false,
-        standard: false,
-        premium: "Initial offert"
+        standard: true,
+        premium: true
     },
     {
         name: "Stratégie de contenu",
         starter: false,
-        standard: false,
-        premium: "Personnalisée"
+        standard: true,
+        premium: "Personnalisée "
     }
 ];
 </script> 
