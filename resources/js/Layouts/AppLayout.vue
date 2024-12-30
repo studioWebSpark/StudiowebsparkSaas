@@ -30,7 +30,6 @@ const logout = () => {
 
 <template>
     <div>
-        <CustomCursor />
 
         <Head :title="title" />
 

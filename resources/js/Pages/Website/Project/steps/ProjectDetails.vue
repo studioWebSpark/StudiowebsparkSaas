@@ -1,14 +1,5 @@
 <template>
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-        <!-- Bouton Modifier -->
-        <div v-if="!isEditing && formData.project.isValidated" class="mb-4 flex justify-end">
-            <button type="button" @click="startEditing"
-                class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center transition-all duration-200 transform hover:scale-105">
-                <i class='bx bx-edit mr-2'></i>
-                Modifier le projet
-            </button>
-        </div>
-
         <form @submit.prevent="validateForm" class="space-y-8">
             <!-- Type de projet -->
             <div>
@@ -16,14 +7,12 @@
                     Type de projet *
                 </label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <button v-for="type in projectTypes" :key="type.id" type="button" :disabled="!isEditing"
+                    <button v-for="type in projectTypes" :key="type.id" type="button"
                         @click="localFormData.projectType = type.id; validateField('projectType')"
-                        class="relative flex flex-col items-center p-6 border rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+                        class="relative flex flex-col items-center p-6 border rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer"
                         :class="{
-                            'border-green-500 bg-green-50 text-green-700': localFormData.projectType === type.id,
-                            'border-gray-200 hover:border-green-500 hover:bg-green-50': localFormData.projectType !== type.id,
-                            'opacity-75 cursor-not-allowed': !isEditing,
-                            'cursor-pointer': isEditing
+                            'border-green-500 bg-green-50 dark:bg-green-900 dark:border-green-400 text-green-700 dark:text-green-300': localFormData.projectType === type.id,
+                            'border-gray-200 dark:border-gray-600 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900': localFormData.projectType !== type.id
                         }">
                         <i :class="['bx text-4xl mb-3', type.icon]"></i>
                         <span class="text-sm font-medium">{{ type.name }}</span>
@@ -32,8 +21,9 @@
                         </div>
                     </button>
                 </div>
-                <p v-if="formErrors.projectType && touchedFields.projectType" class="mt-2 text-sm text-red-600">{{
-                    formErrors.projectType }}</p>
+                <p v-if="formErrors.projectType && touchedFields.projectType" class="mt-2 text-sm text-red-600">
+                    {{ formErrors.projectType }}
+                </p>
             </div>
 
             <!-- Description -->
@@ -42,14 +32,13 @@
                     Description du projet *
                 </label>
                 <div class="relative">
-                    <textarea v-model="localFormData.description" :disabled="!isEditing"
-                        @input="validateField('description')" rows="4" class="mt-1 block w-full rounded-md shadow-sm"
-                        :class="{
+                    <textarea v-model="localFormData.description" @input="validateField('description')" rows="4"
+                        class="mt-1 block w-full rounded-md shadow-sm" :class="{
                             'border-gray-300': !touchedFields.description,
                             'border-red-300': formErrors.description,
-                            'border-green-500': isFieldValid.description && touchedFields.description,
-                            'opacity-75': !isEditing
-                        }" placeholder="Décrivez votre projet en détail..."></textarea>
+                            'border-green-500': isFieldValid.description && touchedFields.description
+                        }" placeholder="Décrivez votre projet en détail...">
+                    </textarea>
                 </div>
                 <p v-if="formErrors.description" class="mt-1 text-sm text-red-600">{{ formErrors.description }}</p>
             </div>
@@ -61,28 +50,25 @@
                 </label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <label v-for="feature in features" :key="feature.id"
-                        class="relative flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+                        class="relative flex flex-col items-center p-6 border rounded-xl cursor-pointer transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
                         :class="{
-                            'border-green-500 bg-green-50': localFormData.selectedFeatures.includes(feature.id),
-                            'border-gray-200 hover:border-green-500 hover:bg-green-50': !localFormData.selectedFeatures.includes(feature.id),
-                            'opacity-75': !isEditing
+                            'border-green-500 bg-green-50/70 dark:bg-green-900/50 dark:border-green-400 text-green-700 dark:text-green-300': localFormData.selectedFeatures.includes(feature.id),
+                            'border-gray-200 dark:border-gray-600 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/50': !localFormData.selectedFeatures.includes(feature.id)
                         }">
-                        <input type="checkbox" :disabled="!isEditing" v-model="localFormData.selectedFeatures"
-                            :value="feature.id" class="sr-only">
-                        <div class="flex items-center w-full">
-                            <i :class="['bx text-2xl mr-3', feature.icon]"></i>
-                            <span class="text-sm font-medium flex-grow">{{ feature.name }}</span>
-                            <div v-if="localFormData.selectedFeatures.includes(feature.id)" class="text-green-500">
-                                <i class='bx bx-check text-xl'></i>
+                        <input type="checkbox" v-model="localFormData.selectedFeatures" :value="feature.id"
+                            class="sr-only">
+                        <div class="flex flex-col items-center w-full">
+                            <i :class="['bx text-3xl mb-2', feature.icon]"></i>
+                            <span class="text-sm font-medium text-center">{{ feature.name }}</span>
+                            <div v-if="localFormData.selectedFeatures.includes(feature.id)"
+                                class="absolute top-2 right-2">
+                                <i class='bx bx-check text-green-500 text-xl'></i>
                             </div>
                         </div>
                     </label>
                 </div>
             </div>
         </form>
-
-        <!-- Bouton Suivant -->
-
     </div>
 </template>
 <script setup>
@@ -105,8 +91,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:formData', 'stepValidated', 'next']);
-
-const isEditing = ref(!props.formData?.project?.isValidated);
 
 // Validation des champs
 const formErrors = ref({
@@ -147,9 +131,7 @@ const features = [
     { id: 'newsletter', name: 'Newsletter', icon: 'bx-mail-send' },
     { id: 'stats', name: 'Statistiques & Rapports', icon: 'bx-line-chart' },
     { id: 'multilang', name: 'Multi-langues', icon: 'bx-world' },
-    { id: 'ecommerce', name: 'E-commerce', icon: 'bx-cart' },
     { id: 'maintenance', name: 'Maintenance', icon: 'bx-wrench' },
-    { id: 'hosting', name: 'Hébergement', icon: 'bx-server' }
 ];
 
 const getInitialData = () => {
@@ -199,15 +181,6 @@ const isFormComplete = computed(() => {
         localFormData.value.selectedFeatures.length > 0;
 });
 
-const startEditing = () => {
-    isEditing.value = true;
-    Object.keys(touchedFields.value).forEach(field => {
-        touchedFields.value[field] = true;
-        isFieldValid.value[field] = true;
-    });
-    emit('stepValidated', false);
-};
-
 const validateForm = () => {
     // Vérifier si le type de projet est sélectionné et la description n'est pas vide
     const isValid =
@@ -248,7 +221,6 @@ watch(localFormData, (newValue) => {
             }
         };
         localStorage.setItem('projectWizardData', JSON.stringify(dataToSave));
-
         // Émettre les mises à jour
         emit('update:formData', {
             ...props.formData,
@@ -331,4 +303,36 @@ const handleNext = () => {
         console.error('Erreur lors de la sauvegarde:', error);
     }
 };
+
+// Définition des recommandations de forfaits selon le type de projet
+const forfaitRecommendations = {
+    'e-commerce': {
+        recommended: 'premium',
+        minimum: 'standard',
+        message: 'Pour un site e-commerce performant, nous recommandons le forfait Premium. Le forfait Standard est également disponible avec les fonctionnalités essentielles.'
+    },
+    'application': {
+        recommended: 'premium',
+        minimum: 'standard',
+        message: 'Pour une application web professionnelle, nous recommandons le forfait Premium. Le forfait Standard est également disponible avec les fonctionnalités de base.'
+    },
+    'blog': {
+        recommended: 'standard',
+        message: 'Pour un blog professionnel, nous recommandons le forfait Standard qui offre un excellent rapport qualité-prix.'
+    },
+    'site-vitrine': {
+        recommended: 'starter',
+        message: 'Pour un site vitrine, le forfait Starter est un excellent point de départ, mais vous pouvez opter pour plus de fonctionnalités avec nos autres forfaits.'
+    }
+};
+
+// Modifier le watch pour le type de projet
+watch(() => localFormData.value.projectType, (newType) => {
+    if (newType) {
+        const recommendation = forfaitRecommendations[newType];
+        if (recommendation) {
+            localStorage.setItem('projectRecommendation', JSON.stringify(recommendation));
+        }
+    }
+});
 </script>

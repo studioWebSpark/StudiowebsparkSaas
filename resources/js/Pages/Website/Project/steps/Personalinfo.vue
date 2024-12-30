@@ -5,7 +5,6 @@
                 <form @submit.prevent="validateForm" class="space-y-4 sm:space-y-6">
                     <!-- Type de client -->
                     <div class="grid grid-cols-1 gap-4">
-                        <!-- Type de client -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Vous êtes ? *
@@ -14,34 +13,37 @@
                                 <div class="flex gap-4">
                                     <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer"
                                         :class="{
-                                            'border-gray-300': !touchedFields.clientType,
-                                            'border-red-300': formErrors.clientType,
-                                            'border-green-500 ': isFieldValid.clientType && touchedFields.clientType,
-                                            'border': true
+                                            'border-gray-300 dark:border-gray-600': !touchedFields.clientType,
+                                            'border-red-300 dark:border-red-500': formErrors.clientType,
+                                            'border-green-500 dark:border-green-400': isFieldValid.clientType && touchedFields.clientType,
+                                            'border bg-white dark:bg-gray-700': true
                                         }">
                                         <input type="radio" v-model="localFormData.clientType" value="individual"
                                             class="sr-only" @change="validateField('clientType')">
-                                        <span class="text-sm font-medium text-gray-900">Un particulier</span>
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white">Un
+                                            particulier</span>
                                         <i v-if="localFormData.clientType === 'individual'"
-                                            class="bx bx-check text-green-500 text-xl ml-2"></i>
+                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl ml-2"></i>
                                     </label>
                                     <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer"
                                         :class="{
-                                            'border-gray-300': !touchedFields.clientType,
-                                            'border-red-300': formErrors.clientType,
-                                            'border-green-500 ': isFieldValid.clientType && touchedFields.clientType,
-                                            'border': true
+                                            'border-gray-300 dark:border-gray-600': !touchedFields.clientType,
+                                            'border-red-300 dark:border-red-500': formErrors.clientType,
+                                            'border-green-500 dark:border-green-400': isFieldValid.clientType && touchedFields.clientType,
+                                            'border bg-white dark:bg-gray-700': true
                                         }">
                                         <input type="radio" v-model="localFormData.clientType" value="professional"
                                             class="sr-only" @change="validateField('clientType')">
-                                        <span class="text-sm font-medium text-gray-900">Un professionnel</span>
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white">Un
+                                            professionnel</span>
                                         <i v-if="localFormData.clientType === 'professional'"
-                                            class="bx bx-check text-green-500 text-xl ml-2"></i>
+                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl ml-2"></i>
                                     </label>
                                 </div>
                             </div>
-                            <p v-if="formErrors.clientType" class="mt-1 text-sm text-red-600">{{ formErrors.clientType
-                                }}</p>
+                            <p v-if="formErrors.clientType" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ formErrors.clientType }}
+                            </p>
                         </div>
                     </div>
 
@@ -49,88 +51,102 @@
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <!-- Nom -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Nom *
                             </label>
                             <div class="relative">
                                 <input type="text" v-model="localFormData.lastName" @input="validateField('lastName')"
-                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
-                                        'border-gray-300': !touchedFields.lastName,
-                                        'border-red-300': formErrors.lastName,
-                                        'border-green-500': isFieldValid.lastName && touchedFields.lastName
+                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white"
+                                    :class="{
+                                        'border-gray-300 dark:border-gray-600': !touchedFields.lastName,
+                                        'border-red-300 dark:border-red-500': formErrors.lastName,
+                                        'border-green-500 dark:border-green-400': isFieldValid.lastName && touchedFields.lastName
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.lastName && touchedFields.lastName"
-                                        class="bx bx-check text-green-500 text-xl"></i>
-                                    <i v-if="formErrors.lastName" class="bx bx-x text-red-500 text-xl"></i>
+                                        class="bx bx-check text-green-500 dark:text-green-400 text-xl"></i>
+                                    <i v-if="formErrors.lastName"
+                                        class="bx bx-x text-red-500 dark:text-red-400 text-xl"></i>
                                 </div>
                             </div>
-                            <p v-if="formErrors.lastName" class="mt-1 text-sm text-red-600">{{ formErrors.lastName }}
+                            <p v-if="formErrors.lastName" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ formErrors.lastName }}
                             </p>
                         </div>
 
                         <!-- Prénom -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Prénom *
                             </label>
                             <div class="relative">
                                 <input type="text" v-model="localFormData.firstName" @input="validateField('firstName')"
-                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
-                                        'border-gray-300': !touchedFields.firstName,
-                                        'border-red-300': formErrors.firstName,
-                                        'border-green-500': isFieldValid.firstName && touchedFields.firstName
+                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white"
+                                    :class="{
+                                        'border-gray-300 dark:border-gray-600': !touchedFields.firstName,
+                                        'border-red-300 dark:border-red-500': formErrors.firstName,
+                                        'border-green-500 dark:border-green-400': isFieldValid.firstName && touchedFields.firstName
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.firstName && touchedFields.firstName"
-                                        class="bx bx-check text-green-500 text-xl"></i>
-                                    <i v-if="formErrors.firstName" class="bx bx-x text-red-500 text-xl"></i>
+                                        class="bx bx-check text-green-500 dark:text-green-400 text-xl"></i>
+                                    <i v-if="formErrors.firstName"
+                                        class="bx bx-x text-red-500 dark:text-red-400 text-xl"></i>
                                 </div>
                             </div>
-                            <p v-if="formErrors.firstName" class="mt-1 text-sm text-red-600">{{ formErrors.firstName }}
+                            <p v-if="formErrors.firstName" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ formErrors.firstName }}
                             </p>
                         </div>
 
                         <!-- Email -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Email *
                             </label>
                             <div class="relative">
                                 <input type="email" v-model="localFormData.email" @input="validateField('email')"
-                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
-                                        'border-gray-300': !touchedFields.email,
-                                        'border-red-300': formErrors.email,
-                                        'border-green-500': isFieldValid.email && touchedFields.email
+                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white"
+                                    :class="{
+                                        'border-gray-300 dark:border-gray-600': !touchedFields.email,
+                                        'border-red-300 dark:border-red-500': formErrors.email,
+                                        'border-green-500 dark:border-green-400': isFieldValid.email && touchedFields.email
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.email && touchedFields.email"
-                                        class="bx bx-check text-green-500 text-xl"></i>
-                                    <i v-if="formErrors.email" class="bx bx-x text-red-500 text-xl"></i>
+                                        class="bx bx-check text-green-500 dark:text-green-400 text-xl"></i>
+                                    <i v-if="formErrors.email"
+                                        class="bx bx-x text-red-500 dark:text-red-400 text-xl"></i>
                                 </div>
                             </div>
-                            <p v-if="formErrors.email" class="mt-1 text-sm text-red-600">{{ formErrors.email }}</p>
+                            <p v-if="formErrors.email" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ formErrors.email }}
+                            </p>
                         </div>
 
                         <!-- Téléphone -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Téléphone *
                             </label>
                             <div class="relative">
                                 <input type="tel" v-model="localFormData.phone" @input="validateField('phone')"
-                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white" :class="{
-                                        'border-gray-300': !touchedFields.phone,
-                                        'border-red-300': formErrors.phone,
-                                        'border-green-500': isFieldValid.phone && touchedFields.phone
+                                    class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white"
+                                    :class="{
+                                        'border-gray-300 dark:border-gray-600': !touchedFields.phone,
+                                        'border-red-300 dark:border-red-500': formErrors.phone,
+                                        'border-green-500 dark:border-green-400': isFieldValid.phone && touchedFields.phone
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.phone && touchedFields.phone"
-                                        class="bx bx-check text-green-500 text-xl"></i>
-                                    <i v-if="formErrors.phone" class="bx bx-x text-red-500 text-xl"></i>
+                                        class="bx bx-check text-green-500 dark:text-green-400 text-xl"></i>
+                                    <i v-if="formErrors.phone"
+                                        class="bx bx-x text-red-500 dark:text-red-400 text-xl"></i>
                                 </div>
                             </div>
-                            <p v-if="formErrors.phone" class="mt-1 text-sm text-red-600">{{ formErrors.phone }}</p>
+                            <p v-if="formErrors.phone" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ formErrors.phone }}
+                            </p>
                         </div>
                     </div>
 
@@ -145,20 +161,22 @@
                                 <div class="relative">
                                     <input type="text" v-model="localFormData.activity"
                                         @input="validateField('activity')"
-                                        class="mt-1 block w-full pr-10 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white"
                                         :class="{
-                                            'border-gray-300': !touchedFields.activity,
-                                            'border-red-300': formErrors.activity,
-                                            'border-green-500': isFieldValid.activity && touchedFields.activity
+                                            'border-gray-300 dark:border-gray-600': !touchedFields.activity,
+                                            'border-red-300 dark:border-red-500': formErrors.activity,
+                                            'border-green-500 dark:border-green-400': isFieldValid.activity && touchedFields.activity
                                         }" required>
                                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                         <i v-if="isFieldValid.activity && touchedFields.activity"
-                                            class="bx bx-check text-green-500 text-xl"></i>
-                                        <i v-if="formErrors.activity" class="bx bx-x text-red-500 text-xl"></i>
+                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl"></i>
+                                        <i v-if="formErrors.activity"
+                                            class="bx bx-x text-red-500 dark:text-red-400 text-xl"></i>
                                     </div>
                                 </div>
-                                <p v-if="formErrors.activity" class="mt-1 text-sm text-red-600">{{ formErrors.activity
-                                    }}</p>
+                                <p v-if="formErrors.activity" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                    {{ formErrors.activity }}
+                                </p>
                             </div>
 
                             <!-- SIREN -->
@@ -168,86 +186,84 @@
                                 </label>
                                 <div class="relative">
                                     <input type="text" v-model="localFormData.siren" @input="validateSiren"
-                                        maxlength="9" class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white"
+                                        maxlength="9"
+                                        class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white"
                                         :class="{
-                                            'border-gray-300': !touchedFields.siren,
-                                            'border-red-300': sirenError,
-                                            'border-green-500': isValidSiren
+                                            'border-gray-300 dark:border-gray-600': !touchedFields.siren,
+                                            'border-red-300 dark:border-red-500': sirenError,
+                                            'border-green-500 dark:border-green-400': isValidSiren
                                         }" required>
                                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                        <i v-if="isValidSiren" class="bx bx-check text-green-500 text-xl"></i>
-                                        <i v-if="sirenError" class="bx bx-x text-red-500 text-xl"></i>
+                                        <i v-if="isValidSiren"
+                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl"></i>
+                                        <i v-if="sirenError" class="bx bx-x text-red-500 dark:text-red-400 text-xl"></i>
                                     </div>
                                 </div>
-                                <p v-if="sirenError" class="mt-1 text-sm text-red-600">{{ sirenError }}</p>
+                                <p v-if="sirenError" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                    {{ sirenError }}
+                                </p>
                             </div>
                         </div>
 
                         <!-- Informations de l'entreprise -->
                         <div v-if="isValidSiren && companyDetails"
-                            class="mt-6 p-6 rounded-md border bg-white cursor-pointer" :class="{
-                                'border-gray-300': !selectedCompany,
-                                'border-green-500': selectedCompany
+                            class="mt-6 p-6 rounded-md border bg-white dark:bg-gray-700 cursor-pointer" :class="{
+                                'border-gray-300 dark:border-gray-600': !selectedCompany,
+                                'border-green-500 dark:border-green-400': selectedCompany
                             }" @click="!selectedCompany && confirmCompanyDetails()">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-sm font-medium text-gray-700">Informations de l'entreprise</h3>
+                                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Informations de l'entreprise
+                                </h3>
                                 <span class="px-3 py-1 rounded-full text-sm font-medium"
-                                    :class="selectedCompany ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                                    :class="selectedCompany ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200'">
                                     {{ selectedCompany ? 'Entreprise confirmée' : 'Cliquez pour confirmer' }}
                                 </span>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-500">Dénomination</p>
-                                    <p class="mt-1 text-base text-gray-900">{{ companyDetails.denomination }}</p>
+                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Dénomination</p>
+                                    <p class="mt-1 text-base text-gray-900 dark:text-white">
+                                        {{ companyDetails.denomination }}
+                                    </p>
                                 </div>
 
                                 <div>
-                                    <p class="text-sm font-medium text-gray-500">Date de création</p>
-                                    <p class="mt-1 text-base text-gray-900">
+                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Date de création</p>
+                                    <p class="mt-1 text-base text-gray-900 dark:text-white">
                                         {{ new Date(companyDetails.dateCreation).toLocaleDateString('fr-FR') }}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <p class="text-sm font-medium text-gray-500">Numéro SIREN</p>
-                                    <p class="mt-1 text-base text-gray-900">{{ companyDetails.siren }}</p>
+                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Numéro SIREN</p>
+                                    <p class="mt-1 text-base text-gray-900 dark:text-white">
+                                        {{ companyDetails.siren }}
+                                    </p>
                                 </div>
 
                                 <div v-if="companyDetails.siret">
-                                    <p class="text-sm font-medium text-gray-500">Numéro SIRET</p>
-                                    <p class="mt-1 text-base text-gray-900">{{ companyDetails.siret }}</p>
+                                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Numéro SIRET</p>
+                                    <p class="mt-1 text-base text-gray-900 dark:text-white">
+                                        {{ companyDetails.siret }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </template>
-                    <!-- Ajout du composant de sélection d'entreprise -->
-                    <div v-if="localFormData.clientType === 'company'" class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Sélectionner une entreprise
-                        </label>
-                        <div class="mt-1">
-                            <!-- Ajouter ici votre composant de recherche/sélection d'entreprise -->
-                            <!-- Par exemple : -->
-                            <input type="text" v-model="localFormData.companyName" @input="handleCompanySelect(null)"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="Nom de l'entreprise" />
-                        </div>
+
+                    <!-- Navigation -->
+                    <div class="mt-8 flex justify-end">
+                        <button v-if="isFormComplete" @click="handleNext"
+                            class="px-6 py-3 text-base lg:text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 border border-transparent rounded-xl shadow-sm">
+                            Suivant
+                        </button>
                     </div>
                 </form>
-
-                <!-- Navigation -->
-                <div class="mt-8 flex justify-end">
-                    <button v-if="isFormComplete" @click="handleNext"
-                        class="px-6 py-3 text-base lg:text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 border border-transparent rounded-xl shadow-sm">
-                        Suivant
-                    </button>
-                </div>
             </div>
         </div>
     </div>
-
 </template>
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'

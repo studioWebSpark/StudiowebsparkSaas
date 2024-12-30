@@ -188,7 +188,11 @@ const handleNextStep = async () => {
 // Sauvegarder dans le localStorage
 const saveToLocalStorage = () => {
     try {
-        localStorage.setItem('projectWizardData', JSON.stringify(formData.value));
+        const dataToSave = {
+            ...formData.value,
+            currentStep: currentStep.value
+        };
+        localStorage.setItem('projectWizardData', JSON.stringify(dataToSave));
     } catch (error) {
         console.error('Erreur lors de la sauvegarde:', error);
     }
@@ -217,6 +221,14 @@ const isAllStepsValidated = computed(() => {
 
 // Charger les données au montage
 onMounted(() => {
+    // Récupérer l'étape depuis l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const stepParam = urlParams.get('step');
+
+    if (stepParam) {
+        currentStep.value = parseInt(stepParam);
+    }
+
     loadSavedData();
 });
 
@@ -316,6 +328,14 @@ onMounted(() => {
         if (savedData) {
             const parsedData = JSON.parse(savedData);
             formData.value = parsedData;
+
+            // Si toutes les étapes sont validées, aller directement à l'étape de validation
+            if (parsedData.personal?.isValidated &&
+                parsedData.project?.isValidated &&
+                parsedData.forfait?.isValidated &&
+                parsedData.template?.isValidated) {
+                currentStep.value = 4; // Étape de validation
+            }
         }
     } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);

@@ -14,15 +14,28 @@
                 </p>
             </div>
 
+            <!-- Ajouter après le titre -->
+            <div v-if="projectRecommendation" class="text-center mb-8">
+                <p class="text-lg text-green-600 dark:text-green-400 font-medium">
+                    {{ projectRecommendation.message }}
+                </p>
+            </div>
+
             <!-- Grille des forfaits -->
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 mb-24">
-                <div v-for="forfait in forfaits" :key="forfait.id"
-                    class="relative flex flex-col rounded-xl border-2 p-8 xl:p-10 bg-white dark:bg-[#1E293B] transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer"
-                    :class="[
-                        forfait.popular ? 'border-green-500' : 'border-gray-200 dark:border-gray-700',
-                        localFormData.selectedForfait === forfait.id ? 'border-green-500 bg-green-50' : '',
-                        'hover:border-green-500 hover:bg-green-50'
-                    ]" @click="selectForfait(forfait)">
+                <div v-for="forfait in filteredForfaits" :key="forfait.id" :class="[
+                    'relative flex flex-col rounded-xl border-2 p-8 xl:p-10 bg-white dark:bg-[#1E293B] transition-all duration-200 transform hover:scale-105 hover:shadow-lg',
+                    forfait.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+                    forfait.recommended ? 'border-green-500 ring-2 ring-green-500' : 'border-gray-200 dark:border-gray-700',
+                    localFormData.selectedForfait === forfait.id ? 'border-green-500 bg-green-50 dark:bg-green-900/50' : '',
+                    'hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/50'
+                ]" @click="selectForfait(forfait)">
+
+                    <!-- Ajouter un badge "Recommandé" -->
+                    <div v-if="forfait.recommended"
+                        class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-green-500 text-white rounded-full text-sm font-medium">
+                        Recommandé
+                    </div>
 
                     <!-- Badge -->
                     <div :class="[
@@ -85,66 +98,66 @@
 
                         <div class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             <div v-for="option in availableOptions" :key="option.id"
-                                class="relative rounded-xl border-2 p-3 sm:p-4 transition-all duration-200" :class="[
-                                    option.disabled ? 'border-gray-200 opacity-50' :
-                                        ['Dashboard', 'ecommerce'].includes(option.id) ?
-                                            (isSelected(option.id) ? 'border-green-500 bg-green-50 cursor-pointer' : 'border-gray-200 hover:border-green-500 hover:bg-green-50 cursor-pointer') :
-                                            option.included ? 'border-green-500 bg-green-50' :
-                                                isSelected(option.id) ? 'border-green-500 bg-green-50 cursor-pointer' :
-                                                    'border-gray-200 hover:border-green-500 hover:bg-green-50 cursor-pointer'
+                                class="relative rounded-xl border-2 p-3 sm:p-4 transition-all duration-200 flex flex-col"
+                                :class="[
+                                    option.disabled ? 'border-gray-200 dark:border-gray-700 opacity-75' :
+                                        isSelected(option.id) ? 'border-green-500 bg-green-50 dark:bg-green-900/50' :
+                                            'border-gray-200 dark:border-gray-700 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/50 cursor-pointer'
                                 ]">
-                                <div class="flex flex-col items-center">
+                                <div class="flex flex-col items-center flex-grow">
                                     <!-- Icône -->
                                     <div class="flex-shrink-0 mb-4">
                                         <i :class="[
                                             'bx text-2xl sm:text-3xl',
                                             option.icon,
-                                            option.included || isSelected(option.id) ? 'text-green-500' : 'text-gray-400'
+                                            option.included || isSelected(option.id) ? 'text-green-500' :
+                                                option.disabled ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400'
                                         ]"></i>
                                     </div>
 
                                     <!-- Contenu -->
                                     <div class="text-center w-full">
-                                        <h3 class="text-base sm:text-lg font-medium text-gray-900 dark:text-white">
+                                        <h3 class="text-base sm:text-lg font-medium"
+                                            :class="option.disabled ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'">
                                             {{ option.name }}
                                         </h3>
-                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                        <p class="mt-1 text-sm"
+                                            :class="option.disabled ? 'text-gray-400 dark:text-gray-500' : 'text-gray-500 dark:text-gray-400'">
                                             {{ option.description }}
                                         </p>
 
-                                        <!-- Badge et Prix -->
+                                        <!-- Prix -->
                                         <div class="mt-2">
-                                            <span v-if="option.disabled" class="text-gray-500 text-sm">
-                                                {{ option.disabledMessage }}
-                                            </span>
-                                            <span
-                                                v-else-if="option.included && !['Dashboard', 'ecommerce'].includes(option.id)"
-                                                class="inline-flex flex-col items-center">
+                                            <span v-if="option.included" class="inline-flex flex-col items-center">
                                                 <span
-                                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
                                                     <i class='bx bx-check mr-1'></i>
                                                     Inclus
                                                 </span>
                                             </span>
                                             <span v-else class="text-green-600 dark:text-green-400 font-medium">
-                                                {{ ['Dashboard', 'ecommerce'].includes(option.id) ? '299' : option.price
-                                                }}€
+                                                {{ option.price }}€
                                             </span>
                                         </div>
-
-                                        <!-- Bouton de sélection -->
-                                        <button
-                                            v-if="!option.included || ['Dashboard', 'ecommerce'].includes(option.id)"
-                                            @click="toggleOption(option)"
-                                            class="mt-4 w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-200"
-                                            :class="[
-                                                isSelected(option.id)
-                                                    ? 'bg-green-600 text-white hover:bg-green-700'
-                                                    : 'bg-gray-100 text-gray-700 hover:bg-green-100'
-                                            ]">
-                                            {{ isSelected(option.id) ? 'Sélectionné' : 'Sélectionner' }}
-                                        </button>
                                     </div>
+                                </div>
+
+                                <!-- Bouton de sélection (maintenant en bas de carte) -->
+                                <div class="mt-auto pt-4">
+                                    <button @click="!option.disabled && toggleOption(option)"
+                                        class="w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-200"
+                                        :class="[
+                                            option.disabled ?
+                                                'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed' :
+                                                isSelected(option.id) || option.included ?
+                                                    'bg-green-600 text-white hover:bg-green-700' :
+                                                    'bg-gray-100 text-gray-700 hover:bg-green-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+                                        ]">
+                                        {{
+                                            option.disabled ? 'Indisponible' :
+                                                isSelected(option.id) || option.included ? 'Sélectionné' : 'Sélectionner'
+                                        }}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -161,12 +174,12 @@
                                     class="relative rounded-xl border-2 p-6 transition-all duration-200" :class="[
                                         (localFormData.selectedForfait === 'standard' && plan.id === 'basic') ||
                                             (localFormData.selectedForfait === 'premium' && plan.id === 'pro')
-                                            ? 'border-green-500 bg-green-50'
+                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/50 dark:border-green-400'
                                             : isMaintenancePlanDisabled(plan.id)
-                                                ? 'border-gray-200 opacity-50 cursor-not-allowed'
+                                                ? 'border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed'
                                                 : localFormData.maintenancePlan === plan.id
-                                                    ? 'border-green-500 bg-green-50 cursor-pointer'
-                                                    : 'border-gray-200 hover:border-green-500 hover:bg-green-50 cursor-pointer'
+                                                    ? 'border-green-500 bg-green-50 dark:bg-green-900/50 dark:border-green-400 cursor-pointer'
+                                                    : 'border-gray-200 dark:border-gray-700 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/50 cursor-pointer'
                                     ]">
                                     <div class="flex flex-col items-center">
                                         <!-- Icône -->
@@ -177,16 +190,17 @@
                                                 (localFormData.selectedForfait === 'standard' && plan.id === 'basic') ||
                                                     (localFormData.selectedForfait === 'premium' && plan.id === 'pro') ||
                                                     localFormData.maintenancePlan === plan.id
-                                                    ? 'text-green-600'
+                                                    ? 'text-green-600 dark:text-green-400'
                                                     : plan.disabled
-                                                        ? 'text-gray-400'
-                                                        : 'text-gray-600'
+                                                        ? 'text-gray-400 dark:text-gray-500'
+                                                        : 'text-gray-600 dark:text-gray-300'
                                             ]"></i>
                                         </div>
 
-                                        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ plan.name }}
+                                        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                                            {{ plan.name }}
                                         </h4>
-                                        <p class="text-gray-600 dark:text-gray-400 mb-6">{{ plan.description }}</p>
+                                        <p class="text-gray-600 dark:text-gray-300 mb-6">{{ plan.description }}</p>
 
                                         <!-- Badge Inclus ou Prix -->
                                         <div class="mb-6">
@@ -195,7 +209,7 @@
                                                 (localFormData.selectedForfait === 'premium' && plan.id === 'pro')"
                                                 class="inline-flex flex-col items-center">
                                                 <span
-                                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-300">
                                                     <i class='bx bx-check mr-1'></i>
                                                     Inclus pendant 3 mois
                                                 </span>
@@ -206,7 +220,7 @@
                                             <span v-else-if="!plan.disabled"
                                                 class="text-3xl font-bold text-green-600 dark:text-green-400">
                                                 {{ plan.price }}€<span
-                                                    class="text-base font-normal text-gray-500">/an</span>
+                                                    class="text-base font-normal text-gray-500 dark:text-gray-400">/an</span>
                                             </span>
                                         </div>
 
@@ -214,7 +228,7 @@
                                         <ul class="space-y-3 mb-6">
                                             <li v-for="feature in plan.features" :key="feature"
                                                 class="flex items-start gap-x-3">
-                                                <i class='bx bx-check text-green-500 text-xl'></i>
+                                                <i class='bx bx-check text-green-500 dark:text-green-400 text-xl'></i>
                                                 <span class="text-gray-600 dark:text-gray-300">{{ feature }}</span>
                                             </li>
                                         </ul>
@@ -225,8 +239,8 @@
                                             class="mt-auto w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-200"
                                             :class="[
                                                 localFormData.maintenancePlan === plan.id
-                                                    ? 'bg-green-600 text-white hover:bg-green-700'
-                                                    : 'bg-gray-100 text-gray-700 hover:bg-green-100'
+                                                    ? 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600'
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-green-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
                                             ]">
                                             {{ localFormData.maintenancePlan === plan.id ? 'Sélectionné' :
                                                 'Sélectionner' }}
@@ -295,37 +309,6 @@ const getInitialData = () => {
     };
 };
 
-// Options disponibles
-const optionsSelection = [
-    {
-        id: 'logoPhotos',
-        name: 'Création de logo + Photos Pro',
-        description: 'Design professionnel de votre identité visuelle',
-        price: 59,
-        icon: 'bx-palette'
-    },
-    {
-        id: 'socialMedia',
-        name: 'Réseaux Sociaux',
-        description: 'Création et gestion de vos réseaux sociaux',
-        price: 199,
-        icon: 'bx-share-alt'
-    },
-    {
-        id: 'Dashboard',
-        name: 'Dashboard (CRM)',
-        description: 'Suivi détaillé de vos performances',
-        price: 299,
-        icon: 'bx-line-chart'
-    },
-    {
-        id: 'ecommerce',
-        name: 'E-commerce',
-        description: 'Solution complète de vente en ligne',
-        price: 299,
-        icon: 'bx-store'
-    }
-];
 
 // État local du formulaire
 const localFormData = ref({
@@ -466,7 +449,7 @@ const forfaits = [
     {
         id: 'starter',
         name: 'Starter',
-        price: 349,
+        price: 399,
         badge: 'Essentiel',
         description: 'Idéal pour les petites entreprises qui souhaitent établir leur présence en ligne.',
         popular: false,
@@ -482,7 +465,7 @@ const forfaits = [
     {
         id: 'standard',
         name: 'Standard',
-        price: 699,
+        price: 799,
         badge: 'Populaire',
         description: 'Solution complète pour une présence web professionnelle et impactante.',
         popular: true,
@@ -492,16 +475,16 @@ const forfaits = [
             'SEO avancé + Suivi de base',
             'Support 30 jours',
             'Délai de livraison : 3-4 jours',
-            'Hébergement (optionnel)',
             'Intégration réseaux sociaux',
             'Statistiques Réseaux sociaux + Rapport mensuel',
-            'Formulaire de contact personnalisé multi-pages'
+            'Formulaire de contact personnalisé multi-pages',
+            'Hébergement (optionnel)',
         ]
     },
     {
         id: 'premium',
         name: 'Premium',
-        price: 1399,
+        price: 1699,
         badge: 'Sur-mesure',
         description: 'Solution premium tout inclus avec accompagnement personnalisé pour une présence web exceptionnelle et des résultats garantis.',
         popular: false,
@@ -511,13 +494,13 @@ const forfaits = [
             'SEO Expert + Suivi mensuel personnalisé',
             'Support prioritaire illimité 60 jours',
             'Délai de livraison : 5-7 jours',
-            'Hébergement premium 1 an offert',
             'Stratégie de contenu personnalisée',
             'Blog professionnel + Newsletter automatisée',
             'Maintenance 3 mois offerte',
             'Audit marketing initial offert',
             'Stratégie de contenu personnalisée',
-            'Système de formulaires avancé'
+            'Système de formulaires avancé',
+            'Hébergement premium 1 an offert'
         ]
     }
 ]
@@ -527,14 +510,14 @@ const TemplateSelection = [
         id: 'logoPhotos',
         name: 'Création de logo + Photos Pro',
         description: 'Design professionnel de votre identité visuelle',
-        price: 199,
+        price: 99,
         icon: 'bx-image'
     },
     {
         id: 'socialMedia',
         name: 'Réseaux Sociaux',
-        description: 'Création et gestion de vos réseaux sociaux',
-        price: 199,
+        description: 'Création Conseil et gestion de vos réseaux sociaux',
+        price: 179,
         icon: 'bx-share-alt'
     },
     {
@@ -583,46 +566,29 @@ const maintenancePlans = [
 ]
 
 const selectForfait = (forfait) => {
-    // Réinitialiser les options lors du changement de forfait
-    localFormData.value = {
-        ...localFormData.value,
-        selectedForfait: forfait.id,
-        forfaitDetails: forfait,
-        includedOptions: [],
-        selectedOptions: []
-    };
-
-    // Si c'est le forfait premium, ajouter les options incluses
-    if (forfait.id === 'premium') {
-        localFormData.value.includedOptions = [
-            {
-                id: 'socialMedia',
-                name: 'Réseaux Sociaux',
-                price: 0,
-                description: 'Création et gestion de vos réseaux sociaux',
-                icon: 'bx-share-alt'
-            },
-            {
-                id: 'logoPhotos',
-                name: 'Création de logo + Photos Pro',
-                price: 0,
-                description: 'Design professionnel de votre identité visuelle',
-                icon: 'bx-image'
-            }
-        ];
+    if (forfait.disabled) {
+        return;
     }
 
-    // Émettre la mise à jour vers le parent
+    localFormData.value.selectedForfait = forfait.id;
+    localFormData.value.forfaitDetails = forfait;
+
+    // Réinitialiser les options
+    localFormData.value.selectedOptions = [];
+
+    // Ajouter automatiquement les options incluses
+    const includedOptions = includedOptionsByForfait[forfait.id] || [];
+    includedOptions.forEach(optionId => {
+        const option = TemplateSelection.find(opt => opt.id === optionId);
+        if (option) {
+            localFormData.value.selectedOptions.push(option);
+        }
+    });
+
     emit('update:formData', {
         ...props.formData,
         forfait: localFormData.value
     });
-
-    console.log('=== FORFAIT SÉLECTIONNÉ ===');
-    console.log('Forfait:', forfait.id);
-    console.log('Options incluses:', localFormData.value.includedOptions);
-    console.log('Options sélectionnées:', localFormData.value.selectedOptions);
-    console.log('========================');
 };
 
 const isOptionDisabled = (optionId) => {
@@ -634,39 +600,33 @@ const isOptionDisabled = (optionId) => {
 };
 
 const toggleOption = (option) => {
-    // Ne rien faire si l'option est désactivée pour le forfait Starter
+    // Ne rien faire si l'option est désactivée
     if (option.disabled) return;
 
-    if (['Dashboard', 'ecommerce'].includes(option.id)) {
-        const selectedOption = {
-            id: option.id,
-            name: option.id === 'Dashboard' ? 'Dashboard (CRM)' : 'E-commerce',
-            price: 299,
-            description: option.id === 'Dashboard'
-                ? 'Suivi détaillé de vos performances'
-                : 'Solution complète de vente en ligne',
-            icon: option.id === 'Dashboard' ? 'bx-line-chart' : 'bx-store'
-        };
+    const index = localFormData.value.selectedOptions.findIndex(
+        opt => opt.id === option.id
+    );
 
-        const index = localFormData.value.selectedOptions.findIndex(
-            opt => opt.id === option.id
+    if (index === -1) {
+        // Ajouter l'option si elle n'est pas déjà sélectionnée
+        localFormData.value.selectedOptions.push(option);
+    } else {
+        // Retirer l'option si elle est déjà sélectionnée
+        localFormData.value.selectedOptions = localFormData.value.selectedOptions.filter(
+            opt => opt.id !== option.id
         );
-
-        if (index === -1) {
-            localFormData.value.selectedOptions.push(selectedOption);
-        } else {
-            localFormData.value.selectedOptions = localFormData.value.selectedOptions.filter(
-                opt => opt.id !== option.id
-            );
-        }
     }
+
+    // Émettre la mise à jour
+    emit('update:formData', {
+        ...props.formData,
+        forfait: localFormData.value
+    });
 };
 
 // Fonction pour vérifier si une option est sélectionnée
 const isSelected = (optionId) => {
-    return localFormData.value.selectedOptions.some(
-        opt => opt.id === optionId
-    );
+    return localFormData.value.selectedOptions.some(opt => opt.id === optionId);
 };
 
 const isMaintenancePlanDisabled = (planId) => {
@@ -826,49 +786,42 @@ const handleNext = () => {
     }
 };
 
-// Computed pour filtrer les options selon le forfait
+// Définir les options incluses par forfait
+const includedOptionsByForfait = {
+    premium: ['ecommerce', 'logoPhotos', 'socialMedia', 'Dashboard'], // E-commerce et création de logo inclus dans le Premium
+    standard: ['logoPhotos', 'socialMedia'],
+    starter: []
+};
+
+// Modifier la computed property availableOptions
 const availableOptions = computed(() => {
     return TemplateSelection.map(option => {
-        const isStarterForfait = localFormData.value.selectedForfait === 'starter';
-        const isDashboardOrEcommerce = ['Dashboard', 'ecommerce'].includes(option.id);
+        let disabled = false;
+        let disabledMessage = '';
+        let included = false;
+
+        // Vérifier si l'option est incluse dans le forfait sélectionné
+        if (localFormData.value.selectedForfait) {
+            included = includedOptionsByForfait[localFormData.value.selectedForfait]?.includes(option.id);
+        }
+
+        // Logique pour déterminer si l'option est désactivée
+        // Uniquement désactiver e-commerce et Dashboard pour le forfait Starter
+        if (localFormData.value.selectedForfait === 'starter') {
+            if (option.id === 'ecommerce' || option.id === 'Dashboard') {
+                disabled = true;
+                disabledMessage = `Disponible à partir du forfait ${option.id === 'ecommerce' ? 'Premium' : 'Standard'}`;
+            }
+        }
 
         return {
             ...option,
-            disabled: isStarterForfait && isDashboardOrEcommerce,
-            disabledMessage: isStarterForfait && isDashboardOrEcommerce ? 'Indisponible pour ce forfait' : null
+            disabled,
+            disabledMessage,
+            included
         };
     });
 });
-
-// Définir les options incluses par forfait
-const includedOptionsByForfait = {
-    premium: [
-        {
-            id: 'logoPhotos',
-            name: 'Création de logo + Photos Pro',
-            price: 199,
-            description: 'Design professionnel de votre identité visuelle',
-            icon: 'bx-image'
-        },
-        {
-            id: 'socialMedia',
-            name: 'Réseaux Sociaux',
-            price: 199,
-            description: 'Création et gestion de vos réseaux sociaux',
-            icon: 'bx-share-alt'
-        }
-    ],
-    standard: [
-        {
-            id: 'logoPhotos',
-            name: 'Création de logo + Photos Pro',
-            price: 199,
-            description: 'Design professionnel de votre identité visuelle',
-            icon: 'bx-image'
-        }
-    ],
-    starter: []
-};
 
 // Fonction pour obtenir les options incluses selon le forfait
 const getIncludedOptions = (forfaitId) => {
@@ -971,5 +924,41 @@ watch(() => localFormData.value.selectedForfait, (newForfait) => {
         );
     }
 });
+
+// Dans la partie script, après les props
+const projectRecommendation = ref(null);
+
+// Dans onMounted, après la récupération des données existantes
+onMounted(() => {
+    try {
+        // Récupérer la recommandation
+        const recommendation = localStorage.getItem('projectRecommendation');
+        if (recommendation) {
+            projectRecommendation.value = JSON.parse(recommendation);
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération de la recommandation:', error);
+    }
+});
+
+// Ajouter une computed property pour les forfaits filtrés
+const filteredForfaits = computed(() => {
+    return forfaits.map(forfait => ({
+        ...forfait,
+        recommended: projectRecommendation.value?.recommended === forfait.id,
+        disabled: projectRecommendation.value?.minimum &&
+            isLowerThanMinimum(forfait.id, projectRecommendation.value.minimum)
+    }));
+});
+
+// Fonction pour vérifier si un forfait est inférieur au minimum requis
+const isLowerThanMinimum = (forfaitId, minimumForfait) => {
+    const forfaitLevels = {
+        'starter': 1,
+        'standard': 2,
+        'premium': 3
+    };
+    return forfaitLevels[forfaitId] < forfaitLevels[minimumForfait];
+};
 
 </script>

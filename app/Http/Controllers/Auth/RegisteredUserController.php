@@ -3,27 +3,34 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 
-class AuthenticatedSessionController extends Controller
+class RegisteredUserController extends Controller
 {
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'remember' => 'boolean',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        if (!Auth::attempt($validatedData)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
 
-        $request->session()->regenerate();
+        event(new Registered($user));
+
+        Auth::login($user);
 
         // Récupérer l'URL de redirection
         $redirect = $request->input('redirect');
@@ -60,4 +67,6 @@ class AuthenticatedSessionController extends Controller
             !empty($data['project']['projectName']) &&
             !empty($data['forfait']['selectedForfait']);
     }
+
+    // ... autres méthodes ...
 }
