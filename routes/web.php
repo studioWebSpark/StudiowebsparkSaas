@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SirenController;
+use App\Http\Controllers\StripeController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -71,5 +72,15 @@ Route::get('/demarrer-projet', [ProjectController::class, 'wizard'])
 // Route pour soumettre le projet
 Route::post('/demarrer-projet', [ProjectController::class, 'store'])
     ->name('project.store');
-    
 
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/stripe/create-session', [StripeController::class, 'createSession'])->name('stripe.create-session');
+    Route::get('/payment/success', [StripeController::class, 'success'])->name('payment.success');
+    Route::get('/payment/cancel', [StripeController::class, 'cancel'])->name('payment.cancel');
+});
+
+Route::get('/payment/success', [StripeController::class, 'success'])
+    ->name('payment.success')
+    ->middleware(['auth']);

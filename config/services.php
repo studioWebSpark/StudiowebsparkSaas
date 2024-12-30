@@ -37,7 +37,12 @@ return [
 
     'insee' => [
         'token' => env('INSEE_API_TOKEN')
-        
+
+    ],
+
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
     ],
 
 ];

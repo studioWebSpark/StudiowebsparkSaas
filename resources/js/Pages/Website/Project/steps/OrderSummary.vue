@@ -376,7 +376,9 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, usePage, router } from '@inertiajs/vue3';
+import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
 
 const props = defineProps({
     formData: {
@@ -540,9 +542,73 @@ const toggleZoom = () => {
     isZoomed.value = !isZoomed.value;
 };
 
-const proceedToPayment = () => {
-    // Logique pour passer au paiement
-    emit('stepValidated', true);
+const proceedToPayment = async () => {
+    try {
+        if (!calculateTotal.value || calculateTotal.value <= 0) {
+            throw new Error('Le montant du paiement est invalide');
+        }
+
+        const paymentData = {
+            amount: calculateTotal.value,
+            projectData: props.formData,
+            customer: {
+                email: informations.value.email,
+                name: `${informations.value.firstName} ${informations.value.lastName}`
+            }
+        };
+
+        console.log('Envoi des données de paiement:', paymentData);
+
+        const response = await axios.post(route('stripe.create-session'), paymentData);
+
+        console.log('Réponse complète du serveur:', response);
+
+        // Extraire le JSON de la réponse si nécessaire
+        let sessionData;
+        try {
+            if (typeof response.data === 'string') {
+                // Chercher le JSON dans la chaîne de caractères
+                const jsonMatch = response.data.match(/\{.*\}/);
+                if (jsonMatch) {
+                    sessionData = JSON.parse(jsonMatch[0]);
+                }
+            } else {
+                sessionData = response.data;
+            }
+        } catch (e) {
+            console.error('Erreur lors du parsing de la réponse:', e);
+            throw new Error('Format de réponse invalide');
+        }
+
+        if (!sessionData || !sessionData.sessionId) {
+            console.error('Réponse invalide:', response.data);
+            throw new Error('Session ID manquant dans la réponse');
+        }
+
+        console.log('Session ID extrait:', sessionData.sessionId);
+
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+        if (!stripe) {
+            throw new Error('Erreur lors de l\'initialisation de Stripe');
+        }
+
+        const { error } = await stripe.redirectToCheckout({
+            sessionId: sessionData.sessionId
+        });
+
+        if (error) {
+            console.error('Erreur Stripe:', error);
+            throw error;
+        }
+
+        // La réinitialisation se fera automatiquement après le retour du paiement
+        // grâce au script dans la route success
+
+    } catch (error) {
+        console.error('Erreur détaillée:', error);
+        console.error('Stack trace:', error.stack);
+        alert('Une erreur est survenue lors de la préparation du paiement. Veuillez réessayer.');
+    }
 };
 
 // Vérification des étapes
@@ -630,6 +696,56 @@ const sendAuthRequest = () => {
     // Ajouter les données dans le header de la requête
     if (projectData) {
         document.cookie = `X-Project-Data=${encodeURIComponent(projectData)}; path=/`;
+    }
+};
+
+const resetProjectData = () => {
+    try {
+        // Réinitialiser le localStorage
+        localStorage.removeItem('projectWizardData');
+
+        // Réinitialiser les données du formulaire
+        emit('update:formData', {
+            personal: {
+                clientType: 'individual',
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+                companyName: null,
+                siren: null,
+                isValidated: false
+            },
+            project: {
+                projectType: '',
+                description: '',
+                selectedFeatures: [],
+                isValidated: false
+            },
+            forfait: {
+                forfaitDetails: null,
+                selectedOptions: [],
+                maintenancePlan: null,
+                isValidated: false
+            },
+            template: {
+                selectedTemplates: [],
+                isValidated: false
+            },
+            currentStep: 1
+        });
+
+        // Rediriger vers le dashboard après le succès
+        router.visit('/dashboard', {
+            method: 'get',
+            preserveScroll: true,
+            onSuccess: () => {
+                // Afficher un message de succès si nécessaire
+                // Vous pouvez utiliser votre système de notification ici
+            }
+        });
+    } catch (error) {
+        console.error('Erreur lors de la réinitialisation:', error);
     }
 };
 </script>
