@@ -78,7 +78,8 @@ Route::post('/demarrer-projet', [ProjectController::class, 'store'])
 Route::middleware(['auth'])->group(function () {
     Route::post('/stripe/create-session', [StripeController::class, 'createSession'])->name('stripe.create-session');
     Route::get('/payment/success', [StripeController::class, 'success'])->name('payment.success');
-    Route::get('/payment/cancel', [StripeController::class, 'cancel'])->name('payment.cancel');
+    Route::get('/payment/cancel', [StripeController::class, 'cancel'])->name('payment.cancel'); 
+     
 });
 
 Route::get('/payment/success', [StripeController::class, 'success'])

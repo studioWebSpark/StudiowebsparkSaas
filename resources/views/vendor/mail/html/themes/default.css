@@ -1,0 +1,171 @@
+/* Base */
+body {
+    background-color: #f8fafc;
+    color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.wrapper {
+    background-color: #f8fafc;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.body {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.content {
+    padding: 32px;
+}
+
+/* Typography */
+h1 {
+    color: #4f46e5;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 24px;
+    padding: 0;
+}
+
+h2 {
+    color: #1f2937;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 24px 0 16px;
+}
+
+h3 {
+    color: #4f46e5;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 20px 0 12px;
+}
+
+p {
+    color: #4b5563;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+/* Panel */
+.panel {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin: 16px 0;
+    padding: 20px;
+}
+
+.panel-content {
+    color: #4b5563;
+}
+
+/* Button */
+.button {
+    background-color: #4f46e5;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.1);
+    color: #ffffff;
+    display: inline-block;
+    font-weight: 600;
+    padding: 12px 24px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.button-primary:hover {
+    background-color: #4338ca;
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+}
+
+/* Header */
+.header {
+    padding: 24px 0;
+    text-align: center;
+}
+
+.header a {
+    color: #4f46e5;
+    font-size: 28px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: none;
+}
+
+/* Footer */
+.footer {
+    margin-top: 32px;
+    padding: 32px 0;
+    text-align: center;
+}
+
+.footer p {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    text-align: center;
+}
+
+/* Lists */
+ul,
+ol {
+    margin: 16px 0;
+    padding-left: 20px;
+}
+
+li {
+    color: #4b5563;
+    margin: 8px 0;
+}
+
+/* Subcopy */
+.subcopy {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 24px;
+    padding-top: 24px;
+}
+
+.subcopy p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Table */
+.table table {
+    border-collapse: collapse;
+    margin: 24px 0;
+    width: 100%;
+}
+
+.table th {
+    background-color: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+    color: #1f2937;
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+}
+
+.table td {
+    border-bottom: 1px solid #e5e7eb;
+    color: #4b5563;
+    padding: 12px;
+}
+
+/* Utilities */
+.break-all {
+    word-break: break-all;
+}
