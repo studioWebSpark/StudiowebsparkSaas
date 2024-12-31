@@ -117,7 +117,7 @@ const currentComponent = computed(() => {
 
 // Structure correcte des données
 const formData = ref({
-    informations: {
+    personal: {
         clientType: '',
         firstName: '',
         lastName: '',
@@ -142,8 +142,7 @@ const formData = ref({
         isValidated: false
     },
     template: {
-        selectedTemplate: null,
-        customizations: [],
+        selectedTemplates: [],
         isValidated: false
     }
 });
@@ -216,7 +215,16 @@ const loadSavedData = () => {
 
 // Vérifier si toutes les étapes sont validées
 const isAllStepsValidated = computed(() => {
-    return steps.every(step => formData.value[step.key]?.isValidated === true);
+    const validations = {
+        personal: formData.value.personal?.isValidated === true,
+        project: formData.value.project?.isValidated === true,
+        forfait: formData.value.forfait?.isValidated === true,
+        template: formData.value.template?.isValidated === true
+    };
+
+    console.log('Validation détaillée:', validations);
+
+    return Object.values(validations).every(v => v === true);
 });
 
 // Charger les données au montage
@@ -238,7 +246,20 @@ watch(formData, () => {
 }, { deep: true });
 
 const updateFormData = (newData) => {
-    formData.value = newData;
+    formData.value = {
+        ...formData.value,
+        ...newData,
+        template: {
+            ...formData.value.template,
+            ...newData.template,
+            isValidated: newData.template?.isValidated ?? formData.value.template?.isValidated
+        }
+    };
+
+    console.log('Mise à jour formData:', {
+        template: formData.value.template,
+        isValidated: formData.value.template.isValidated
+    });
 };
 
 const handleStepValidation = (isValid) => {
@@ -273,15 +294,13 @@ const previousStep = () => {
 const nextStep = () => {
     if (isNavigating.value || currentStep.value >= steps.length - 1) return;
 
-    const stepData = {
-        0: { key: 'personal', name: 'Personnel' },
-        1: { key: 'project', name: 'Projet' },
-        2: { key: 'forfait', name: 'Forfait' },
-        3: { key: 'template', name: 'Template' }
-    }[currentStep.value];
+    debugValidation(); // Afficher les informations de debug
 
-    if (stepData) {
-        console.log(`Données du formulaire ${stepData.name} :`, formData.value[stepData.key]);
+    if (!isCurrentStepValid()) {
+        // Message d'erreur plus spécifique
+        const stepName = steps[currentStep.value];
+        alert(`Veuillez compléter tous les champs requis de l'étape "${stepName}" avant de continuer.`);
+        return;
     }
 
     isNavigating.value = true;
@@ -415,22 +434,83 @@ const TemplateSelectionRef = ref(null);
 
 // Vérifier si l'étape actuelle est valide
 const isCurrentStepValid = () => {
+    const currentStepData = formData.value;
+
     switch (currentStep.value) {
         case 0: // PersonalInfo
-            return formData.value?.personal?.firstName &&
-                formData.value?.personal?.lastName &&
-                formData.value?.personal?.email &&
-                formData.value?.personal?.phone;
+            const personalData = currentStepData?.personal;
+            if (!personalData) return false;
+
+            // Validation de base pour tous les types de clients
+            const baseValidation =
+                personalData.firstName &&
+                personalData.lastName &&
+                personalData.email &&
+                personalData.phone &&
+                personalData.clientType;
+
+            // Validation supplémentaire pour les professionnels
+            if (personalData.clientType === 'professional') {
+                const sirenRequired = !personalData.disableSiren;
+                return baseValidation && (!sirenRequired || personalData.siren);
+            }
+
+            return baseValidation;
+
         case 1: // ProjectDetails
-            return formData.value?.project?.projectName;
-        case 2: // TemplateSelection
-            return formData.value?.template?.selectedForfait;
+            const projectData = currentStepData?.project;
+            if (!projectData) return false;
+
+            // Vérifier uniquement le type de projet et la description
+            return !!projectData.projectType &&
+                !!projectData.description &&
+                projectData.description.length >= 10;
+
+        case 2: // ForfaitSelection
+            const forfaitData = currentStepData?.forfait;
+            return !!forfaitData && !!forfaitData.selectedForfait;
+
         case 3: // TemplateSelection
-            return true; // Optionnel
+            const templateData = currentStepData?.template;
+            return !!templateData &&
+                Array.isArray(templateData.selectedTemplates) &&
+                templateData.selectedTemplates.length > 0;
+
+        case 4: // OrderSummary
+            return true;
+
         default:
             return false;
     }
-}
+};
+
+// Fonction de debug améliorée
+const debugValidation = () => {
+    const currentStepData = formData.value;
+    const stepValidation = {
+        étapeCourante: currentStep.value,
+        nomÉtape: steps[currentStep.value],
+        données: currentStepData,
+        validation: {
+            résultat: isCurrentStepValid(),
+            détails: {}
+        }
+    };
+
+    // Ajouter des détails spécifiques selon l'étape
+    switch (currentStep.value) {
+        case 1: // ProjectDetails
+            stepValidation.validation.détails = {
+                projectType: !!currentStepData?.project?.projectType,
+                description: !!currentStepData?.project?.description,
+                descriptionLength: currentStepData?.project?.description?.length >= 10
+            };
+            break;
+        // Ajouter d'autres cas si nécessaire
+    }
+
+    console.log('État de validation:', stepValidation);
+};
 
 // Gérer la transition entre les composants
 const handleBeforeLeave = (el) => {
@@ -462,6 +542,142 @@ const setComponentRef = (el) => {
 // Ajouter un gestionnaire de nettoyage
 onBeforeUnmount(() => {
     isNavigating.value = false;
+});
+
+// Ajouter ces constantes au début du script
+const includedOptionsByForfait = {
+    premium: ['ecommerce', 'logoPhotos', 'socialMedia', 'Dashboard'],
+    standard: ['logoPhotos', 'socialMedia'],
+    starter: []
+};
+
+const templateOptions = [
+    {
+        id: 'logoPhotos',
+        name: 'Création de logo + Photos Pro',
+        description: 'Design professionnel de votre identité visuelle',
+        price: 99,
+        icon: 'bx-image'
+    },
+    {
+        id: 'socialMedia',
+        name: 'Réseaux Sociaux',
+        description: 'Création Conseil et gestion de vos réseaux sociaux',
+        price: 179,
+        icon: 'bx-share-alt'
+    },
+    {
+        id: 'Dashboard',
+        name: 'Dashboard (CRM)',
+        description: 'Suivi détaillé de vos performances',
+        price: 299,
+        icon: 'bx-line-chart'
+    },
+    {
+        id: 'ecommerce',
+        name: 'E-commerce',
+        description: 'Solution complète de vente en ligne',
+        price: 299,
+        icon: 'bx-store'
+    }
+];
+
+const maintenancePlans = [
+    {
+        id: 'basic',
+        name: 'Basic',
+        price: 49,
+        features: [
+            'Mises à jour de sécurité',
+            'Sauvegardes mensuelles',
+            'Support email'
+        ]
+    },
+    {
+        id: 'pro',
+        name: 'Pro',
+        price: 99,
+        features: [
+            'Mises à jour de sécurité',
+            'Sauvegardes hebdomadaires',
+            'Support prioritaire 24/7',
+            'Optimisation des performances'
+        ]
+    }
+];
+
+// Ajouter une computed property pour vérifier l'état global
+const currentStepValidationStatus = computed(() => {
+    return {
+        isValid: isCurrentStepValid(),
+        stepName: steps[currentStep.value],
+        currentStep: currentStep.value
+    };
+});
+
+// Ajouter une fonction de debug détaillée
+const debugAllSteps = () => {
+    console.group('État de validation des étapes');
+
+    // Vérification des informations personnelles
+    console.log('1. Informations Personnelles:', {
+        données: formData.value.personal,
+        validé: formData.value.personal?.isValidated,
+        champs: {
+            clientType: !!formData.value.personal?.clientType,
+            firstName: !!formData.value.personal?.firstName,
+            lastName: !!formData.value.personal?.lastName,
+            email: !!formData.value.personal?.email,
+            phone: !!formData.value.personal?.phone,
+            siren: formData.value.personal?.clientType === 'professional' ? !!formData.value.personal?.siren : 'Non requis'
+        }
+    });
+
+    // Vérification du projet
+    console.log('2. Détails du Projet:', {
+        données: formData.value.project,
+        validé: formData.value.project?.isValidated,
+        champs: {
+            projectType: !!formData.value.project?.projectType,
+            description: !!formData.value.project?.description,
+            descriptionLength: formData.value.project?.description?.length
+        }
+    });
+
+    // Vérification du forfait
+    console.log('3. Forfait:', {
+        données: formData.value.forfait,
+        validé: formData.value.forfait?.isValidated,
+        champs: {
+            selectedForfait: !!formData.value.forfait?.selectedForfait,
+            forfaitDetails: !!formData.value.forfait?.forfaitDetails
+        }
+    });
+
+    // Vérification du template
+    console.log('4. Template:', {
+        données: formData.value.template,
+        validé: formData.value.template?.isValidated,
+        champs: {
+            selectedTemplates: formData.value.template?.selectedTemplates?.length > 0
+        }
+    });
+
+    // État global
+    console.log('État Global:', {
+        étapeCourante: currentStep.value,
+        toutesÉtapesValides: isAllStepsValidated.value,
+        peutProcéderAuPaiement: currentStep.value === steps.length - 1 && isAllStepsValidated.value
+    });
+
+    console.groupEnd();
+};
+
+// Ajouter un appel à debugAllSteps dans la dernière étape
+watch(() => currentStep.value, (newStep) => {
+    if (newStep === steps.length - 1) {
+        debugAllSteps();
+    }
 });
 
 </script>

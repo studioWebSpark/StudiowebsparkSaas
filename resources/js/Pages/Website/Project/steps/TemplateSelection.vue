@@ -16,7 +16,7 @@
             </div>
 
             <!-- Filtres -->
-            <div class="flex flex-wrap gap-4">
+            <div class="flex flex-wrap gap-4 justify-center sm:justify-start">
                 <button v-for="category in availableCategories" :key="category" @click="selectedCategory = category"
                     :class="[
                         'px-4 py-2 rounded-full text-sm font-medium transition-colors',
@@ -29,17 +29,17 @@
             </div>
 
             <!-- Grille des templates -->
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 <div v-for="template in availableTemplates" :key="template.id" class="relative group">
                     <!-- Card du template -->
                     <div :class="[
-                        'relative rounded-lg border-2 overflow-hidden transition-all cursor-pointer',
+                        'relative rounded-lg border-2 overflow-hidden transition-all cursor-pointer h-full',
                         isTemplateSelected(template.id)
                             ? 'border-green-500 ring-2 ring-green-500'
                             : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
                     ]">
-                        <!-- Image du template avec overlay au hover -->
-                        <div class="aspect-w-16 aspect-h-9 bg-gray-100 relative group">
+                        <!-- Image du template avec overlay -->
+                        <div class="aspect-w-16 aspect-h-9 bg-gray-100 relative">
                             <img :src="template.image" :alt="template.name" class="object-cover w-full h-full">
                             <div
                                 class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center">
@@ -52,7 +52,7 @@
 
                         <!-- Informations du template -->
                         <div class="p-4">
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between mb-2">
                                 <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                                     {{ template.name }}
                                 </h3>
@@ -61,11 +61,11 @@
                                     PRO
                                 </span>
                             </div>
-                            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
                                 {{ template.description }}
                             </p>
                             <button @click="selectTemplate(template)"
-                                class="mt-4 w-full px-4 py-2 text-sm font-medium rounded-lg transition-colors" :class="[
+                                class="w-full px-4 py-2 text-sm font-medium rounded-lg transition-colors" :class="[
                                     isTemplateSelected(template.id)
                                         ? 'bg-green-600 text-white hover:bg-green-700'
                                         : 'bg-gray-100 text-gray-700 hover:bg-green-100 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
@@ -257,7 +257,7 @@ const templates = [
 
 const localFormData = ref({
     selectedTemplates: [],
-    ...props.formData?.template || {}
+    isValidated: false
 });
 
 const availableCategories = computed(() => {
@@ -316,23 +316,26 @@ const isTemplateSelected = (templateId) => {
 const selectTemplate = (template) => {
     if (!template) return;
 
-    console.log('=== SÉLECTION DU TEMPLATE ===');
-    console.log('Template sélectionné:', template.name);
-    console.log('ID:', template.id);
-    console.log('Description:', template.description);
-    console.log('Catégorie:', template.category);
-    console.log('Est Pro:', template.isPro);
-    console.log('========================');
+    // Mettre à jour la sélection
+    localFormData.value = {
+        selectedTemplates: [template.id],
+        isValidated: true
+    };
 
-    // Remplacer la sélection existante au lieu d'ajouter/retirer
-    localFormData.value.selectedTemplates = [template.id];
-
+    // Émettre la mise à jour
     emit('update:formData', {
         ...props.formData,
-        template: localFormData.value
+        template: {
+            selectedTemplates: [template.id],
+            isValidated: true
+        }
     });
 
-    // Optionnel : fermer le modal après la sélection
+    console.log('Template sélectionné:', {
+        template: template.name,
+        formData: localFormData.value
+    });
+
     closePreview();
 };
 
@@ -384,11 +387,17 @@ const selectedTemplateDetails = computed(() => {
 const removeTemplate = (template) => {
     if (!template) return;
 
-    localFormData.value.selectedTemplates = [];
+    localFormData.value = {
+        selectedTemplates: [],
+        isValidated: false
+    };
 
     emit('update:formData', {
         ...props.formData,
-        template: localFormData.value
+        template: {
+            selectedTemplates: [],
+            isValidated: false
+        }
     });
 };
 
@@ -399,6 +408,45 @@ watch(forfaitInfo, (newValue) => {
     console.log('Templates disponibles:', availableTemplates.value.length);
     console.log('==============================');
 }, { immediate: true });
+
+// S'assurer que le watcher synchronise correctement les données
+watch(() => props.formData?.template, (newValue) => {
+    if (newValue) {
+        localFormData.value = {
+            selectedTemplates: newValue.selectedTemplates || [],
+            isValidated: newValue.isValidated || false
+        };
+    }
+}, { deep: true, immediate: true });
+
+// Modifier la méthode validate
+const validate = () => {
+    const isValid = localFormData.value.selectedTemplates.length > 0;
+
+    // Mettre à jour isValidated
+    localFormData.value.isValidated = isValid;
+
+    // Émettre la mise à jour
+    emit('update:formData', {
+        ...props.formData,
+        template: {
+            ...localFormData.value,
+            isValidated: isValid
+        }
+    });
+
+    console.log('Validation du template:', {
+        selectedTemplates: localFormData.value.selectedTemplates,
+        isValidated: isValid
+    });
+
+    return isValid;
+};
+
+// Exposer la méthode de validation
+defineExpose({
+    validate
+});
 </script>
 
 <style scoped>
@@ -474,5 +522,43 @@ img.scale-150:hover {
     --tw-scale-x: 1;
     --tw-scale-y: 1;
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+/* Ajustements pour grands écrans */
+@media (min-width: 1536px) {
+    .grid-cols-5 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+/* Ajustements pour la hauteur des cards */
+.aspect-w-16.aspect-h-9 {
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 ratio */
+}
+
+.aspect-w-16.aspect-h-9 img {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+}
+
+/* Amélioration de la lisibilité sur grands écrans */
+@media (min-width: 1920px) {
+    .text-xl {
+        font-size: 1.5rem;
+    }
+
+    .text-lg {
+        font-size: 1.25rem;
+    }
+
+    .text-sm {
+        font-size: 1rem;
+    }
 }
 </style>

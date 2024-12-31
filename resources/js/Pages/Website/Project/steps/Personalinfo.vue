@@ -414,8 +414,19 @@ const validateField = (field) => {
             formErrors.value[field] = !isFieldValid.value[field] ? 'Email invalide' : '';
             break;
         case 'phone':
-            isFieldValid.value[field] = !!localFormData.value[field];
-            formErrors.value[field] = !isFieldValid.value[field] ? 'Le téléphone est requis' : '';
+            const phoneNumber = localFormData.value[field].replace(/[^0-9]/g, '');
+            localFormData.value[field] = phoneNumber; // Garde uniquement les chiffres
+
+            if (!phoneNumber) {
+                formErrors.value[field] = 'Le téléphone est requis';
+                isFieldValid.value[field] = false;
+            } else if (phoneNumber.length !== 10) {
+                formErrors.value[field] = 'Le numéro doit contenir 10 chiffres';
+                isFieldValid.value[field] = false;
+            } else {
+                formErrors.value[field] = '';
+                isFieldValid.value[field] = true;
+            }
             break;
         case 'activity':
             isFieldValid.value[field] = !!localFormData.value[field];
@@ -469,13 +480,11 @@ const isFormComplete = computed(() => {
         return commonFieldsValid;
     }
 
-    // Si c'est un professionnel, on vérifie aussi les champs spécifiques et la sélection de l'entreprise
+    // Si c'est un professionnel
     if (localFormData.value.clientType === 'professional') {
         return commonFieldsValid &&
             localFormData.value.activity &&
-            localFormData.value.siren &&
-            isValidSiren.value &&
-            selectedCompany.value;
+            (!localFormData.value.siren || isValidSiren.value); // SIREN optionnel mais valide si renseigné
     }
 
     return false;
@@ -545,40 +554,35 @@ const isValidSiren = ref(false)
 const isCheckingSiren = ref(false)
 let sirenTimeout = null
 
-const validateSiren = async () => {
+const validateSiren = () => {
     const siren = localFormData.value.siren.replace(/[^0-9]/g, '');
     localFormData.value.siren = siren;
 
-    if (siren.length !== 9) {
-        sirenError.value = siren.length > 0 ? 'Le numéro SIREN doit contenir 9 chiffres' : '';
+    // Simple validation du format (9 chiffres)
+    if (siren && siren.length !== 9) {
+        sirenError.value = 'Le numéro SIREN doit contenir 9 chiffres';
         isValidSiren.value = false;
-        companyDetails.value = null;
-        selectedCompany.value = false;
-        return;
-    }
-
-    try {
-        const response = await axios.post('/api/verify-siren', { siren });
-        if (response.data.success && response.data.company) {
-            const uniteLegale = response.data.company.uniteLegale;
-            companyDetails.value = {
-                denomination: uniteLegale.denominationUniteLegale,
-                siren: uniteLegale.siren,
-                siret: uniteLegale.siret,
-                dateCreation: uniteLegale.dateCreationUniteLegale
-            };
-            isValidSiren.value = true;
-            selectedCompany.value = false;
-            sirenError.value = '';
-        }
-    } catch (error) {
-        console.error('Erreur détaillée:', error);
-        isValidSiren.value = false;
-        companyDetails.value = null;
-        selectedCompany.value = false;
-        sirenError.value = error.response?.status === 404 ? 'Entreprise non trouvée' : 'Une erreur est survenue';
+    } else {
+        sirenError.value = '';
+        isValidSiren.value = true;
     }
 };
+
+// Simplifier le watch
+watch(() => localFormData.value.siren, (newValue) => {
+    // Nettoyer : garder uniquement les chiffres
+    const cleanValue = newValue.replace(/[^0-9]/g, '');
+    localFormData.value.siren = cleanValue;
+
+    // Valider uniquement si un numéro est entré
+    if (cleanValue.length > 0) {
+        validateSiren();
+    } else {
+        // Si vide, pas d'erreur
+        sirenError.value = '';
+        isValidSiren.value = true;
+    }
+});
 
 // Réinitialiser les champs professionnels lors du changement de type de client
 watch(() => localFormData.value.clientType, (newType) => {
@@ -713,6 +717,17 @@ const saveStepData = () => {
 defineExpose({
     saveStepData: handleNext
 })
+
+// Ajouter un watch spécifique pour le téléphone
+watch(() => localFormData.value.phone, (newValue) => {
+    // Nettoyer : garder uniquement les chiffres
+    const cleanValue = newValue.replace(/[^0-9]/g, '');
+    localFormData.value.phone = cleanValue;
+
+    if (touchedFields.value.phone) {
+        validateField('phone');
+    }
+});
 </script>
 <style scoped>
 .fade-enter-active,

@@ -7,6 +7,9 @@ use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use App\Models\PendingProject;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentFailed;
 
 class StripeController extends Controller
 {
@@ -40,7 +43,7 @@ class StripeController extends Controller
                 ]],
                 'mode' => 'payment',
                 'success_url' => route('payment.success') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('payment.cancel'),
+                'cancel_url' => route('payment.cancel', ['project_id' => $request->project_id]),
                 'metadata' => [
                     'project_type' => $request->projectData['projectType'] ?? '',
                     'client_type' => $request->projectData['personal']['clientType'] ?? '',
@@ -103,8 +106,31 @@ class StripeController extends Controller
         }
     }
 
-    public function cancel()
+    public function cancel(Request $request, $project_id = null)
     {
-        return redirect()->route('project.summary')->with('error', 'Paiement annulé.');
+        try {
+            Log::info('Annulation de paiement', ['project_id' => $project_id]);
+
+            if ($project_id) {
+                $pendingProject = PendingProject::findOrFail($project_id);
+            }
+
+            // Envoyer l'email d'échec de paiement si vous le souhaitez
+            if (isset($pendingProject)) {
+                Mail::to(auth()->user()->email)->send(new PaymentFailed($pendingProject));
+            }
+
+            // Utiliser votre vue existante
+            return Inertia::render('Payment/Cancel', [
+                'project' => $pendingProject ?? null
+            ]);
+        } catch (Exception $e) {
+            Log::error('Erreur lors de l\'annulation:', [
+                'error' => $e->getMessage()
+            ]);
+
+            return redirect()->route('dashboard')
+                ->with('error', 'Une erreur est survenue.');
+        }
     }
 }

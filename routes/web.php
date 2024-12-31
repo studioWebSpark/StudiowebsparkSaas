@@ -7,6 +7,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SirenController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\NewsletterController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -73,15 +74,29 @@ Route::get('/demarrer-projet', [ProjectController::class, 'wizard'])
 Route::post('/demarrer-projet', [ProjectController::class, 'store'])
     ->name('project.store');
 
-
+Route::get('/project/resume/{projectId}', [ProjectController::class, 'resumeProject'])
+    ->name('project.resume');
 
 Route::middleware(['auth'])->group(function () {
-    Route::post('/stripe/create-session', [StripeController::class, 'createSession'])->name('stripe.create-session');
-    Route::get('/payment/success', [StripeController::class, 'success'])->name('payment.success');
-    Route::get('/payment/cancel', [StripeController::class, 'cancel'])->name('payment.cancel'); 
-     
+    Route::post('/stripe/create-session', [StripeController::class, 'createSession'])
+        ->name('stripe.create-session');
+    Route::get('/payment/success', [StripeController::class, 'success'])
+        ->name('payment.success');
+    Route::get('/payment/cancel', [StripeController::class, 'cancel'])
+        ->name('payment.cancel');
 });
 
 Route::get('/payment/success', [StripeController::class, 'success'])
     ->name('payment.success')
     ->middleware(['auth']);
+
+
+Route::get('/project/summary', [ProjectController::class, 'summary'])
+    ->name('project.summary');
+
+// Routes pour la newsletter
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+    ->name('newsletter.subscribe');
+Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])
+    ->name('newsletter.unsubscribe');
+// Po

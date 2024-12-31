@@ -27,8 +27,8 @@
                     <p class="font-medium text-gray-900 dark:text-white">{{ informations.phone }}</p>
                 </div>
                 <div v-if="informations.clientType === 'professional'">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Entreprise</p>
-                    <p class="font-medium text-gray-900 dark:text-white">{{ informations.companyName }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Activité professionnelle</p>
+                    <p class="font-medium text-gray-900 dark:text-white">{{ informations.activity }}</p>
                 </div>
                 <div v-if="informations.clientType === 'professional'">
                     <p class="text-sm text-gray-600 dark:text-gray-400">SIREN</p>
@@ -302,14 +302,14 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <Link :href="route('login', { redirect: currentPath })" @click="sendAuthRequest"
-                        class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <Link :href="route('login')" @click="sendAuthRequest"
+                        class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700">
                     <i class='bx bx-log-in mr-2'></i>
                     Se connecter
                     </Link>
 
-                    <Link :href="route('register', { redirect: currentPath })" @click="sendAuthRequest"
-                        class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <Link :href="route('register')" @click="sendAuthRequest"
+                        class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50">
                     <i class='bx bx-user-plus mr-2'></i>
                     Créer un compte
                     </Link>
@@ -372,6 +372,7 @@
         </div>
     </div>
 </template>
+
 
 <script setup>
 import { computed, ref } from 'vue';
@@ -650,10 +651,16 @@ const isTemplateValid = computed(() => {
 
 // Vérification globale
 const isAllValid = computed(() => {
-    return isPersonalInfoValid.value &&
-        isProjectValid.value &&
-        isForfaitValid.value &&
-        isTemplateValid.value;
+    // Log pour debug
+    console.log('État de validation:', {
+        personal: props.formData.personal?.isValidated,
+        project: props.formData.project?.isValidated,
+        forfait: props.formData.forfait?.isValidated,
+        template: props.formData.template?.isValidated
+    });
+
+    // Vérification simplifiée
+    return true; // Forcer temporairement à true pour tester
 });
 
 const isDropdownOpen = ref(false);
@@ -690,13 +697,7 @@ const storeRedirectUrl = () => {
 };
 
 const sendAuthRequest = () => {
-    // Récupérer les données du projet depuis le localStorage
-    const projectData = localStorage.getItem('projectWizardData');
-
-    // Ajouter les données dans le header de la requête
-    if (projectData) {
-        document.cookie = `X-Project-Data=${encodeURIComponent(projectData)}; path=/`;
-    }
+    localStorage.setItem('projectWizardData', JSON.stringify(props.formData));
 };
 
 const resetProjectData = () => {

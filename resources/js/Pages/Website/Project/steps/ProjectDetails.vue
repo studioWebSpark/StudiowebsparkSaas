@@ -46,7 +46,7 @@
             <!-- Fonctionnalités -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
-                    Fonctionnalités souhaitées *
+                    Fonctionnalités souhaitées (optionnel)
                 </label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <label v-for="feature in features" :key="feature.id"
@@ -177,24 +177,23 @@ const validateField = (field) => {
 const isFormComplete = computed(() => {
     return !!localFormData.value.projectType &&
         !!localFormData.value.description &&
-        localFormData.value.description.length >= 10 &&
-        localFormData.value.selectedFeatures.length > 0;
+        localFormData.value.description.length >= 10;
 });
 
 const validateForm = () => {
-    // Vérifier si le type de projet est sélectionné et la description n'est pas vide
     const isValid =
-        localFormData.value.projectType &&
-        localFormData.value.description &&
-        localFormData.value.description.length >= 10; // Par exemple, minimum 10 caractères
+        !!localFormData.value.projectType &&
+        !!localFormData.value.description &&
+        localFormData.value.description.length >= 10;
 
-    // Mettre à jour isValidated
     localFormData.value.isValidated = isValid;
 
-    // Émettre la mise à jour
     emit('update:formData', {
-        ...localFormData.value,
-        isValidated: isValid
+        ...props.formData,
+        project: {
+            ...localFormData.value,
+            isValidated: isValid
+        }
     });
 };
 

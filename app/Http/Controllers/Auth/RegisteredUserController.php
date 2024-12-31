@@ -4,54 +4,58 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Mail\Auth\WelcomeEmail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredUserController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|confirmed|min:8',
+            ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        event(new Registered($user));
+            // Log avant l'envoi
+            Log::info('Tentative d\'envoi d\'email de bienvenue', [
+                'user_id' => $user->id,
+                'email' => $user->email
+            ]);
 
-        Auth::login($user);
+            // Envoi de l'email de bienvenue
+            Mail::to($user->email)->send(new WelcomeEmail($user));
 
-        // Récupérer l'URL de redirection
-        $redirect = $request->input('redirect');
+            // Log après l'envoi
+            Log::info('Email de bienvenue envoyé');
 
-        // Vérifier si l'utilisateur vient de la page de validation du projet
-        if ($redirect && str_contains($redirect, 'demarrer-projet')) {
-            // Vérifier si des données de projet existent dans le localStorage
-            $projectData = $request->cookie('projectWizardData');
+            event(new Registered($user));
 
-            if ($projectData) {
-                $data = json_decode($projectData, true);
+            Auth::login($user);
 
-                // Vérifier si les formulaires sont remplis
-                if ($this->isProjectDataComplete($data)) {
-                    return redirect($redirect);
-                }
-            }
+            return redirect(RouteServiceProvider::HOME);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de l\'envoi de l\'email de bienvenue', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
-
-        // Si pas de données de projet ou formulaires incomplets, rediriger vers la page d'accueil
-        return redirect('/');
     }
 
     private function isProjectDataComplete($data): bool

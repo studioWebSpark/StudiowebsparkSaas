@@ -8,43 +8,27 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Mail\LoginNotification;
+use Illuminate\Support\Facades\Mail;
 
 class AuthenticatedSessionController extends Controller
 {
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'remember' => 'boolean',
-        ]);
-
-        if (!Auth::attempt($validatedData)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
+        $request->authenticate();
 
         $request->session()->regenerate();
 
-        // Récupérer l'URL de redirection
-        $redirect = $request->input('redirect');
+        // Détection simple du navigateur via User-Agent
+        $userAgent = $request->header('User-Agent');
 
-        // Vérifier si l'utilisateur vient de la page de validation du projet
-        if ($redirect && str_contains($redirect, 'demarrer-projet')) {
-            // Vérifier si des données de projet existent dans le localStorage
-            $projectData = $request->cookie('projectWizardData');
+        Mail::to(Auth::user()->email)->send(new LoginNotification(
+            Auth::user(),
+            $request->ip(),
+            $userAgent
+        ));
 
-            if ($projectData) {
-                $data = json_decode($projectData, true);
-
-                // Vérifier si les formulaires sont remplis
-                if ($this->isProjectDataComplete($data)) {
-                    return redirect($redirect);
-                }
-            }
-        }
-
-        // Si pas de données de projet ou formulaires incomplets, rediriger vers la page d'accueil
-        return redirect('/');
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     private function isProjectDataComplete($data): bool

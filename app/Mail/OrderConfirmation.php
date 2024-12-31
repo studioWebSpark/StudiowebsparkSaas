@@ -10,22 +10,19 @@ class OrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $order;
-    public $user;
+    public $data;
 
-    public function __construct($order, $user)
+    public function __construct($data)
     {
-        $this->order = $order;
-        $this->user = $user;
+        $this->data = $data;
     }
 
     public function build()
     {
-        return $this->subject('Confirmation de votre commande - Studio Webspark')
-            ->markdown('emails.orders.confirmation')
+        return $this->subject('Confirmation de votre commande')
+            ->markdown('emails.order-confirmation')
             ->with([
-                'order' => $this->order,
-                'user' => $this->user
+                'data' => $this->data
             ]);
     }
 }

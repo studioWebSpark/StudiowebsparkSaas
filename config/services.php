@@ -35,14 +35,16 @@ return [
         ],
     ],
 
-    'insee' => [
-        'token' => env('INSEE_API_TOKEN')
-
-    ],
 
     'stripe' => [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
+    ],
+
+    'insee' => [
+        'token' => env('INSEE_API_TOKEN'),
+        'consumer_key' => env('INSEE_CONSUMER_KEY'),
+        'consumer_secret' => env('INSEE_CONSUMER_SECRET'),
     ],
 
 ];

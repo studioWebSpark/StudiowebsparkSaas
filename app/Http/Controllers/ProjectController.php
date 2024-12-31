@@ -2,126 +2,152 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ProjectService;
+use App\Mail\ProjectPending;
+use App\Mail\ProjectConfirmed;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use App\Models\PendingProject;
 use Inertia\Inertia;
-use App\Notifications\ProjectSubmitted;
-use App\Models\Project;
+use App\Mail\PaymentSuccess;
+use App\Mail\PaymentFailed;
 
 class ProjectController extends Controller
 {
-    /**
-     * Affiche le wizard de création de projet
-     */
-    public function wizard()
+    protected $projectService;
+
+    public function __construct(ProjectService $projectService)
     {
-        return Inertia::render('Website/Project/ProjectWizard', [
-            'initialData' => [
-                'personal' => [],
-                'project' => [],
-                'template' => null,
-                'options' => [
-                    'selectedOptions' => [],
-                    'maintenancePlan' => null
-                ]
-            ]
-        ]);
+        $this->projectService = $projectService;
     }
 
-    /**
-     * Traite la soumission du projet
-     */
-    public function store(Request $request)
+    public function saveStep(Request $request)
     {
-        $validated = $request->validate([
-            'personal.clientType' => 'required|in:individual,professional',
-            'personal.firstName' => 'required|string|max:255',
-            'personal.lastName' => 'required|string|max:255',
-            'personal.email' => 'required|email|max:255',
-            'personal.phone' => 'required|string|max:20',
-            'personal.companyName' => 'nullable|required_if:personal.clientType,professional|string|max:255',
-            'personal.siret' => 'nullable|required_if:personal.clientType,professional|string|max:14',
-
-            'project.projectType' => 'required|string|max:255',
-            'project.budget' => 'required|string|max:255',
-            'project.deadline' => 'required|string|max:255',
-            'project.description' => 'required|string',
-            'project.selectedFeatures' => 'required|array',
-
-            'template.selectedTemplate' => 'required|integer',
-            'template.templateDetails' => 'required|array',
-
-            'options.selectedOptions' => 'present|array',
-            'options.maintenancePlan' => 'nullable|string|max:255',
+        $validatedData = $request->validate([
+            'step' => 'required|integer|between:1,4',
+            'project_id' => 'nullable|exists:pending_projects,id',
+            'form_data' => 'required|array'
         ]);
 
         try {
-            // Création du projet
-            $project = Project::create([
-                'client_type' => $validated['personal']['clientType'],
-                'first_name' => $validated['personal']['firstName'],
-                'last_name' => $validated['personal']['lastName'],
-                'email' => $validated['personal']['email'],
-                'phone' => $validated['personal']['phone'],
-                'company_name' => $validated['personal']['companyName'] ?? null,
-                'siret' => $validated['personal']['siret'] ?? null,
+            $project = $validatedData['project_id']
+                ? PendingProject::findOrFail($validatedData['project_id'])
+                : $this->projectService->createPendingProject($validatedData['form_data']);
 
-                'project_type' => $validated['project']['projectType'],
-                'budget' => $validated['project']['budget'],
-                'deadline' => $validated['project']['deadline'],
-                'description' => $validated['project']['description'],
-                'selected_features' => $validated['project']['selectedFeatures'],
-
-                'template_id' => $validated['template']['selectedTemplate'],
-                'template_details' => $validated['template']['templateDetails'],
-
-                'selected_options' => $validated['options']['selectedOptions'],
-                'maintenance_plan' => $validated['options']['maintenancePlan'],
-
-                // Calcul du prix total (à adapter selon votre logique de prix)
-                'total_price' => $validated['template']['templateDetails']['price'],
-                'monthly_maintenance' => $this->calculateMaintenancePrice($validated['options']['maintenancePlan']),
-
-                'status' => 'pending'
+            $project->update([
+                'form_data_step_' . $validatedData['step'] => $validatedData['form_data'],
+                'last_completed_step' => $validatedData['step']
             ]);
 
-            // Envoi de la notification
-            $project->notify(new ProjectSubmitted($project));
-
-            // Stockage en session pour la page de confirmation
-            session(['project_email' => $project->email]);
-            session(['project_reference' => $project->id]);
+            // Envoyer l'email de projet en attente à la dernière étape
+            if ($validatedData['step'] == 4) {
+                Mail::to($project->email)->send(new ProjectPending(
+                    $project,
+                    auth()->user()
+                ));
+            }
 
             return response()->json([
-                'message' => 'Projet soumis avec succès',
-                'redirect' => route('project.confirmation')
+                'status' => 'success',
+                'project_id' => $project->id
             ]);
         } catch (\Exception $e) {
+            Log::error('Erreur lors de la sauvegarde', [
+                'error' => $e->getMessage(),
+                'step' => $validatedData['step']
+            ]);
+
             return response()->json([
-                'message' => 'Une erreur est survenue lors de la soumission du projet',
-                'error' => $e->getMessage()
+                'status' => 'error',
+                'message' => 'Une erreur est survenue'
             ], 500);
         }
     }
 
-    /**
-     * Calcule le prix de la maintenance mensuelle
-     */
-    private function calculateMaintenancePrice(?string $maintenancePlan): ?float
+    public function handlePayment(Request $request)
     {
-        $prices = [
-            'basic' => 49.00,
-            'pro' => 99.00,
-            'enterprise' => 199.00
-        ];
+        $validatedData = $request->validate([
+            'project_id' => 'required|exists:pending_projects,id',
+            'payment_data' => 'required|array'
+        ]);
 
-        return $maintenancePlan ? $prices[$maintenancePlan] : null;
+        $pendingProject = PendingProject::findOrFail($validatedData['project_id']);
+
+        try {
+            $confirmedProject = $this->projectService->convertToConfirmedProject(
+                $pendingProject,
+                $validatedData['payment_data']
+            );
+
+            \Log::info('Tentative d\'envoi d\'email de confirmation', [
+                'email' => $confirmedProject->email,
+                'project_id' => $confirmedProject->id
+            ]);
+
+            try {
+                Mail::to($confirmedProject->email)->send(new ProjectConfirmed($confirmedProject));
+                \Log::info('Email de confirmation envoyé avec succès');
+            } catch (\Exception $mailError) {
+                \Log::error('Erreur lors de l\'envoi de l\'email : ' . $mailError->getMessage());
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Projet confirmé avec succès',
+                'order_number' => $confirmedProject->order_number,
+                'reset_form' => true
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors du paiement : ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erreur lors du paiement'
+            ], 500);
+        }
     }
 
-    public function confirmation()
+    public function resumeProject($projectId)
     {
-        return Inertia::render('Website/Project/ProjectConfirmation', [
-            'email' => session('project_email'),
-            'reference' => session('project_reference')
+        $project = PendingProject::findOrFail($projectId);
+
+        return response()->json([
+            'status' => 'success',
+            'project' => $project,
+            'redirect_to_step' => 4
+        ]);
+    }
+
+    public function showProjectForm(Request $request, $projectId = null)
+    {
+        $step = $request->query('step', 1);
+
+        if ($projectId) {
+            $project = PendingProject::findOrFail($projectId);
+            $step = $request->query('from_email') ? 4 : $step;
+
+            return view('project.form', [
+                'step' => $step,
+                'project' => $project
+            ]);
+        }
+
+        return view('project.form', ['step' => $step]);
+    }
+
+    public function getPendingProjects()
+    {
+        $projects = PendingProject::where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($projects);
+    }
+
+    public function wizard()
+    {
+        return Inertia::render('Website/Project/ProjectWizard', [
+            'initialStep' => request()->query('step', 0),
+            'projectId' => request()->query('project_id'),
         ]);
     }
 }

@@ -98,67 +98,48 @@
 
                         <div class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             <div v-for="option in availableOptions" :key="option.id"
-                                class="relative rounded-xl border-2 p-3 sm:p-4 transition-all duration-200 flex flex-col"
+                                class="relative flex items-center p-4 border rounded-lg transition-all duration-200"
                                 :class="[
-                                    option.disabled ? 'border-gray-200 dark:border-gray-700 opacity-75' :
-                                        isSelected(option.id) ? 'border-green-500 bg-green-50 dark:bg-green-900/50' :
-                                            'border-gray-200 dark:border-gray-700 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/50 cursor-pointer'
+                                    option.included || isSelected(option.id)
+                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/10'
+                                        : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
                                 ]">
-                                <div class="flex flex-col items-center flex-grow">
-                                    <!-- Icône -->
-                                    <div class="flex-shrink-0 mb-4">
-                                        <i :class="[
-                                            'bx text-2xl sm:text-3xl',
-                                            option.icon,
-                                            option.included || isSelected(option.id) ? 'text-green-500' :
-                                                option.disabled ? 'text-gray-400 dark:text-gray-500' : 'text-gray-400'
-                                        ]"></i>
-                                    </div>
-
-                                    <!-- Contenu -->
-                                    <div class="text-center w-full">
-                                        <h3 class="text-base sm:text-lg font-medium"
-                                            :class="option.disabled ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'">
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h3 class="text-base font-medium text-gray-900 dark:text-white">
                                             {{ option.name }}
                                         </h3>
-                                        <p class="mt-1 text-sm"
-                                            :class="option.disabled ? 'text-gray-400 dark:text-gray-500' : 'text-gray-500 dark:text-gray-400'">
-                                            {{ option.description }}
-                                        </p>
-
-                                        <!-- Prix -->
-                                        <div class="mt-2">
-                                            <span v-if="option.included" class="inline-flex flex-col items-center">
-                                                <span
-                                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                                                    <i class='bx bx-check mr-1'></i>
-                                                    Inclus
-                                                </span>
+                                        <div class="flex items-center space-x-2">
+                                            <!-- Badge pour les options incluses ou sélectionnées -->
+                                            <span v-if="option.included || isSelected(option.id)"
+                                                class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/30 dark:text-green-400">
+                                                {{ option.included ? 'Inclus' : 'Sélectionné' }}
                                             </span>
-                                            <span v-else class="text-green-600 dark:text-green-400 font-medium">
+                                            <!-- Prix pour les options non incluses et non sélectionnées -->
+                                            <span v-else class="text-sm font-medium text-gray-900 dark:text-white">
                                                 {{ option.price }}€
                                             </span>
                                         </div>
                                     </div>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ option.description }}
+                                    </p>
                                 </div>
 
-                                <!-- Bouton de sélection (maintenant en bas de carte) -->
-                                <div class="mt-auto pt-4">
-                                    <button @click="!option.disabled && toggleOption(option)"
-                                        class="w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-200"
-                                        :class="[
-                                            option.disabled ?
-                                                'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed' :
-                                                isSelected(option.id) || option.included ?
-                                                    'bg-green-600 text-white hover:bg-green-700' :
-                                                    'bg-gray-100 text-gray-700 hover:bg-green-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                                        ]">
-                                        {{
-                                            option.disabled ? 'Indisponible' :
-                                                isSelected(option.id) || option.included ? 'Sélectionné' : 'Sélectionner'
-                                        }}
-                                    </button>
-                                </div>
+                                <!-- Bouton de sélection uniquement pour les options non incluses -->
+                                <button v-if="!option.included" @click="toggleOption(option)"
+                                    :disabled="option.disabled" class="ml-4 p-2 rounded-lg transition-colors" :class="[
+                                        isSelected(option.id)
+                                            ? 'bg-green-100 text-green-600 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400'
+                                            : option.disabled
+                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+                                    ]">
+                                    <i class='bx text-xl' :class="[
+                                        isSelected(option.id) ? 'bx-check' : 'bx-plus'
+                                    ]">
+                                    </i>
+                                </button>
                             </div>
                         </div>
 
@@ -265,6 +246,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
+import { includedOptionsByForfait, templateOptions } from '../constants'
 
 const props = defineProps({
     formData: {
@@ -403,9 +385,7 @@ const validateForm = () => {
     // Émettre les données mises à jour
     emit('update:formData', formDataToEmit);
 
-    // Log de vérification
-    console.log('Validation du formulaire Forfait:', true);
-    console.log('Données validées:', validatedData);
+
 
     emit('stepValidated', true);
     return true;
@@ -566,9 +546,7 @@ const maintenancePlans = [
 ]
 
 const selectForfait = (forfait) => {
-    if (forfait.disabled) {
-        return;
-    }
+    if (forfait.disabled) return;
 
     localFormData.value.selectedForfait = forfait.id;
     localFormData.value.forfaitDetails = forfait;
@@ -576,14 +554,96 @@ const selectForfait = (forfait) => {
     // Réinitialiser les options
     localFormData.value.selectedOptions = [];
 
-    // Ajouter automatiquement les options incluses
-    const includedOptions = includedOptionsByForfait[forfait.id] || [];
-    includedOptions.forEach(optionId => {
-        const option = TemplateSelection.find(opt => opt.id === optionId);
-        if (option) {
-            localFormData.value.selectedOptions.push(option);
+    // Récupérer toutes les options incluses pour ce forfait
+    const includedOptionsIds = includedOptionsByForfait[forfait.id] || [];
+
+    // Créer un tableau des options incluses avec tous leurs détails
+    const includedOptions = TemplateSelection
+        .filter(option => includedOptionsIds.includes(option.id))
+        .map(option => ({
+            id: option.id,
+            name: option.name,
+            description: option.description,
+            price: 0,
+            icon: option.icon,
+            included: true
+        }));
+
+    // Ajouter les options incluses aux options sélectionnées
+    localFormData.value.selectedOptions = includedOptions;
+
+    // Mettre à jour le formData parent avec toutes les informations
+    emit('update:formData', {
+        ...props.formData,
+        forfait: {
+            ...localFormData.value,
+            selectedForfait: forfait.id,
+            forfaitDetails: forfait,
+            selectedOptions: includedOptions,
+            includedOptionsIds: includedOptionsIds // Ajouter les IDs des options incluses
         }
     });
+
+    // Log de vérification (temporaire)
+    console.log('Options incluses:', includedOptions);
+};
+
+// Computed property pour les options disponibles
+const availableOptions = computed(() => {
+    if (!localFormData.value.selectedForfait) return TemplateSelection;
+
+    return TemplateSelection.map(option => {
+        const isIncluded = includedOptionsByForfait[localFormData.value.selectedForfait]?.includes(option.id);
+        return {
+            ...option,
+            included: isIncluded,
+            disabled: isIncluded || (
+                localFormData.value.selectedForfait === 'starter' &&
+                ['ecommerce', 'Dashboard'].includes(option.id)
+            ),
+            price: isIncluded ? 0 : option.price
+        };
+    });
+});
+
+// Computed property pour les options incluses
+const includedOptions = computed(() => {
+    if (!localFormData.value.selectedForfait) return [];
+
+    const includedIds = includedOptionsByForfait[localFormData.value.selectedForfait] || [];
+    return TemplateSelection
+        .filter(option => includedIds.includes(option.id))
+        .map(option => ({
+            ...option,
+            included: true,
+            price: 0
+        }));
+});
+
+// Fonction pour vérifier si une option est incluse
+const isOptionIncluded = (optionId) => {
+    return includedOptionsByForfait[localFormData.value.selectedForfait]?.includes(optionId) || false;
+};
+
+// Modifier la fonction toggleOption
+const toggleOption = (option) => {
+    // Ne pas permettre la modification des options incluses
+    if (isOptionIncluded(option.id)) return;
+
+    const index = localFormData.value.selectedOptions.findIndex(opt => opt.id === option.id);
+
+    if (index === -1) {
+        // Ajouter l'option additionnelle
+        localFormData.value.selectedOptions.push({
+            ...option,
+            included: false
+        });
+    } else {
+        // Retirer l'option seulement si elle n'est pas incluse
+        localFormData.value.selectedOptions = localFormData.value.selectedOptions.filter(
+            opt => opt.id !== option.id || isOptionIncluded(opt.id)
+        );
+    }
 
     emit('update:formData', {
         ...props.formData,
@@ -597,31 +657,6 @@ const isOptionDisabled = (optionId) => {
         return ['Dashboard', 'ecommerce'].includes(optionId);
     }
     return false;
-};
-
-const toggleOption = (option) => {
-    // Ne rien faire si l'option est désactivée
-    if (option.disabled) return;
-
-    const index = localFormData.value.selectedOptions.findIndex(
-        opt => opt.id === option.id
-    );
-
-    if (index === -1) {
-        // Ajouter l'option si elle n'est pas déjà sélectionnée
-        localFormData.value.selectedOptions.push(option);
-    } else {
-        // Retirer l'option si elle est déjà sélectionnée
-        localFormData.value.selectedOptions = localFormData.value.selectedOptions.filter(
-            opt => opt.id !== option.id
-        );
-    }
-
-    // Émettre la mise à jour
-    emit('update:formData', {
-        ...props.formData,
-        forfait: localFormData.value
-    });
 };
 
 // Fonction pour vérifier si une option est sélectionnée
@@ -641,11 +676,15 @@ const isMaintenancePlanDisabled = (planId) => {
 };
 
 const selectMaintenancePlan = (plan) => {
-    // Empêche la sélection si le plan est désactivé
     if (isMaintenancePlanDisabled(plan.id)) return;
 
     localFormData.value.maintenancePlan =
         localFormData.value.maintenancePlan === plan.id ? null : plan.id;
+
+    emit('update:formData', {
+        ...props.formData,
+        forfait: localFormData.value
+    });
 };
 
 const handlePrevious = () => {
@@ -657,7 +696,7 @@ const handlePrevious = () => {
             maintenance: localFormData.value.maintenancePlan
         };
 
-        console.log('État sauvegardé avant retour :', currentState);
+
 
         // Mettre à jour le formData avant de revenir en arrière
         const formDataToEmit = {
@@ -786,135 +825,6 @@ const handleNext = () => {
     }
 };
 
-// Définir les options incluses par forfait
-const includedOptionsByForfait = {
-    premium: ['ecommerce', 'logoPhotos', 'socialMedia', 'Dashboard'], // E-commerce et création de logo inclus dans le Premium
-    standard: ['logoPhotos', 'socialMedia'],
-    starter: []
-};
-
-// Modifier la computed property availableOptions
-const availableOptions = computed(() => {
-    return TemplateSelection.map(option => {
-        let disabled = false;
-        let disabledMessage = '';
-        let included = false;
-
-        // Vérifier si l'option est incluse dans le forfait sélectionné
-        if (localFormData.value.selectedForfait) {
-            included = includedOptionsByForfait[localFormData.value.selectedForfait]?.includes(option.id);
-        }
-
-        // Logique pour déterminer si l'option est désactivée
-        // Uniquement désactiver e-commerce et Dashboard pour le forfait Starter
-        if (localFormData.value.selectedForfait === 'starter') {
-            if (option.id === 'ecommerce' || option.id === 'Dashboard') {
-                disabled = true;
-                disabledMessage = `Disponible à partir du forfait ${option.id === 'ecommerce' ? 'Premium' : 'Standard'}`;
-            }
-        }
-
-        return {
-            ...option,
-            disabled,
-            disabledMessage,
-            included
-        };
-    });
-});
-
-// Fonction pour obtenir les options incluses selon le forfait
-const getIncludedOptions = (forfaitId) => {
-    const includedIds = includedOptionsByForfait[forfaitId] || [];
-    return TemplateSelection.filter(option => includedIds.includes(option.id));
-};
-
-// Mettre à jour localFormData quand le forfait change
-watch(() => localFormData.value.selectedForfait, (newForfait) => {
-    if (newForfait) {
-        console.log('Forfait sélectionné:', newForfait);
-        console.log('Options incluses:', getIncludedOptions(newForfait));
-        console.log('Toutes les options:', TemplateSelection);
-    }
-});
-
-// Dans la fonction de validation
-const validateStep = () => {
-    // ... autre code ...
-
-    // Ajouter les options incluses aux données du formulaire
-    formData.value.forfait = {
-        ...localFormData.value,
-        includedOptions: getIncludedOptions(localFormData.value.selectedForfait)
-    };
-};
-
-// Modification de la fonction isOptionIncluded si elle existe
-const isOptionIncluded = (optionId) => {
-    if (!localFormData.value.selectedForfait) return false;
-    const includedOptions = getIncludedOptions(localFormData.value.selectedForfait);
-    return includedOptions.some(option => option.id === optionId);
-};
-
-const selectedOptions = ref([
-    {
-        id: 'socialMedia',
-        name: 'Réseaux Sociaux',
-        price: 199,
-        description: 'Création et gestion de vos réseaux sociaux',
-        icon: 'bx-share-alt'
-    },
-    {
-        id: 'Dashboard',
-        name: 'Dashboard (CRM)',
-        price: 299,
-        description: 'Suivi détaillé de vos performances',
-        icon: 'bx-line-chart'
-    }
-]);
-
-// Assurez-vous que les options sont toujours des objets complets
-const handleOptionSelection = (option) => {
-    if (typeof option === 'string') {
-        // Convertir en objet si c'est une chaîne
-        const optionDetails = availableOptions.find(opt => opt.id === option);
-        if (optionDetails) {
-            selectedOptions.value.push(optionDetails);
-        }
-    } else {
-        selectedOptions.value.push(option);
-    }
-};
-
-// Constantes pour séparer les options
-const includedOptions = computed(() => {
-    return (localFormData.value.selectedOptions || []).filter(option =>
-        option.id === 'socialMedia' || option.id === 'logoPhotos'
-    );
-});
-
-const selectedAdditionalOptions = computed(() => {
-    return (localFormData.value.selectedOptions || []).filter(option =>
-        option.id !== 'socialMedia' && option.id !== 'logoPhotos'
-    );
-});
-
-// Log pour vérifier la séparation
-watch([includedOptions, selectedAdditionalOptions], () => {
-    console.log('Options séparées :', {
-        optionsIncluses: includedOptions.value,  // Contiendra Réseaux Sociaux et Logo
-        optionsSelectionnees: selectedAdditionalOptions.value  // Contiendra Dashboard
-    });
-});
-
-// Ajouter un watcher pour logger les changements
-watch([includedOptions, selectedAdditionalOptions], () => {
-    console.log('=== SÉPARATION DES OPTIONS ===');
-    console.log('Options incluses dans le forfait:', includedOptions.value);
-    console.log('Options supplémentaires sélectionnées:', selectedAdditionalOptions.value);
-    console.log('================================');
-}, { immediate: true });
-
 // Ajouter un watcher pour le changement de forfait
 watch(() => localFormData.value.selectedForfait, (newForfait) => {
     if (newForfait === 'starter') {
@@ -962,3 +872,14 @@ const isLowerThanMinimum = (forfaitId, minimumForfait) => {
 };
 
 </script>
+
+<style scoped>
+/* Ajouter des styles pour une transition plus fluide */
+.border {
+    transition: all 0.2s ease-in-out;
+}
+
+.bg-green-50 {
+    transition: background-color 0.2s ease-in-out;
+}
+</style>
