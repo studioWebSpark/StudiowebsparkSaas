@@ -1,77 +1,69 @@
 @component('mail::message')
-# Merci pour votre commande !
+# Confirmation de commande
 
 Cher(e) {{ $user->name }},
 
-@component('mail::panel')
-### 📋 Détails de la commande
-**Numéro de commande :** {{ $order['orderId'] }}
+Nous vous remercions pour votre commande sur {{ config('app.name') }}. Voici le récapitulatif de votre commande :
 
-**Montant total :** {{ number_format($order['amount'], 2, ',', ' ') }}€
+@component('mail::panel')
+## Informations client
+- Nom : {{ $user->name }}
+- Email : {{ $user->email }}
+- Date de commande : {{ now()->format('d/m/Y à H:i') }}
 @endcomponent
 
 @component('mail::panel')
-### 🚀 Détails de votre projet
-**Type de projet :** {{ $order['projectType'] }}
+## Détails du projet
+- Type de projet : {{ $orderData['project']['projectType'] }}
+- Description : {{ $orderData['project']['description'] }}
 
-**Forfait choisi :** {{ $order['forfaitType'] }}
-
-@if($order['forfaitType'] === 'starter')
-#### ✨ Fonctionnalités du forfait starter :
-@else
-#### ✨ Fonctionnalités sélectionnées :
-@endif
-
-@foreach($order['features'] as $feature)
-• {{ $feature }}<br>
+### Fonctionnalités sélectionnées :
+@foreach($orderData['project']['selectedFeatures'] ?? [] as $feature)
+- {{ $feature }}
 @endforeach
 @endcomponent
 
 @component('mail::panel')
-### 📅 Prochaines étapes
-
-**1. Analyse immédiate de votre projet**
-Notre équipe technique analysera votre projet (2-4h)
-
-**2. Email de confirmation du début du projet**
-Vous recevrez un planning détaillé
-
-**3. Prise de contact par votre chef de projet dédié**
-• Validation de vos besoins spécifiques
-• Planning de développement
-• Points de suivi réguliers
-
-@if($order['forfaitType'] === 'premium' || $order['forfaitType'] === 'standard')
-**4. Étude approfondie marketing**
-• Analyse de votre marché
-• Stratégie de communication
-• Plan d'action réseaux sociaux
-• Planning des points d'étape marketing
-@endif
+## Forfait choisi
+- Nom du forfait : {{ $orderData['forfait']['selectedForfait'] }}
+- Prix : {{ number_format($orderData['forfait']['forfaitDetails']['price'], 2, ',', ' ') }} €
 @endcomponent
 
-### 🔍 Pour Suivre votre projet
-
-@component('mail::button', ['url' => route('dashboard'), 'color' => 'primary'])
-Accéder à mon tableau de bord
-@endcomponent
-
-@if($order['forfaitType'] === 'premium' || $order['forfaitType'] === 'standard')
+@if(isset($orderData['template']['selectedTemplates']))
 @component('mail::panel')
-### ⭐ Note importante
-Notre équipe marketing vous contactera dans les heures qui suivent pour débuter l'étude de marché et définir votre stratégie de communication.
+## Template sélectionné
+@foreach($orderData['template']['selectedTemplates'] as $template)
+- {{ $template['name'] }}
+@endforeach
 @endcomponent
 @endif
 
-@component('mail::panel')
-### 📞 Besoin d'assistance ?
-• Email : studiowebspark@gmail.com
-
-• Téléphone : +33 7 67 17 57 24
+@component('mail::table')
+| Récapitulatif | Montant |
+|---------------|---------|
+| **Total** | **{{ number_format($orderData['forfait']['forfaitDetails']['price'], 2, ',', ' ') }} €** |
 @endcomponent
 
-Nous sommes impatients de commencer votre projet !
+## Informations légales
 
-Cordialement,
-L'équipe StudioWebspark
+- Conformément à l'article L.121-20-3 du Code de la consommation, nous nous engageons à vous livrer votre projet dans les délais convenus.
+- TVA non applicable, art. 293 B du CGI
+- Vous disposez d'un droit de rétractation de 14 jours à compter de la date de cette commande.
+- Vos données personnelles sont traitées conformément au RGPD (Règlement Général sur la Protection des Données).
+
+Pour toute question concernant votre commande, vous pouvez nous contacter à l'adresse : {{ config('mail.from.address') }}
+
+@component('mail::button', ['url' => config('app.url').'/dashboard'])
+Accéder à mon espace client
+@endcomponent
+
+Cordialement,<br>
+L'équipe {{ config('app.name') }}
+
+<small>
+    Ce message est généré automatiquement, merci de ne pas y répondre directement.<br>
+    {{ config('app.name') }} - SIRET : [Votre SIRET]<br>
+    TVA non applicable, art. 293 B du CGI<br>
+    [Votre adresse complète]
+</small>
 @endcomponent

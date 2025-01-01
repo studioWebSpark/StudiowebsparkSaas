@@ -7,6 +7,15 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { onMounted, ref } from 'vue';
+
+// Récupérer l'URL stockée
+const storedUrl = ref('');
+
+onMounted(() => {
+    // Récupérer l'URL stockée au chargement
+    storedUrl.value = localStorage.getItem('projectWizardData') ? '/demarrer-projet' : '/dashboard';
+});
 
 const form = useForm({
     name: '',
@@ -18,7 +27,15 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+        onSuccess: () => {
+            // Forcer la redirection après le succès
+            setTimeout(() => {
+                window.location.href = storedUrl.value;
+            }, 500);
+        },
+        onError: (errors) => {
+            console.error('Erreurs d\'inscription:', errors);
+        }
     });
 };
 </script>

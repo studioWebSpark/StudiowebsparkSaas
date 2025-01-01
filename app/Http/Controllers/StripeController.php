@@ -10,6 +10,8 @@ use Inertia\Inertia;
 use App\Models\PendingProject;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaymentFailed;
+use App\Mail\PaymentSuccess;
+use App\Mail\PaymentCancelled;
 
 class StripeController extends Controller
 {
@@ -91,10 +93,17 @@ class StripeController extends Controller
             // Générer un ID de commande
             $orderId = 'CMD-' . strtoupper(substr(uniqid(), -8));
 
+            // Envoyer l'email de confirmation
+            Mail::to($request->user()->email)->send(new PaymentSuccess(
+                $request->user(),
+                $orderId,
+                session('projectData')
+            ));
+
             // Rediriger vers la page de succès avec les données
-            return Inertia::render('Website/Project/PaymentSuccess', [
+            return Inertia::render('Payment/PaymentSuccess', [
                 'orderId' => $orderId,
-                'amount' => $session->amount_total / 100, // Convertir les centimes en euros
+                'amount' => $session->amount_total / 100,
             ]);
         } catch (\Exception $e) {
             Log::error('Erreur lors du traitement du succès:', [
@@ -106,31 +115,39 @@ class StripeController extends Controller
         }
     }
 
-    public function cancel(Request $request, $project_id = null)
+    public function cancel(Request $request)
     {
         try {
-            Log::info('Annulation de paiement', ['project_id' => $project_id]);
-
-            if ($project_id) {
-                $pendingProject = PendingProject::findOrFail($project_id);
-            }
-
-            // Envoyer l'email d'échec de paiement si vous le souhaitez
-            if (isset($pendingProject)) {
-                Mail::to(auth()->user()->email)->send(new PaymentFailed($pendingProject));
-            }
-
-            // Utiliser votre vue existante
-            return Inertia::render('Payment/Cancel', [
-                'project' => $pendingProject ?? null
-            ]);
-        } catch (Exception $e) {
-            Log::error('Erreur lors de l\'annulation:', [
-                'error' => $e->getMessage()
+            Log::info('Paiement annulé', [
+                'user' => $request->user()->email,
+                'timestamp' => now()
             ]);
 
-            return redirect()->route('dashboard')
-                ->with('error', 'Une erreur est survenue.');
+            // Générer un ID de référence pour l'annulation
+            $cancelId = 'CANCEL-' . strtoupper(substr(uniqid(), -8));
+
+            // Récupérer les données du projet
+            $projectData = session('projectData');
+
+            // Envoyer l'email d'annulation
+            Mail::to($request->user()->email)->send(new PaymentCancelled(
+                $request->user(),
+                $cancelId,
+                $projectData
+            ));
+
+            // Retourner la vue avec les données
+            return Inertia::render('Payment/PaymentCancel', [
+                'cancelId' => $cancelId,
+                'projectData' => $projectData,
+                'timestamp' => now()->format('Y-m-d H:i:s')
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de l\'annulation: ' . $e->getMessage());
+
+            return Inertia::render('Payment/PaymentCancel', [
+                'error' => 'Une erreur est survenue lors de l\'annulation'
+            ]);
         }
     }
 }

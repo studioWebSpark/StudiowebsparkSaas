@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SirenController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\VerifyEmailController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -68,7 +69,7 @@ Route::get('/conseil', function () {
 
 // Route pour le wizard de projet
 Route::get('/demarrer-projet', [ProjectController::class, 'wizard'])
-    ->name('project.wizard');
+    ->name('demarrer-projet');
 
 // Route pour soumettre le projet
 Route::post('/demarrer-projet', [ProjectController::class, 'store'])
@@ -86,17 +87,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('payment.cancel');
 });
 
-Route::get('/payment/success', [StripeController::class, 'success'])
-    ->name('payment.success')
-    ->middleware(['auth']);
-
-
 Route::get('/project/summary', [ProjectController::class, 'summary'])
     ->name('project.summary');
 
-// Routes pour la newsletter
-Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
-    ->name('newsletter.subscribe');
-Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])
-    ->name('newsletter.unsubscribe');
+Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
 // Po

@@ -6,24 +6,24 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class PaymentSuccess extends Mailable
+class PaymentCancelled extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $user;
-    public $orderId;
+    public $cancelId;
     public $projectData;
 
-    public function __construct($user, $orderId, $projectData)
+    public function __construct($user, $cancelId, $projectData)
     {
         $this->user = $user;
-        $this->orderId = $orderId;
+        $this->cancelId = $cancelId;
         $this->projectData = $projectData;
     }
 
     public function build()
     {
-        return $this->markdown('emails.payments.success')
-            ->subject('Confirmation de votre paiement - ' . config('app.name'));
+        return $this->markdown('emails.payments.cancelled')
+            ->subject('Annulation de votre paiement - ' . config('app.name'));
     }
 }

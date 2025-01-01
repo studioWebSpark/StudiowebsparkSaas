@@ -113,4 +113,17 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'markdown' => [
+        'theme' => 'default',
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+        'colors' => [
+            'primary' => '#2d3748',
+            'secondary' => '#718096',
+            'success' => '#48bb78',
+            'error' => '#e53e3e',
+        ],
+    ],
+
 ];

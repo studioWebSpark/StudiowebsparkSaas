@@ -2,10 +2,10 @@
 
 namespace App\Mail\Auth;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
 
 class WelcomeEmail extends Mailable
 {
@@ -21,6 +21,6 @@ class WelcomeEmail extends Mailable
     public function build()
     {
         return $this->markdown('emails.auth.welcome')
-            ->subject('Bienvenue sur StudioWebspark !');
+            ->subject('Bienvenue sur ' . config('app.name'));
     }
 }

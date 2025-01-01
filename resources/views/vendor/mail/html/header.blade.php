@@ -1,9 +1,12 @@
 @props(['url'])
 <tr>
     <td class="header">
-        <a href="{{ $url }}" style="font-size: 28px; font-weight: bold; color: #4f46e5; text-decoration: none;">
-            StudioWebspark
+        <a href="{{ $url }}" style="display: inline-block;">
+            @if (trim($slot) === 'Laravel')
+            <img src="{{ asset('images/logo.png') }}" class="logo" alt="Logo">
+            @else
+            {{ $slot }}
+            @endif
         </a>
     </td>
 </tr>
-

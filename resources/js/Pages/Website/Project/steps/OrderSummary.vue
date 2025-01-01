@@ -296,28 +296,24 @@
                 Dernière étape avant le paiement
             </h2>
 
-            <div v-if="!$page.props.auth.user" class="space-y-6">
+            <div v-if="!isAuthenticated" class="space-y-6">
                 <p class="text-gray-600 dark:text-gray-400">
                     Pour finaliser votre commande, vous devez être connecté à votre compte.
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <Link :href="route('login')" @click="sendAuthRequest"
+                    <button @click="navigateToLogin"
                         class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700">
-                    <i class='bx bx-log-in mr-2'></i>
-                    Se connecter
-                    </Link>
+                        <i class='bx bx-log-in mr-2'></i>
+                        Se connecter
+                    </button>
 
-                    <Link :href="route('register')" @click="sendAuthRequest"
+                    <button @click="navigateToRegister"
                         class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    <i class='bx bx-user-plus mr-2'></i>
-                    Créer un compte
-                    </Link>
+                        <i class='bx bx-user-plus mr-2'></i>
+                        Créer un compte
+                    </button>
                 </div>
-
-                <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
-                    La création d'un compte vous permet de suivre vos commandes et de gérer vos projets.
-                </p>
             </div>
 
             <div v-else class="space-y-4">
@@ -334,18 +330,17 @@
                                 Connecté en tant que
                             </p>
                             <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ $page.props.auth.user.email }}
+                                {{ page.props.auth.user.email }}
                             </p>
                         </div>
                     </div>
 
                     <div class="flex items-center space-x-4">
-                        <Link :href="route('logout')" method="post" as="button" @click="storeRedirectUrl"
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:bg-gray-500"
-                            preserve-scroll>
-                        <i class='bx bx-transfer text-lg mr-2'></i>
-                        Changer de compte
-                        </Link>
+                        <button @click="handleLogout"
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:bg-gray-500">
+                            <i class='bx bx-transfer text-lg mr-2'></i>
+                            Changer de compte
+                        </button>
 
                         <button @click="proceedToPayment"
                             class="inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
@@ -651,16 +646,10 @@ const isTemplateValid = computed(() => {
 
 // Vérification globale
 const isAllValid = computed(() => {
-    // Log pour debug
-    console.log('État de validation:', {
-        personal: props.formData.personal?.isValidated,
-        project: props.formData.project?.isValidated,
-        forfait: props.formData.forfait?.isValidated,
-        template: props.formData.template?.isValidated
-    });
-
-    // Vérification simplifiée
-    return true; // Forcer temporairement à true pour tester
+    return props.formData.personal?.isValidated &&
+        props.formData.project?.isValidated &&
+        props.formData.forfait?.isValidated &&
+        props.formData.template?.isValidated;
 });
 
 const isDropdownOpen = ref(false);
@@ -693,7 +682,11 @@ const page = usePage();
 const currentPath = computed(() => '/demarrer-projet?step=4');
 
 const storeRedirectUrl = () => {
-    localStorage.setItem('auth_redirect_url', currentPath.value);
+    // Sauvegarder l'URL actuelle et les données du projet
+    localStorage.setItem('intendedUrl', '/demarrer-projet?step=4');
+    if (props.formData) {
+        localStorage.setItem('projectWizardData', JSON.stringify(props.formData));
+    }
 };
 
 const sendAuthRequest = () => {
@@ -748,6 +741,59 @@ const resetProjectData = () => {
     } catch (error) {
         console.error('Erreur lors de la réinitialisation:', error);
     }
+};
+
+// Fonction pour sauvegarder les données avant la redirection
+const saveAndRedirect = (path) => {
+    try {
+        // Sauvegarder les données du projet
+        if (props.formData) {
+            localStorage.setItem('projectWizardData', JSON.stringify({
+                currentStep: props.formData.currentStep,
+                personal: props.formData.personal,
+                project: props.formData.project,
+                forfait: props.formData.forfait,
+                template: props.formData.template
+            }));
+        }
+
+        // Redirection
+        window.location.href = path;
+    } catch (error) {
+        console.error('Erreur lors de la sauvegarde:', error);
+    }
+};
+
+// Fonctions de navigation
+const navigateToLogin = () => {
+    saveAndRedirect('/login');
+};
+
+const navigateToRegister = () => {
+    saveAndRedirect('/register');
+};
+
+const isAuthenticated = computed(() => page.props.auth.user !== null);
+
+const handleLogout = () => {
+    // Sauvegarder l'URL actuelle et les données du projet
+    localStorage.setItem('intendedUrl', '/demarrer-projet?step=4');
+    if (props.formData) {
+        localStorage.setItem('projectWizardData', JSON.stringify(props.formData));
+    }
+
+    // Déconnexion avec Inertia en restant sur la même page
+    router.post(route('logout'), {}, {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            // Rester sur la même page après la déconnexion
+            router.visit('/demarrer-projet?step=4', {
+                preserveState: true,
+                preserveScroll: true
+            });
+        }
+    });
 };
 </script>
 <style scoped>

@@ -10,19 +10,22 @@ class OrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $data;
+    public $orderData;
+    public $user;
 
-    public function __construct($data)
+    public function __construct($user, $orderData)
     {
-        $this->data = $data;
+        $this->user = $user;
+        $this->orderData = $orderData;
     }
 
     public function build()
     {
-        return $this->subject('Confirmation de votre commande')
-            ->markdown('emails.order-confirmation')
+        return $this->markdown('emails.orders.confirmation')
+            ->subject('Confirmation de votre commande - ' . config('app.name'))
             ->with([
-                'data' => $this->data
+                'orderData' => $this->orderData,
+                'user' => $this->user
             ]);
     }
 }
