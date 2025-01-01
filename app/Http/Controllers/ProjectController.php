@@ -11,6 +11,7 @@ use App\Models\PendingProject;
 use Inertia\Inertia;
 use App\Mail\PaymentSuccess;
 use App\Mail\PaymentFailed;
+use App\Models\Payment;
 
 class ProjectController extends Controller
 {
@@ -143,11 +144,62 @@ class ProjectController extends Controller
         return response()->json($projects);
     }
 
-    public function wizard()
+    public function wizard(Request $request)
     {
+        // Vérifier si on vient d'un paiement réussi
+        if (session()->has('payment_success')) {
+            // Nettoyer toutes les données du projet
+            session()->forget([
+                'projectData',
+                'currentStep',
+                'formData',
+                'personal',
+                'project',
+                'requirements',
+                'payment'
+            ]);
+
+            // Script pour nettoyer le localStorage
+            $cleanupScript = <<<'JS'
+                <script>
+                    localStorage.removeItem('projectWizardData');
+                    localStorage.removeItem('currentStep');
+                    localStorage.removeItem('formData');
+                    localStorage.removeItem('personal');
+                    localStorage.removeItem('project');
+                    localStorage.removeItem('requirements');
+                    localStorage.removeItem('payment');
+                </script>
+            JS;
+
+            return Inertia::render('Website/Project/ProjectWizard', [
+                'step' => 1,
+                'cleanupScript' => $cleanupScript
+            ]);
+        }
+
+        // Votre code existant pour le wizard...
         return Inertia::render('Website/Project/ProjectWizard', [
-            'initialStep' => request()->query('step', 0),
-            'projectId' => request()->query('project_id'),
+            'step' => $request->query('step', 1),
+            'projectData' => session('projectData', [])
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        // Votre validation existante...
+
+        // Créer un paiement en attente
+        $payment = Payment::create([
+            'user_id' => auth()->id(),
+            'amount' => $request->amount,
+            'status' => 'pending',
+            'project_data' => $request->all(),
+        ]);
+
+        // Stocker l'ID du paiement en session
+        session(['pending_payment_id' => $payment->id]);
+
+        // Votre logique existante...
     }
 }
