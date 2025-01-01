@@ -11,19 +11,21 @@ class PaymentSuccess extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
-    public $orderId;
+    public $order_number;
     public $projectData;
+    public $amount;
 
-    public function __construct($user, $orderId, $projectData)
+    public function __construct($user, $order_number, $projectData, $amount)
     {
         $this->user = $user;
-        $this->orderId = $orderId;
+        $this->order_number = $order_number;
         $this->projectData = $projectData;
+        $this->amount = $amount;
     }
 
     public function build()
     {
-        return $this->markdown('emails.payments.success')
-            ->subject('Confirmation de votre paiement - ' . config('app.name'));
+        return $this->subject('Confirmation de votre paiement')
+            ->markdown('emails.payments.success');
     }
 }

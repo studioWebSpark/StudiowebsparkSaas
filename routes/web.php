@@ -9,6 +9,7 @@ use App\Http\Controllers\SirenController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\VerifyEmailController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -78,13 +79,17 @@ Route::post('/demarrer-projet', [ProjectController::class, 'store'])
 Route::get('/project/resume/{projectId}', [ProjectController::class, 'resumeProject'])
     ->name('project.resume');
 
-Route::middleware(['auth'])->group(function () {
-    Route::post('/stripe/create-session', [StripeController::class, 'createSession'])
-        ->name('stripe.create-session');
-    Route::get('/payment/success', [StripeController::class, 'success'])
-        ->name('payment.success');
-    Route::get('/payment/cancel', [StripeController::class, 'cancel'])
-        ->name('payment.cancel');
+// Routes Stripe publiques (hors middleware auth)
+Route::controller(StripeController::class)->group(function () {
+    Route::post('/stripe/create-session', 'createSession')->name('stripe.create-session');
+    Route::get('/payment/success', 'success')->name('payment.success');
+    Route::get('/payment/cancel', 'cancel')->name('payment.cancel');
+});
+
+// Routes protégées
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+    // Route pour sauvegarder les données du projet
+    Route::post('/save-project-data', [ProjectController::class, 'saveData'])->name('project.save');
 });
 
 Route::get('/project/summary', [ProjectController::class, 'summary'])
@@ -99,5 +104,10 @@ Route::post('/stripe/webhook', [StripeController::class, 'webhook'])->name('stri
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/payments', [App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/{payment}', [App\Http\Controllers\Admin\PaymentController::class, 'show'])->name('payments.show');
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
 // Po

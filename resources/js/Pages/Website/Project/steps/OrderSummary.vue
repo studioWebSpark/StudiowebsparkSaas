@@ -540,7 +540,7 @@ const toggleZoom = () => {
 
 const proceedToPayment = async () => {
     try {
-        if (!calculateTotal.value || calculateTotal.value <= 0) {
+        if (!calculateTotal.value) {
             throw new Error('Le montant du paiement est invalide');
         }
 
@@ -794,6 +794,49 @@ const handleLogout = () => {
             });
         }
     });
+};
+
+const handlePayment = async () => {
+    try {
+        console.log('1. Début du processus de paiement');
+        console.log('2. Données à envoyer:', {
+            amount: calculateTotal.value,
+            customer: {
+                email: props.formData.personal.email,
+                name: `${props.formData.personal.firstName} ${props.formData.personal.lastName}`
+            },
+            projectData: {
+                personal: props.formData.personal,
+                project: props.formData.project,
+                forfait: props.formData.forfait,
+                template: props.formData.template
+            }
+        });
+
+        // Utiliser la nouvelle route
+        const response = await axios.post(route('stripe.create-session'), {
+            amount: calculateTotal.value,
+            customer: {
+                email: props.formData.personal.email,
+                name: `${props.formData.personal.firstName} ${props.formData.personal.lastName}`
+            },
+            projectData: {
+                personal: props.formData.personal,
+                project: props.formData.project,
+                forfait: props.formData.forfait,
+                template: props.formData.template
+            }
+        });
+
+        console.log('3. Réponse de create-session:', response.data);
+
+        // ... reste du code existant ...
+
+    } catch (error) {
+        console.error('Erreur détaillée:', error);
+        console.error('Stack trace:', error.stack);
+        alert('Une erreur est survenue lors de la préparation du paiement. Veuillez réessayer.');
+    }
 };
 </script>
 <style scoped>

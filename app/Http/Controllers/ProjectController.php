@@ -202,4 +202,30 @@ class ProjectController extends Controller
 
         // Votre logique existante...
     }
+
+    public function saveData(Request $request)
+    {
+        try {
+            Log::info('Sauvegarde des données du projet:', [
+                'projectData' => $request->projectData
+            ]);
+
+            session(['projectData' => $request->projectData]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Données sauvegardées avec succès'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la sauvegarde des données:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la sauvegarde des données'
+            ], 500);
+        }
+    }
 }

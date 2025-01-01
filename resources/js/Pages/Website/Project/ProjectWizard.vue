@@ -92,13 +92,16 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, onBeforeUnmount, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import PersonalInfo from './steps/Personalinfo.vue'
 import ProjectDetails from './steps/ProjectDetails.vue'
 import ForfaitSelection from './steps/ForfaitSelection.vue'
 import TemplateSelection from './steps/TemplateSelection.vue'
 import OrderSummary from './steps/OrderSummary.vue'
 import Header from '../componentsHome/Header.vue'
+import { loadStripe } from '@stripe/stripe-js';
 
+const page = usePage();
 const steps = [
     { title: 'Informations', component: PersonalInfo },
     { title: 'Projet', component: ProjectDetails },
@@ -107,7 +110,7 @@ const steps = [
     { title: 'Validation', component: OrderSummary }
 ];
 
-const currentStep = ref(0);
+const currentStep = ref(1);
 const stepsValidation = ref({});
 
 // Ajout de la computed property pour currentComponent
@@ -117,34 +120,10 @@ const currentComponent = computed(() => {
 
 // Structure correcte des données
 const formData = ref({
-    personal: {
-        clientType: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        companyName: '',
-        siren: '',
-        activity: '',
-        isValidated: false
-    },
-    project: {
-        projectType: '',
-        description: '',
-        selectedFeatures: [],
-        isValidated: false
-    },
-    forfait: {
-        selectedForfait: null,
-        forfaitDetails: null,
-        selectedOptions: [],
-        maintenancePlan: null,
-        isValidated: false
-    },
-    template: {
-        selectedTemplates: [],
-        isValidated: false
-    }
+    project: null,
+    personal: null,
+    template: null,
+    forfait: null
 });
 
 // Référence vers le composant actif
@@ -679,6 +658,99 @@ watch(() => currentStep.value, (newStep) => {
         debugAllSteps();
     }
 });
+
+// Ajouter une méthode pour réinitialiser le wizard
+const resetWizard = () => {
+    // Nettoyer le localStorage
+    localStorage.removeItem('projectWizardData');
+    localStorage.removeItem('currentStep');
+    localStorage.removeItem('formData');
+    localStorage.removeItem('personal');
+    localStorage.removeItem('project');
+    localStorage.removeItem('requirements');
+    localStorage.removeItem('payment');
+
+    // Réinitialiser l'état du composant
+    currentStep.value = 1;
+    formData.value = {
+        project: null,
+        personal: null,
+        template: null,
+        forfait: null
+    };
+
+    // Forcer le rechargement du composant
+    if (window.location.pathname.includes('demarrer-projet')) {
+        window.location.reload();
+    }
+};
+
+// Surveiller les props de la page pour la réinitialisation
+watch(() => page.props.resetWizard, (shouldReset) => {
+    if (shouldReset) {
+        resetWizard();
+    }
+});
+
+// Ajouter un listener pour le message de réinitialisation
+onMounted(() => {
+    if (page.props.resetWizard) {
+        resetWizard();
+    }
+});
+
+// Dans votre gestionnaire de paiement Stripe
+const handleStripeSuccess = async (response) => {
+    try {
+        const result = await axios.post('/stripe/success', {
+            session_id: response.session_id
+        });
+
+        if (result.data.success && result.data.shouldResetWizard) {
+            resetWizard();
+            // Rediriger vers la page de confirmation ou dashboard
+            router.push({ name: 'dashboard' });
+        }
+    } catch (error) {
+        console.error('Erreur lors du traitement du paiement:', error);
+    }
+};
+
+const handlePayment = async () => {
+    try {
+        // 1. Récupérer toutes les données du wizard
+        const wizardData = {
+            personal: formData.value.personal.données,
+            project: formData.value.project.données,
+            forfait: formData.value.forfait.données,
+            template: formData.value.template.données
+        };
+
+        console.log('Données du wizard avant paiement:', wizardData);
+
+        // 2. Créer la session Stripe
+        const response = await axios.post('/stripe/create-session', {
+            amount: totalAmount.value,
+            projectWizardData: JSON.stringify(wizardData)
+        });
+
+        const { sessionId } = response.data;
+        console.log('Session Stripe créée:', sessionId);
+
+        // 3. Rediriger vers Stripe
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+        const result = await stripe.redirectToCheckout({
+            sessionId: sessionId
+        });
+
+        if (result.error) {
+            console.error('Erreur Stripe:', result.error);
+        }
+
+    } catch (error) {
+        console.error('Erreur lors du paiement:', error);
+    }
+};
 
 </script>
 <style scoped>

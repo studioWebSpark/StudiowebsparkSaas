@@ -26,6 +26,12 @@ const switchToTeam = (team) => {
 const logout = () => {
     router.post(route('logout'));
 };
+
+const navigation = [
+    { name: 'Tableau de bord', href: route('dashboard'), icon: 'bx-home' },
+    { name: 'Mes commandes', href: route('orders.index'), icon: 'bx-shopping-bag' },
+    // ... autres liens de navigation ...
+];
 </script>
 
 <template>

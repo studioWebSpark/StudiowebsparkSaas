@@ -1,34 +1,38 @@
 @component('mail::message')
 # Confirmation de paiement
 
-Cher(e) {{ $user->name }},
+Cher {{ $user->name }},
 
-Nous vous confirmons la réception de votre paiement pour votre projet.
+Nous vous confirmons le paiement de votre commande.
 
-**Référence de commande :** {{ $orderId }}
+Numéro de commande : {{ $order_number }}
+Montant : {{ $amount }} €
 
-## Détails de votre projet
-@if(isset($projectData['projectType']))
-- Type de projet : {{ $projectData['projectType'] }}
-@endif
-@if(isset($projectData['personal']['clientType']))
-- Type de client : {{ $projectData['personal']['clientType'] }}
-@endif
-
-@component('mail::button', ['url' => config('app.url').'/dashboard'])
-Accéder à mon tableau de bord
+@component('mail::panel')
+**Détails de la commande :**
+- Numéro de commande : {{ $order_number }}
+- Montant total : {{ number_format($projectData['forfait']['forfaitDetails']['price'], 2, ',', ' ') }} €
 @endcomponent
 
-Nous allons traiter votre projet dans les plus brefs délais. Notre équipe vous contactera prochainement pour démarrer le développement.
+@component('mail::panel')
+**Votre projet :**
+- Type de projet : {{ $projectData['project']['projectType'] }}
+- Forfait choisi : {{ $projectData['forfait']['selectedForfait'] }}
+- Template choisi : {{ $projectData['template']['selectedTemplates'][0] ?? 'Aucun template sélectionné' }}
+@endcomponent
 
-Merci de votre confiance !
+@component('mail::button', ['url' => config('app.url').'/dashboard'])
+Accéder à mon espace client
+@endcomponent
+
+Nous vous contacterons très prochainement pour démarrer votre projet.
 
 Cordialement,<br>
 L'équipe {{ config('app.name') }}
 
 <small>
     Ce message est généré automatiquement, merci de ne pas y répondre directement.<br>
-    {{ config('app.name') }} - SIRET : [Votre SIRET]<br>
+    {{ config('app.name') }} - SIRET : 90476131900022<br>
     TVA non applicable, art. 293 B du CGI
 </small>
 @endcomponent

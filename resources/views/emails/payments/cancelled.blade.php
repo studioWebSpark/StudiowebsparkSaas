@@ -7,22 +7,31 @@ Nous avons bien noté l'annulation de votre paiement.
 
 **Référence d'annulation :** {{ $cancelId }}
 
-## Détails du projet annulé
+## Votre projet est sauvegardé
+Bonne nouvelle : toutes les informations de votre projet sont conservées dans votre espace client. Vous pourrez reprendre votre projet exactement là où vous l'avez laissé quand vous le souhaiterez.
+
+## Récapitulatif du projet en attente
 @if(isset($projectData['projectType']))
 - Type de projet : {{ $projectData['projectType'] }}
 @endif
-@if(isset($projectData['personal']['clientType']))
-- Type de client : {{ $projectData['personal']['clientType'] }}
+@if(isset($projectData['forfait']))
+- Formule : {{ $projectData['forfait']['selectedForfait'] }}
+- Montant : {{ number_format($projectData['forfait']['forfaitDetails']['price'], 2, ',', ' ') }} €
 @endif
 
-Si vous avez rencontré des difficultés lors du paiement ou si vous avez des questions, n'hésitez pas à nous contacter. Notre équipe est là pour vous aider.
+## Besoin d'aide ?
+- Vous avez rencontré un problème technique ?
+- Vous souhaitez discuter de votre projet ?
+- Vous avez des questions sur nos formules ?
+
+Notre équipe est là pour vous aider !
 
 @component('mail::button', ['url' => config('app.url').'/demarrer-projet?step=4'])
-Réessayer le paiement
+Reprendre mon projet
 @endcomponent
 
 @component('mail::button', ['url' => config('app.url').'/contact', 'color' => 'red'])
-Nous contacter
+Contacter un conseiller
 @endcomponent
 
 Nous restons à votre disposition pour toute information complémentaire.
@@ -32,7 +41,7 @@ L'équipe {{ config('app.name') }}
 
 <small>
     Ce message est généré automatiquement, merci de ne pas y répondre directement.<br>
-    {{ config('app.name') }} - SIRET : [Votre SIRET]<br>
+    {{ config('app.name') }} - SIRET : 90476131900022<br>
     TVA non applicable, art. 293 B du CGI
 </small>
 @endcomponent

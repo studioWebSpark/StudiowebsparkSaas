@@ -2,34 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PaymentCancelled;
+use App\Mail\PaymentSuccess;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use App\Models\PendingProject;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\PaymentFailed;
-use App\Mail\PaymentSuccess;
-use App\Mail\PaymentCancelled;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentSuccessEmail;
 
 class StripeController extends Controller
 {
     public function createSession(Request $request)
     {
         try {
-            Log::info('Début de création de session Stripe', [
+            Log::info('1. Création session Stripe - Données reçues:', [
                 'amount' => $request->amount,
-                'email' => $request->customer['email']
+                'projectData' => $request->projectData
             ]);
 
             Stripe::setApiKey(config('services.stripe.secret'));
-
             $amount = (int)($request->amount * 100);
-            if ($amount <= 0) {
-                throw new \Exception('Le montant doit être supérieur à 0');
-            }
+
+            // Stocker les données en session
+            session(['projectData' => $request->projectData]);
+            Log::info('2. Données stockées en session');
 
             $session = Session::create([
                 'payment_method_types' => ['card'],
@@ -46,98 +45,156 @@ class StripeController extends Controller
                 ]],
                 'mode' => 'payment',
                 'success_url' => route('payment.success') . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('payment.cancel', ['project_id' => $request->project_id]),
+                'cancel_url' => route('payment.cancel'),
                 'metadata' => [
-                    'project_type' => $request->projectData['projectType'] ?? '',
-                    'client_type' => $request->projectData['personal']['clientType'] ?? '',
                     'customer_email' => $request->customer['email'],
-                    'customer_name' => $request->customer['name'],
-                    'payment_id' => session('pending_payment_id'),
+                    'customer_name' => $request->customer['name']
                 ]
             ]);
 
-            // Mettre à jour le payment avec l'ID de session Stripe
-            Payment::where('id', session('pending_payment_id'))
-                ->update(['stripe_session_id' => $session->id]);
-
-            Log::info('Session créée avec succès', ['session_id' => $session->id]);
-
-            // S'assurer que la réponse est propre
-            return response()->json(['sessionId' => $session->id])
-                ->header('Content-Type', 'application/json')
-                ->header('X-Content-Type-Options', 'nosniff');
+            Log::info('3. Session Stripe créée:', ['session_id' => $session->id]);
+            return response()->json(['sessionId' => $session->id]);
         } catch (\Exception $e) {
-            Log::error('Erreur lors de la création de la session Stripe', [
+            Log::error('Erreur createSession:', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
-            return response()->json([
-                'error' => $e->getMessage(),
-                'details' => config('app.debug') ? $e->getTraceAsString() : null
-            ], 500)
-                ->header('Content-Type', 'application/json')
-                ->header('X-Content-Type-Options', 'nosniff');
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
     public function success(Request $request)
     {
         try {
-            Log::info('Callback de succès Stripe:', ['session_id' => $request->session_id]);
+            Log::info('Début du traitement success', [
+                'session_id' => $request->session_id,
+                'user_email' => auth()->user()->email
+            ]);
+
+            Log::info('1. État initial de la session:', [
+                'session_data' => session()->all(),
+                'user_id' => auth()->id()
+            ]);
+
+            Log::info('1. Début du traitement success avec session_id:', [
+                'session_id' => $request->session_id
+            ]);
+
+            if (!$request->session_id) {
+                throw new \Exception('Session ID manquant');
+            }
 
             Stripe::setApiKey(config('services.stripe.secret'));
             $session = Session::retrieve($request->session_id);
+            $projectData = session('projectData');
 
-            // Vérifier si le paiement existe
-            $payment = Payment::where('stripe_session_id', $session->id)->first();
+            // Créer la commande d'abord
+            $orderController = new OrderController();
+            $order = $orderController->store($projectData, $request->session_id);
 
-            if (!$payment) {
-                // Si le paiement n'existe pas, on le crée
-                $payment = Payment::create([
+            // Créer le paiement UNE SEULE FOIS avec le bon order_number
+            $payment = Payment::updateOrCreate(
+                ['stripe_session_id' => $request->session_id],
+                [
                     'user_id' => auth()->id(),
-                    'stripe_session_id' => $session->id,
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number, // Utiliser le order_number de l'order
                     'amount' => $session->amount_total / 100,
                     'status' => 'completed',
-                    'order_id' => 'CMD-' . strtoupper(substr(uniqid(), -8)),
-                    'paid_at' => now(),
-                    'project_data' => session('projectData')
-                ]);
-
-                Log::info('Nouveau paiement créé:', ['payment_id' => $payment->id]);
-            } else {
-                // Mettre à jour le paiement existant
-                $payment->update([
-                    'status' => 'completed',
-                    'order_id' => 'CMD-' . strtoupper(substr(uniqid(), -8)),
+                    'project_data' => $projectData,
                     'paid_at' => now()
-                ]);
+                ]
+            );
 
-                Log::info('Paiement existant mis à jour:', ['payment_id' => $payment->id]);
+            Log::info('Tentative d\'envoi de l\'email', [
+                'to' => auth()->user()->email,
+                'order_number' => $order->order_number // Utiliser le order_number de l'order
+            ]);
+
+            try {
+                Mail::to(auth()->user()->email)
+                    ->send(new PaymentSuccess(
+                        auth()->user(),
+                        $order->order_number, // Utiliser le order_number de l'order
+                        $projectData,
+                        $payment->amount
+                    ));
+
+                Log::info('Email envoyé avec succès');
+            } catch (\Exception $e) {
+                Log::error('Erreur lors de l\'envoi de l\'email', [
+                    'error' => $e->getMessage()
+                ]);
             }
 
-            // Envoyer l'email de confirmation
-            Mail::to($request->user()->email)->send(new PaymentSuccess(
-                $request->user(),
-                $payment->order_id,
-                session('projectData')
-            ));
-
-            // Nettoyer les données de session
-            session()->forget(['projectData', 'currentStep']);
-
-            // Rediriger vers la page de succès
-            return Inertia::render('Payment/PaymentSuccess', [
-                'orderId' => $payment->order_id,
-                'amount' => $payment->amount
+            // Nettoyer toutes les données de session
+            session()->forget([
+                'projectData',
+                'formData',
+                'currentStep',
+                'wizardState',
+                'pending_payment_id',
+                'selectedTemplate',
+                'selectedForfait',
+                'selectedOptions'
             ]);
+
+            Log::info('2. État après nettoyage de la session:', [
+                'session_data' => session()->all(),
+                'cleaned_keys' => [
+                    'projectData' => session()->has('projectData'),
+                    'formData' => session()->has('formData'),
+                    'currentStep' => session()->has('currentStep'),
+                    'wizardState' => session()->has('wizardState')
+                ]
+            ]);
+
+            $responseData = [
+                'session_id' => $request->session_id,
+                'amount' => $session->amount_total / 100,
+                'status' => 'success',
+                'customer' => [
+                    'first_name' => $projectData['personal']['firstName'] ?? '',
+                    'last_name' => $projectData['personal']['lastName'] ?? '',
+                    'email' => $projectData['personal']['email'] ?? '',
+                    'phone' => $projectData['personal']['phone'] ?? '',
+                    'company_name' => $projectData['personal']['companyName'] ?? null,
+                    'activity' => $projectData['personal']['activity'] ?? null,
+                    'siren' => $projectData['personal']['siren'] ?? null
+                ],
+                'project' => [
+                    'type' => $projectData['project']['projectType'] ?? '',
+                    'description' => $projectData['project']['description'] ?? '',
+                    'selected_features' => $projectData['project']['selectedFeatures'] ?? [],
+                    'forfait' => $projectData['forfait']['selectedForfait'] ?? '',
+                    'forfait_details' => $projectData['forfait']['forfaitDetails'] ?? [],
+                    'selected_options' => $projectData['forfait']['selectedOptions'] ?? [],
+                    'maintenance' => $projectData['forfait']['maintenancePlan'] ?? '',
+                    'template' => $projectData['template']['selectedTemplates'][0] ?? null
+                ],
+                'order' => [
+                    'number' => $order->order_number, // Utiliser le order_number de l'order
+                    'date' => now()->format('d/m/Y')
+                ],
+                'payment' => $payment,
+                'resetWizard' => true,
+                'resetValidationStates' => true
+            ];
+
+            Log::info('3. Données envoyées au frontend:', [
+                'resetWizard' => true,
+                'resetValidationStates' => true,
+                'user_id' => auth()->id(),
+                'payment_id' => $payment->id ?? null
+            ]);
+
+            return Inertia::render('Payment/PaymentSuccess', $responseData);
         } catch (\Exception $e) {
-            Log::error('Erreur lors du traitement du succès:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+            Log::error('Erreur dans success', [
+                'error' => $e->getMessage()
             ]);
-
-            return redirect()->route('dashboard')->with('error', 'Erreur lors de la validation du paiement.');
+            return redirect()->route('dashboard')
+                ->with('error', 'Une erreur est survenue lors du traitement du paiement.');
         }
     }
 
@@ -155,13 +212,11 @@ class StripeController extends Controller
                     ->update(['status' => 'cancelled']);
             }
 
-            // Générer un ID de référence pour l'annulation
-            $cancelId = 'CANCEL-' . strtoupper(substr(uniqid(), -8));
-
             // Récupérer les données du projet
             $projectData = session('projectData');
 
             // Envoyer l'email d'annulation
+            $cancelId = 'CLC-' . strtoupper(substr(uniqid(), -6));
             Mail::to($request->user()->email)->send(new PaymentCancelled(
                 $request->user(),
                 $cancelId,
@@ -180,51 +235,6 @@ class StripeController extends Controller
             return Inertia::render('Payment/PaymentCancel', [
                 'error' => 'Une erreur est survenue lors de l\'annulation'
             ]);
-        }
-    }
-
-    public function webhook(Request $request)
-    {
-        $endpoint_secret = config('services.stripe.webhook_secret');
-        $payload = @file_get_contents('php://input');
-        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
-
-        try {
-            $event = \Stripe\Webhook::constructEvent(
-                $payload,
-                $sig_header,
-                $endpoint_secret
-            );
-
-            switch ($event->type) {
-                case 'checkout.session.completed':
-                    $session = $event->data->object;
-
-                    $payment = Payment::where('stripe_session_id', $session->id)->first();
-                    if ($payment) {
-                        $payment->markAsCompleted();
-
-                        // Envoyer une notification à l'administrateur
-                        \Notification::route('mail', config('mail.admin_address'))
-                            ->notify(new NewPaymentReceived($payment));
-                    }
-                    break;
-
-                case 'checkout.session.expired':
-                    $session = $event->data->object;
-
-                    $payment = Payment::where('stripe_session_id', $session->id)->first();
-                    if ($payment) {
-                        $payment->markAsCancelled();
-                    }
-                    break;
-            }
-
-            return response()->json(['status' => 'success']);
-        } catch (\UnexpectedValueException $e) {
-            return response()->json(['error' => 'Webhook error'], 400);
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            return response()->json(['error' => 'Invalid signature'], 400);
         }
     }
 }
