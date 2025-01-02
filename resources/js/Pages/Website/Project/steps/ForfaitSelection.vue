@@ -97,25 +97,30 @@
                         </h2>
 
                         <div class="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            <div v-for="option in availableOptions" :key="option.id"
-                                class="relative flex items-center p-4 border rounded-lg transition-all duration-200"
-                                :class="[
-                                    option.included || isSelected(option.id)
-                                        ? 'border-green-500 bg-green-50 dark:bg-green-900/10'
-                                        : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
-                                ]">
+                            <div v-for="option in availableOptions" :key="option.id" :class="[
+                                'relative flex items-center p-4 border rounded-lg transition-all duration-200',
+                                option.included || isSelected(option.id)
+                                    ? 'border-green-500 bg-green-50 dark:bg-green-900/10'
+                                    : 'border-gray-200 dark:border-gray-700 hover:border-green-300',
+                                isOptionDisabled(option.id) ? 'opacity-50' : ''
+                            ]">
                                 <div class="flex-1">
                                     <div class="flex items-center justify-between mb-1">
                                         <h3 class="text-base font-medium text-gray-900 dark:text-white">
                                             {{ option.name }}
                                         </h3>
                                         <div class="flex items-center space-x-2">
+                                            <!-- Badge pour les options indisponibles -->
+                                            <span v-if="isOptionDisabled(option.id)"
+                                                class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full dark:bg-red-900/30 dark:text-red-400">
+                                                Indisponible pour ce forfait
+                                            </span>
                                             <!-- Badge pour les options incluses ou sélectionnées -->
-                                            <span v-if="option.included || isSelected(option.id)"
+                                            <span v-else-if="option.included || isSelected(option.id)"
                                                 class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/30 dark:text-green-400">
                                                 {{ option.included ? 'Inclus' : 'Sélectionné' }}
                                             </span>
-                                            <!-- Prix pour les options non incluses et non sélectionnées -->
+                                            <!-- Prix pour les options disponibles non incluses et non sélectionnées -->
                                             <span v-else class="text-sm font-medium text-gray-900 dark:text-white">
                                                 {{ option.price }}€
                                             </span>
@@ -126,19 +131,16 @@
                                     </p>
                                 </div>
 
-                                <!-- Bouton de sélection uniquement pour les options non incluses -->
-                                <button v-if="!option.included" @click="toggleOption(option)"
-                                    :disabled="option.disabled" class="ml-4 p-2 rounded-lg transition-colors" :class="[
+                                <!-- Bouton de sélection uniquement pour les options non incluses et disponibles -->
+                                <button v-if="!option.included && !isOptionDisabled(option.id)"
+                                    @click="toggleOption(option)" class="ml-4 p-2 rounded-lg transition-colors" :class="[
                                         isSelected(option.id)
                                             ? 'bg-green-100 text-green-600 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400'
-                                            : option.disabled
-                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-600'
-                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'
                                     ]">
                                     <i class='bx text-xl' :class="[
                                         isSelected(option.id) ? 'bx-check' : 'bx-plus'
-                                    ]">
-                                    </i>
+                                    ]"></i>
                                 </button>
                             </div>
                         </div>
@@ -506,13 +508,12 @@ const availableOptions = computed(() => {
 
     return TemplateSelection.map(option => {
         const isIncluded = includedOptionsByForfait[localFormData.value.selectedForfait]?.includes(option.id);
+        const isDisabled = isOptionDisabled(option.id);
+
         return {
             ...option,
             included: isIncluded,
-            disabled: isIncluded || (
-                localFormData.value.selectedForfait === 'starter' &&
-                ['ecommerce', 'Dashboard'].includes(option.id)
-            ),
+            disabled: isDisabled,
             price: isIncluded ? 0 : option.price
         };
     });
@@ -539,6 +540,11 @@ const isOptionIncluded = (optionId) => {
 
 // Modifier la fonction toggleOption
 const toggleOption = (option) => {
+    // Vérifier si l'option est désactivée
+    if (isOptionDisabled(option.id)) {
+        return;
+    }
+
     // Ne pas permettre la modification des options incluses
     if (isOptionIncluded(option.id)) return;
 
@@ -564,10 +570,13 @@ const toggleOption = (option) => {
 };
 
 const isOptionDisabled = (optionId) => {
-    // Pour le forfait Starter, désactiver Dashboard et E-commerce
+    // Liste des options non disponibles pour le forfait starter
+    const restrictedOptionsForStarter = ['Dashboard', 'ecommerce'];
+
     if (localFormData.value.selectedForfait === 'starter') {
-        return ['Dashboard', 'ecommerce'].includes(optionId);
+        return restrictedOptionsForStarter.includes(optionId);
     }
+
     return false;
 };
 
@@ -740,7 +749,7 @@ const handleNext = () => {
 // Ajouter un watcher pour le changement de forfait
 watch(() => localFormData.value.selectedForfait, (newForfait) => {
     if (newForfait === 'starter') {
-        // Retirer Dashboard et E-commerce des options sélectionnées
+        // Retirer les options non autorisées des options sélectionnées
         localFormData.value.selectedOptions = localFormData.value.selectedOptions.filter(
             opt => !['Dashboard', 'ecommerce'].includes(opt.id)
         );

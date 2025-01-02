@@ -342,7 +342,7 @@
                             Changer de compte
                         </button>
 
-                        <button @click="proceedToPayment"
+                        <button @click="startPaymentProcess"
                             class="inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             Procéder au paiement
                             <i class='bx bx-right-arrow-alt ml-2'></i>
@@ -376,14 +376,14 @@ import { Link, usePage, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 
+const emit = defineEmits(['update:formData', 'step-validated', 'reset-wizard']);
+
 const props = defineProps({
     formData: {
         type: Object,
         required: true
     }
 });
-
-const emit = defineEmits(['update:formData', 'stepValidated']);
 
 // Accès sécurisé aux données avec valeurs par défaut
 const informations = computed(() => props.formData?.personal || {});
@@ -798,6 +798,7 @@ const handleLogout = () => {
 
 const handlePayment = async () => {
     try {
+        isPaymentInProgress.value = true;
         console.log('1. Début du processus de paiement');
         console.log('2. Données à envoyer:', {
             amount: calculateTotal.value,
@@ -813,7 +814,6 @@ const handlePayment = async () => {
             }
         });
 
-        // Utiliser la nouvelle route
         const response = await axios.post(route('stripe.create-session'), {
             amount: calculateTotal.value,
             customer: {
@@ -830,9 +830,19 @@ const handlePayment = async () => {
 
         console.log('3. Réponse de create-session:', response.data);
 
-        // ... reste du code existant ...
+        // Ajouter cette partie pour la redirection Stripe
+        const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+        const { error } = await stripe.redirectToCheckout({
+            sessionId: response.data.sessionId
+        });
+
+        if (error) {
+            console.error('Erreur Stripe:', error);
+            throw error;
+        }
 
     } catch (error) {
+        isPaymentInProgress.value = false;
         console.error('Erreur détaillée:', error);
         console.error('Stack trace:', error.stack);
         alert('Une erreur est survenue lors de la préparation du paiement. Veuillez réessayer.');
@@ -844,6 +854,8 @@ const paymentStatus = ref(null);
 // Ajout des logs pour le paiement
 onMounted(async () => {
     try {
+        await checkPaymentCompletion();
+
         const response = await axios.get('/stripe/check-payment-status');
         console.log('État du paiement :', {
             response: response.data,
@@ -860,11 +872,13 @@ onMounted(async () => {
 watch(paymentStatus, (newStatus) => {
     console.log('Changement du statut de paiement:', {
         newStatus,
-        completed: newStatus?.status === 'completed'
+        completed: newStatus?.status === 'completed',
+        isProcessing: isPaymentInProgress.value
     });
 
-    if (newStatus?.status === 'completed') {
-        console.log('Paiement complété, réinitialisation du wizard...');
+    if (newStatus?.status === 'completed' &&
+        (isPaymentInProgress.value || new URLSearchParams(window.location.search).get('payment_success') === 'true')) {
+        console.log('Paiement validé, lancement de la réinitialisation...');
         resetWizardState();
     }
 }, { deep: true });
@@ -897,6 +911,116 @@ const resetWizardState = () => {
         console.error('Erreur lors de la réinitialisation:', error);
     }
 };
+
+// Ajouter cette nouvelle variable
+const isPaymentInProgress = ref(false);
+
+// Ajouter cette fonction sans modifier handlePayment existant
+const startPaymentProcess = () => {
+    isPaymentInProgress.value = true;
+    handlePayment();
+};
+
+// Ajouter cette fonction pour vérifier si le paiement vient d'être complété
+const checkPaymentCompletion = async () => {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentSuccess = urlParams.get('payment_success');
+
+        if (paymentSuccess === 'true') {
+            console.log('Paiement détecté comme réussi, vérification...');
+            isPaymentInProgress.value = true;
+
+            const response = await axios.get('/stripe/check-payment-status');
+            console.log('Vérification finale du paiement:', response.data);
+
+            if (response.data?.paymentInfo?.status === 'completed') {
+                console.log('Paiement confirmé, lancement réinitialisation...');
+                paymentStatus.value = response.data.paymentInfo;
+                resetWizardState();
+            }
+        }
+    } catch (error) {
+        console.error('Erreur vérification finale:', error);
+    }
+};
+
+const completeReset = () => {
+    try {
+        console.log('Début de la réinitialisation complète...');
+
+        // 1. Vider le localStorage
+        localStorage.clear();
+
+        // 2. Réinitialiser toutes les données du formulaire avec clientType vide
+        const emptyFormData = {
+            personal: {
+                clientType: '',
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
+                companyName: '',
+                siren: '',
+                activity: '',
+                isValidated: false
+            },
+            project: {
+                projectType: '',
+                description: '',
+                selectedFeatures: [],
+                isValidated: false
+            },
+            forfait: {
+                selectedForfait: '',
+                forfaitDetails: null,
+                selectedOptions: [],
+                maintenancePlan: null,
+                isValidated: false
+            },
+            template: {
+                selectedTemplates: [],
+                isValidated: false
+            }
+        };
+
+        // 3. Émettre l'événement avec les données réinitialisées
+        emit('update:formData', emptyFormData);
+        emit('reset-wizard');
+
+        console.log('Données du formulaire réinitialisées avec clientType vide');
+
+        paymentStatus.value = null;
+        isPaymentInProgress.value = false;
+
+        router.visit('/demarrer-projet?step=0', {
+            preserveState: false,
+            preserveScroll: false,
+            replace: true,
+            onSuccess: () => {
+                console.log('Redirection réussie vers l\'étape initiale');
+            }
+        });
+
+        console.log('Réinitialisation complète terminée');
+    } catch (error) {
+        console.error('Erreur lors de la réinitialisation complète:', error);
+    }
+};
+
+// Modifier le watcher pour utiliser la nouvelle fonction
+watch(paymentStatus, (newStatus) => {
+    console.log('Changement du statut de paiement:', {
+        newStatus,
+        completed: newStatus?.status === 'completed',
+        isProcessing: isPaymentInProgress.value
+    });
+
+    if (newStatus?.status === 'completed') {
+        console.log('Paiement validé, lancement de la réinitialisation complète...');
+        completeReset();
+    }
+}, { deep: true });
 </script>
 <style scoped>
 .scale-150 {

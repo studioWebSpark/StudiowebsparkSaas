@@ -9,15 +9,41 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    private function calculateTotalAmount($projectData)
+    {
+        // Prix de base du forfait
+        $totalAmount = $projectData['forfait']['forfaitDetails']['price'];
+
+        // Ajouter le prix des options si elles existent
+        if (!empty($projectData['forfait']['selectedOptions'])) {
+            foreach ($projectData['forfait']['selectedOptions'] as $option) {
+                if (isset($option['price'])) {
+                    $totalAmount += $option['price'];
+                }
+            }
+        }
+
+        Log::info('Calcul du montant total:', [
+            'forfaitPrice' => $projectData['forfait']['forfaitDetails']['price'],
+            'options' => $projectData['forfait']['selectedOptions'] ?? [],
+            'totalAmount' => $totalAmount
+        ]);
+
+        return $totalAmount;
+    }
+
     public function store($projectData, $sessionId)
     {
         try {
             Log::info('Création de la commande avec les données:', ['projectData' => $projectData]);
 
+            // Calculer le montant total incluant le forfait et les options
+            $totalAmount = $this->calculateTotalAmount($projectData);
+
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'order_number' => 'CMD-' . strtoupper(Str::random(8)),
-                'total_amount' => $projectData['forfait']['forfaitDetails']['price'],
+                'total_amount' => $totalAmount, // Utiliser le montant total calculé
                 'status' => 'completed',
                 'stripe_session_id' => $sessionId,
                 'paid_at' => now(),
@@ -48,7 +74,12 @@ class OrderController extends Controller
                 'template_details' => $projectData['template']
             ]);
 
-            Log::info('Commande créée avec succès:', ['order_id' => $order->id]);
+            Log::info('Commande créée avec succès:', [
+                'order_id' => $order->id,
+                'total_amount' => $totalAmount,
+                'forfait_price' => $projectData['forfait']['forfaitDetails']['price'],
+                'options' => $projectData['forfait']['selectedOptions'] ?? []
+            ]);
 
             return $order;
         } catch (\Exception $e) {

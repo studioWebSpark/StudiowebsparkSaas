@@ -1,0 +1,186 @@
+<script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
+import { Link } from '@inertiajs/vue3';
+
+const props = defineProps({
+    order: {
+        type: Object,
+        required: true
+    },
+    orderStatus: {
+        type: Object,
+        required: true
+    }
+});
+
+const formatPrice = (price) => {
+    return Number(price).toLocaleString('fr-FR');
+};
+
+const getStatusColor = (status) => {
+    switch (status) {
+        case 'completed':
+            return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+        case 'pending':
+            return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+        case 'cancelled':
+            return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+        default:
+            return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+    }
+};
+
+const includedOptionsByForfait = {
+    premium: ['ecommerce', 'logoPhotos', 'socialMedia', 'Dashboard'],
+    standard: ['logoPhotos', 'socialMedia'],
+    starter: []
+};
+
+const optionNames = {
+    ecommerce: 'E-commerce',
+    logoPhotos: 'Logo et Photos',
+    socialMedia: 'Réseaux Sociaux',
+    Dashboard: 'Dashboard'
+};
+
+const getIncludedOptions = (forfaitType) => {
+    return includedOptionsByForfait[forfaitType.toLowerCase()] || [];
+};
+
+const getAdditionalOptions = (forfaitType, selectedOptions) => {
+    const included = new Set(includedOptionsByForfait[forfaitType.toLowerCase()] || []);
+    return (selectedOptions || []).filter(option => !included.has(option.id));
+};
+
+const getOptionName = (optionId) => {
+    return optionNames[optionId] || optionId;
+};
+</script>
+
+<template>
+    <AppLayout :title="`Commande #${order.order_number}`">
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- En-tête -->
+                <div class="mb-6 flex justify-between items-center">
+                    <Link :href="route('dashboard')"
+                        class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                    <i class='bx bx-arrow-back mr-2'></i>
+                    Retour au tableau de bord
+                    </Link>
+                    <span :class="[
+                        'px-4 py-2 rounded-full text-sm font-semibold',
+                        getStatusColor(order.status)
+                    ]">
+                        {{ orderStatus[order.status] }}
+                    </span>
+                </div>
+
+                <!-- Informations de la commande -->
+                <div class="bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg overflow-hidden">
+                    <!-- En-tête de la commande -->
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">
+                            Commande #{{ order.order_number }}
+                        </h2>
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            Passée le {{ new Date(order.created_at).toLocaleDateString('fr-FR') }}
+                        </p>
+                    </div>
+
+                    <!-- Détails du client -->
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            Informations client
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Nom</p>
+                                <p class="font-medium text-gray-900 dark:text-white">
+                                    {{ order.first_name }} {{ order.last_name }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Email</p>
+                                <p class="font-medium text-gray-900 dark:text-white">{{ order.email }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Téléphone</p>
+                                <p class="font-medium text-gray-900 dark:text-white">{{ order.phone }}</p>
+                            </div>
+                            <div v-if="order.company_name">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Entreprise</p>
+                                <p class="font-medium text-gray-900 dark:text-white">{{ order.company_name }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Détails du projet -->
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            Détails du projet
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Type de projet</p>
+                                <p class="font-medium text-gray-900 dark:text-white">{{ order.project_type }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Description</p>
+                                <p class="font-medium text-gray-900 dark:text-white">{{ order.project_description }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Forfait et options -->
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            Forfait et options
+                        </h3>
+                        <div class="space-y-4">
+                            <!-- Forfait -->
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Forfait sélectionné</p>
+                                <p class="font-medium text-gray-900 dark:text-white">{{ order.selected_forfait }}</p>
+                            </div>
+
+                            <!-- Options incluses dans le forfait -->
+                            <div v-if="getIncludedOptions(order.selected_forfait).length">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Options incluses dans le forfait</p>
+                                <ul class="mt-2 space-y-2">
+                                    <li v-for="option in getIncludedOptions(order.selected_forfait)" :key="option"
+                                        class="flex items-center text-gray-900 dark:text-white">
+                                        <i class='bx bx-check text-green-500 mr-2'></i>
+                                        {{ getOptionName(option) }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Options supplémentaires sélectionnées -->
+                            <div v-if="getAdditionalOptions(order.selected_forfait, order.selected_options).length">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Options supplémentaires</p>
+                                <ul class="mt-2 space-y-2">
+                                    <li v-for="option in getAdditionalOptions(order.selected_forfait, order.selected_options)"
+                                        :key="option.id" class="flex items-center text-gray-900 dark:text-white">
+                                        <i class='bx bx-plus text-blue-500 mr-2'></i>
+                                        {{ option.name }} - {{ formatPrice(option.price) }}€
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Total -->
+                            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
+                                    <span class="text-lg font-bold text-gray-900 dark:text-white">
+                                        {{ formatPrice(order.total_amount) }}€
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AppLayout>
+</template>

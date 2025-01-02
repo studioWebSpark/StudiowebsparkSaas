@@ -39,12 +39,20 @@
               <i v-else class='bx bxs-moon text-3xl'></i>
             </button>
 
-            <!-- Newsletter Subscription Button -->
-            <button @click="openNewsletterModal"
-              class="hidden lg:inline-flex items-center px-6 py-3 text-base font-bold leading-7 text-white transition-all duration-200 bg-green-600 border border-transparent rounded-xl hover:bg-green-700 font-pj focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">
-              <i class='bx bx-envelope mr-2'></i>
-              Newsletter
-            </button>
+            <!-- Auth Links - Desktop Only -->
+            <div class="hidden lg:flex items-center space-x-4">
+              <template v-if="$page.props.auth.user">
+                <nav-link href="/dashboard" title="Dashboard">Dashboard</nav-link>
+              </template>
+              <template v-else>
+                <nav-link href="/login" title="se connecter">Se connecter</nav-link>
+                <a href="/register" title=""
+                  class="inline-flex items-center justify-center px-6 py-3 text-base font-bold leading-7 text-white transition-all duration-200 bg-gray-900 border border-transparent rounded-xl hover:bg-gray-600 font-pj focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+                  role="button">
+                  Créer un compte
+                </a>
+              </template>
+            </div>
           </div>
         </div>
       </div>
@@ -105,47 +113,32 @@
               </nav-link>
             </li>
 
-            <!-- Newsletter Button - Mobile -->
-            <li>
-              <button @click="openNewsletterModal"
-                class="w-full py-3 text-lg font-medium text-center text-white bg-green-600 rounded-xl hover:bg-green-700 transition-all duration-200">
-                <i class='bx bx-envelope mr-2'></i>
-                Newsletter
-              </button>
-            </li>
+            <!-- Auth Links intégrés dans la liste principale -->
+            <template v-if="$page.props.auth.user">
+              <li>
+                <nav-link href="/dashboard" title="Dashboard" class="block py-3 text-lg font-medium border-b"
+                  :class="{ 'text-white border-gray-700': isDarkMode, 'text-gray-900 border-gray-200': !isDarkMode }">
+                  Dashboard
+                </nav-link>
+              </li>
+            </template>
+            <template v-else>
+              <li>
+                <nav-link href="/login" title="se connecter" class="block py-3 text-lg font-medium border-b"
+                  :class="{ 'text-white border-gray-700': isDarkMode, 'text-gray-900 border-gray-200': !isDarkMode }">
+                  Se connecter
+                </nav-link>
+              </li>
+              <li>
+                <a href="/register"
+                  class="block py-3 text-lg font-medium text-center text-white bg-gray-900 rounded-xl hover:bg-gray-600 transition-all duration-200"
+                  role="button">
+                  Créer un compte
+                </a>
+              </li>
+            </template>
           </ul>
         </nav>
-      </div>
-    </transition>
-
-    <!-- Newsletter Modal -->
-    <transition enter-active-class="transition-opacity ease-linear duration-300" enter-from-class="opacity-0"
-      enter-to-class="opacity-100" leave-active-class="transition-opacity ease-linear duration-300"
-      leave-from-class="opacity-100" leave-to-class="opacity-0">
-      <div v-if="showNewsletterModal"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl max-w-md w-full mx-4">
-          <div class="flex justify-between items-center mb-6">
-            <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">Newsletter</h3>
-            <button @click="showNewsletterModal = false" class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <form @submit.prevent="subscribeToNewsletter" class="space-y-4">
-            <div>
-              <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-              <input type="email" id="email" v-model="newsletterEmail" required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-            </div>
-            <button type="submit"
-              class="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-              S'inscrire
-              <i class='bx bx-right-arrow-alt ml-2'></i>
-            </button>
-          </form>
-        </div>
       </div>
     </transition>
   </div>
@@ -162,27 +155,8 @@ defineProps({
 });
 
 const emit = defineEmits(['toggle-dark-mode', 'toggle-menu', 'toggle-categories']);
-const showNewsletterModal = ref(false);
-const newsletterEmail = ref('');
 
 const toggleMenu = () => {
   emit('toggle-menu');
-};
-
-const openNewsletterModal = () => {
-  showNewsletterModal.value = true;
-};
-
-const subscribeToNewsletter = async () => {
-  try {
-    // Ici, ajoutez la logique pour envoyer l'email à votre backend
-    console.log('Email inscrit:', newsletterEmail.value);
-    showNewsletterModal.value = false;
-    newsletterEmail.value = '';
-    // Ajouter une notification de succès
-  } catch (error) {
-    console.error('Erreur lors de l\'inscription:', error);
-    // Ajouter une notification d'erreur
-  }
 };
 </script>
