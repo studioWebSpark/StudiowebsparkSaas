@@ -110,4 +110,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
+
+Route::get('/stripe/check-payment-status', [StripeController::class, 'checkPaymentStatus'])
+    ->name('stripe.check-payment-status')
+    ->middleware(['auth']);
 // Po

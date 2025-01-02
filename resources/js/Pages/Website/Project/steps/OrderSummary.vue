@@ -370,7 +370,7 @@
 
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
 import { Link, usePage, router } from '@inertiajs/vue3';
 import axios from 'axios';
@@ -836,6 +836,65 @@ const handlePayment = async () => {
         console.error('Erreur détaillée:', error);
         console.error('Stack trace:', error.stack);
         alert('Une erreur est survenue lors de la préparation du paiement. Veuillez réessayer.');
+    }
+};
+
+const paymentStatus = ref(null);
+
+// Ajout des logs pour le paiement
+onMounted(async () => {
+    try {
+        const response = await axios.get('/stripe/check-payment-status');
+        console.log('État du paiement :', {
+            response: response.data,
+            paymentInfo: response.data?.paymentInfo,
+            status: response.data?.paymentInfo?.status
+        });
+        paymentStatus.value = response.data.paymentInfo;
+    } catch (error) {
+        console.error('Erreur vérification paiement:', error);
+    }
+});
+
+// Surveiller les changements de statut
+watch(paymentStatus, (newStatus) => {
+    console.log('Changement du statut de paiement:', {
+        newStatus,
+        completed: newStatus?.status === 'completed'
+    });
+
+    if (newStatus?.status === 'completed') {
+        console.log('Paiement complété, réinitialisation du wizard...');
+        resetWizardState();
+    }
+}, { deep: true });
+
+const resetWizardState = () => {
+    try {
+        console.log('Début de la réinitialisation...');
+
+        // Vider tous les éléments du localStorage
+        localStorage.removeItem('projectWizardData');
+        localStorage.removeItem('currentStep');
+        localStorage.removeItem('wizardState');
+        localStorage.removeItem('intendedUrl');
+
+        // Réinitialiser le statut de paiement
+        paymentStatus.value = null;
+
+        // Émettre l'événement pour réinitialiser le wizard parent
+        emit('reset-wizard');
+
+        // Rediriger vers l'étape 0 (informations)
+        router.visit('/demarrer-projet?step=0', {
+            preserveState: false,
+            preserveScroll: false,
+            replace: true
+        });
+
+        console.log('Réinitialisation complète et redirection vers étape 0');
+    } catch (error) {
+        console.error('Erreur lors de la réinitialisation:', error);
     }
 };
 </script>

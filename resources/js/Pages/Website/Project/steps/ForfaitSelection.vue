@@ -142,94 +142,6 @@
                                 </button>
                             </div>
                         </div>
-
-                        <!-- Plans de maintenance -->
-                        <div class="mt-8">
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                                Plans de maintenance annuelle
-                            </h3>
-
-                            <!-- Grille des plans de maintenance -->
-                            <div class="grid grid-cols-2 gap-8">
-                                <div v-for="plan in maintenancePlans" :key="plan.id"
-                                    class="relative rounded-xl border-2 p-6 transition-all duration-200" :class="[
-                                        (localFormData.selectedForfait === 'standard' && plan.id === 'basic') ||
-                                            (localFormData.selectedForfait === 'premium' && plan.id === 'pro')
-                                            ? 'border-green-500 bg-green-50 dark:bg-green-900/50 dark:border-green-400'
-                                            : isMaintenancePlanDisabled(plan.id)
-                                                ? 'border-gray-200 dark:border-gray-700 opacity-50 cursor-not-allowed'
-                                                : localFormData.maintenancePlan === plan.id
-                                                    ? 'border-green-500 bg-green-50 dark:bg-green-900/50 dark:border-green-400 cursor-pointer'
-                                                    : 'border-gray-200 dark:border-gray-700 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/50 cursor-pointer'
-                                    ]">
-                                    <div class="flex flex-col items-center">
-                                        <!-- Icône -->
-                                        <div
-                                            class="h-12 w-12 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center mb-4">
-                                            <i :class="[
-                                                'bx bx-shield-quarter text-2xl',
-                                                (localFormData.selectedForfait === 'standard' && plan.id === 'basic') ||
-                                                    (localFormData.selectedForfait === 'premium' && plan.id === 'pro') ||
-                                                    localFormData.maintenancePlan === plan.id
-                                                    ? 'text-green-600 dark:text-green-400'
-                                                    : plan.disabled
-                                                        ? 'text-gray-400 dark:text-gray-500'
-                                                        : 'text-gray-600 dark:text-gray-300'
-                                            ]"></i>
-                                        </div>
-
-                                        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                                            {{ plan.name }}
-                                        </h4>
-                                        <p class="text-gray-600 dark:text-gray-300 mb-6">{{ plan.description }}</p>
-
-                                        <!-- Badge Inclus ou Prix -->
-                                        <div class="mb-6">
-                                            <span v-if="
-                                                (localFormData.selectedForfait === 'standard' && plan.id === 'basic') ||
-                                                (localFormData.selectedForfait === 'premium' && plan.id === 'pro')"
-                                                class="inline-flex flex-col items-center">
-                                                <span
-                                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-300">
-                                                    <i class='bx bx-check mr-1'></i>
-                                                    Inclus pendant 3 mois
-                                                </span>
-                                                <span class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                                    Puis {{ plan.price }}€/an
-                                                </span>
-                                            </span>
-                                            <span v-else-if="!plan.disabled"
-                                                class="text-3xl font-bold text-green-600 dark:text-green-400">
-                                                {{ plan.price }}€<span
-                                                    class="text-base font-normal text-gray-500 dark:text-gray-400">/an</span>
-                                            </span>
-                                        </div>
-
-                                        <!-- Liste des fonctionnalités -->
-                                        <ul class="space-y-3 mb-6">
-                                            <li v-for="feature in plan.features" :key="feature"
-                                                class="flex items-start gap-x-3">
-                                                <i class='bx bx-check text-green-500 dark:text-green-400 text-xl'></i>
-                                                <span class="text-gray-600 dark:text-gray-300">{{ feature }}</span>
-                                            </li>
-                                        </ul>
-
-                                        <!-- Bouton de sélection -->
-                                        <button v-if="!isMaintenancePlanDisabled(plan.id)"
-                                            @click="selectMaintenancePlan(plan)"
-                                            class="mt-auto w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-200"
-                                            :class="[
-                                                localFormData.maintenancePlan === plan.id
-                                                    ? 'bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600'
-                                                    : 'bg-gray-100 text-gray-700 hover:bg-green-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                                            ]">
-                                            {{ localFormData.maintenancePlan === plan.id ? 'Sélectionné' :
-                                                'Sélectionner' }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </transition>
@@ -429,7 +341,7 @@ const forfaits = [
     {
         id: 'starter',
         name: 'Starter',
-        price: 399,
+        price: 990,
         badge: 'Essentiel',
         description: 'Idéal pour les petites entreprises qui souhaitent établir leur présence en ligne.',
         popular: false,
@@ -445,7 +357,7 @@ const forfaits = [
     {
         id: 'standard',
         name: 'Standard',
-        price: 799,
+        price: 1990,
         badge: 'Populaire',
         description: 'Solution complète pour une présence web professionnelle et impactante.',
         popular: true,
@@ -464,7 +376,7 @@ const forfaits = [
     {
         id: 'premium',
         name: 'Premium',
-        price: 1699,
+        price: 2990,
         badge: 'Sur-mesure',
         description: 'Solution premium tout inclus avec accompagnement personnalisé pour une présence web exceptionnelle et des résultats garantis.',
         popular: false,

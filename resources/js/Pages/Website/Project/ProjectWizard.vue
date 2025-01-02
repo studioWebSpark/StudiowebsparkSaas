@@ -92,7 +92,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, onBeforeUnmount, watch } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, router } from '@inertiajs/vue3';
 import PersonalInfo from './steps/Personalinfo.vue'
 import ProjectDetails from './steps/ProjectDetails.vue'
 import ForfaitSelection from './steps/ForfaitSelection.vue'
@@ -110,7 +110,7 @@ const steps = [
     { title: 'Validation', component: OrderSummary }
 ];
 
-const currentStep = ref(1);
+const currentStep = ref(0);
 const stepsValidation = ref({});
 
 // Ajout de la computed property pour currentComponent
@@ -212,6 +212,18 @@ onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const stepParam = urlParams.get('step');
 
+    // Si pas de données sauvegardées, forcer l'étape 0
+    const savedData = localStorage.getItem('projectWizardData');
+    if (!savedData) {
+        currentStep.value = 0;
+        router.visit('/demarrer-projet?step=0', {
+            replace: true,
+            preserveState: true
+        });
+        return;
+    }
+
+    // Si des données existent, permettre la navigation
     if (stepParam) {
         currentStep.value = parseInt(stepParam);
     }
@@ -751,6 +763,47 @@ const handlePayment = async () => {
         console.error('Erreur lors du paiement:', error);
     }
 };
+
+// Ajouter ces méthodes à la suite de vos méthodes existantes
+const resetWizardState = () => {
+    console.group('Réinitialisation du wizard');
+    console.log('1. État avant réinitialisation:', {
+        localStorage: localStorage.getItem('projectWizardData'),
+        currentStep: currentStep.value,
+        formData: formData.value
+    });
+
+    // Vider le localStorage
+    localStorage.removeItem('projectWizardData');
+    localStorage.removeItem('currentStep');
+    localStorage.removeItem('wizardState');
+
+    // Réinitialiser les états de validation
+    formData.value = {
+        personal: { isValidated: false },
+        project: { isValidated: false },
+        forfait: { isValidated: false },
+        template: { isValidated: false }
+    };
+
+    // Remettre à l'étape 1
+    currentStep.value = 1;
+
+    console.log('2. État après réinitialisation:', {
+        localStorage: localStorage.getItem('projectWizardData'),
+        currentStep: currentStep.value,
+        formData: formData.value
+    });
+    console.groupEnd();
+};
+
+// Ajouter ce watcher avec vos autres watchers existants
+watch(() => page.props.shouldReset, (shouldReset) => {
+    if (shouldReset) {
+        console.log('Déclenchement de la réinitialisation');
+        resetWizardState();
+    }
+});
 
 </script>
 <style scoped>

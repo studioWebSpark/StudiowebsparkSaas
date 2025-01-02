@@ -98,7 +98,7 @@ class StripeController extends Controller
                 [
                     'user_id' => auth()->id(),
                     'order_id' => $order->id,
-                    'order_number' => $order->order_number, // Utiliser le order_number de l'order
+                    'order_number' => $order->order_number,
                     'amount' => $session->amount_total / 100,
                     'status' => 'completed',
                     'project_data' => $projectData,
@@ -106,16 +106,24 @@ class StripeController extends Controller
                 ]
             );
 
+            // Stocker le paiement dans la session pour le récupérer dans le wizard
+            session(['payment_info' => [
+                'id' => $payment->id,
+                'status' => 'completed',
+                'amount' => $payment->amount,
+                'order_number' => $payment->order_number
+            ]]);
+
             Log::info('Tentative d\'envoi de l\'email', [
                 'to' => auth()->user()->email,
-                'order_number' => $order->order_number // Utiliser le order_number de l'order
+                'order_number' => $order->order_number
             ]);
 
             try {
                 Mail::to(auth()->user()->email)
                     ->send(new PaymentSuccess(
                         auth()->user(),
-                        $order->order_number, // Utiliser le order_number de l'order
+                        $order->order_number,
                         $projectData,
                         $payment->amount
                     ));
@@ -169,11 +177,10 @@ class StripeController extends Controller
                     'forfait' => $projectData['forfait']['selectedForfait'] ?? '',
                     'forfait_details' => $projectData['forfait']['forfaitDetails'] ?? [],
                     'selected_options' => $projectData['forfait']['selectedOptions'] ?? [],
-                    'maintenance' => $projectData['forfait']['maintenancePlan'] ?? '',
                     'template' => $projectData['template']['selectedTemplates'][0] ?? null
                 ],
                 'order' => [
-                    'number' => $order->order_number, // Utiliser le order_number de l'order
+                    'number' => $order->order_number,
                     'date' => now()->format('d/m/Y')
                 ],
                 'payment' => $payment,
@@ -235,6 +242,41 @@ class StripeController extends Controller
             return Inertia::render('Payment/PaymentCancel', [
                 'error' => 'Une erreur est survenue lors de l\'annulation'
             ]);
+        }
+    }
+
+    public function checkPaymentStatus()
+    {
+        try {
+            $payment = Payment::where('user_id', auth()->id())
+                ->where('status', 'completed')
+                ->latest()
+                ->first();
+
+            Log::info('Vérification du statut de paiement', [
+                'user_id' => auth()->id(),
+                'payment_found' => $payment ? true : false,
+                'payment_details' => $payment
+            ]);
+
+            return response()->json([
+                'hasCompletedPayment' => $payment !== null,
+                'paymentInfo' => $payment ? [
+                    'id' => $payment->id,
+                    'status' => 'completed',
+                    'amount' => $payment->amount,
+                    'order_number' => $payment->order_number,
+                    'created_at' => $payment->created_at
+                ] : null
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la vérification du statut de paiement', [
+                'error' => $e->getMessage()
+            ]);
+            return response()->json([
+                'hasCompletedPayment' => false,
+                'error' => 'Erreur lors de la vérification du paiement'
+            ], 500);
         }
     }
 }
