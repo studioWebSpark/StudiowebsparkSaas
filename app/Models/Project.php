@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Notifications\ProjectStatusUpdated;
 
 class Project extends Model
 {
@@ -44,11 +45,40 @@ class Project extends Model
         'completed_at' => 'datetime'
     ];
 
-    /**
-     * Get the order for the project.
-     */
-    public function order(): HasOne
+    public function order(): BelongsTo
     {
-        return $this->hasOne(Order::class);
+        return $this->belongsTo(Order::class);
+    }
+
+    public function updateStatus($newStatus)
+    {
+        $progressMap = [
+            'pending' => 0,
+            'development' => 25,
+            'finalizing' => 50,
+            'production' => 75,
+            'completed' => 100
+        ];
+
+        $this->update([
+            'status' => $newStatus,
+            'progress' => $progressMap[$newStatus],
+            'started_at' => $newStatus === 'development' ? now() : $this->started_at,
+            'completed_at' => $newStatus === 'completed' ? now() : $this->completed_at,
+            'current_step_description' => $this->getStepDescription($newStatus)
+        ]);
+
+        $this->order->notify(new ProjectStatusUpdated($this, $newStatus));
+    }
+
+    private function getStepDescription($status)
+    {
+        return match ($status) {
+            'pending' => 'Projet en attente de démarrage',
+            'development' => 'Développement en cours',
+            'production' => 'Mise en production',
+            'completed' => 'Projet terminé',
+            default => 'État inconnu'
+        };
     }
 }

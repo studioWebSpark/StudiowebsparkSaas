@@ -12,6 +12,7 @@ use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Admin\ProjectStatusController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -140,3 +141,18 @@ Route::get('/orders', [OrderController::class, 'index'])
 
 Route::get('/clients', [ClientController::class, 'index'])
     ->name('clients.index');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/projects', [ProjectStatusController::class, 'index'])->name('admin.projects.index');
+    Route::get('/projects/{order}', [ProjectStatusController::class, 'show'])->name('admin.projects.show');
+    Route::patch('/projects/{order}/status', [ProjectStatusController::class, 'update'])
+        ->name('admin.projects.update-status')
+        ->where('order', '[0-9]+');
+    Route::patch('/projects/{order}/progress', [ProjectStatusController::class, 'updateProgress'])
+        ->name('admin.projects.update-progress');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::patch('/projects/{order:order_number}/status', [ProjectStatusController::class, 'update'])
+        ->name('projects.update-status');
+});

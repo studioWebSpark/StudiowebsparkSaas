@@ -262,7 +262,8 @@ class OrderController extends Controller
                         'client_name' => $order->first_name . ' ' . $order->last_name
                     ];
                 }),
-                'stats' => $stats
+                'stats' => $stats,
+                'currentRoute' => 'orders.index'  // Ajout pour le suivi de la route active
             ]);
         } catch (\Exception $e) {
             Log::error('Erreur lors de la récupération des commandes:', [
@@ -271,6 +272,25 @@ class OrderController extends Controller
             ]);
 
             return redirect()->back()->with('error', 'Une erreur est survenue lors de la récupération des commandes.');
+        }
+    }
+
+    public function checkExistingOrder(Request $request)
+    {
+        try {
+            // Vérifier s'il y a une commande en cours pour l'utilisateur
+            $hasActiveOrder = Order::where('user_id', auth()->id())
+                ->whereIn('status', ['pending', 'processing'])
+                ->exists();
+
+            return response()->json([
+                'hasActiveOrder' => $hasActiveOrder
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'hasActiveOrder' => false,
+                'error' => 'Erreur lors de la vérification'
+            ]);
         }
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\SirenController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\InseeTokenController;
+use App\Models\ProjectStatus;
 
 
 Route::post('/projects', [ProjectController::class, 'store']);
@@ -13,4 +14,8 @@ Route::get('/projects/confirmed', [ProjectController::class, 'getConfirmedProjec
 
 Route::middleware('api')->group(function () {
     Route::post('/verify-siren', [SirenController::class, 'verify'])->name('api.verify-siren');
+});
+
+Route::get('/project-statuses', function () {
+    return ProjectStatus::select('order_number', 'status', 'progress')->get();
 });

@@ -3,23 +3,30 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 import { Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
+import axios from 'axios';
 
 const props = defineProps({
     projects: {
         type: Array,
         required: true
     },
-    successfulPayments: {
-        type: Number,
+    errors: {
+        type: Object,
+        default: () => ({})
+    },
+    jetstream: {
+        type: Object,
         required: true
     },
-    totalAmount: {
-        type: Number,
+    auth: {
+        type: Object,
         required: true
     }
 });
+
+const projects = ref(props.projects);
 
 const isSidebarOpen = ref(true);
 
@@ -27,19 +34,134 @@ const toggleSidebar = () => {
     isSidebarOpen.value = !isSidebarOpen.value;
 };
 
-const updateProjectStatus = (projectId, newStatus) => {
-    router.put(route('projects.update-status', projectId), {
-        status: newStatus
-    });
+// Définir les statuts avec leurs détails
+const PROJECT_STATUSES = {
+    pending: {
+        label: 'En attente',
+        class: 'bg-gray-50 text-gray-800 border-gray-300 hover:bg-gray-100',
+        gradientClass: 'from-gray-300 to-gray-400'
+    },
+    development: {
+        label: 'En développement',
+        class: 'bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100',
+        gradientClass: 'from-blue-400 to-blue-500'
+    },
+    production: {
+        label: 'En production',
+        class: 'bg-purple-50 text-purple-800 border-purple-300 hover:bg-purple-100',
+        gradientClass: 'from-purple-400 to-purple-500'
+    },
+    completed: {
+        label: 'Terminé',
+        class: 'bg-green-50 text-green-800 border-green-300 hover:bg-green-100',
+        gradientClass: 'from-green-400 to-green-500'
+    }
 };
+
+// Stocker les statuts localement
+const storedStatuses = ref({});
+
+// Fonction pour récupérer le statut stocké
+const getStoredStatus = (orderNumber) => {
+    return storedStatuses.value[orderNumber] || 'pending';
+};
+
+// Fonction pour récupérer la progression stockée
+const getStoredProgress = (orderNumber) => {
+    return PROJECT_STATUSES[getStoredStatus(orderNumber)]?.progress || 0;
+};
+
+const updateProjectStatus = async (project, newStatus) => {
+    try {
+        const orderNumber = project.order.order_number;
+
+        const response = await axios.patch(`/projects/${orderNumber}/status`, {
+            status: newStatus,
+            description: `Statut mis à jour vers : ${PROJECT_STATUSES[newStatus].label}`
+        });
+
+        if (response.data.success && response.data.project_status) {
+            // Stocker le nouveau statut
+            storedStatuses.value[orderNumber] = response.data.project_status.status;
+
+            // Mettre à jour l'état du projet
+            project.project_status = response.data.project_status;
+        }
+    } catch (error) {
+        console.error('Erreur détaillée:', error.response?.data);
+        console.error('Status:', error.response?.status);
+        alert('Une erreur est survenue lors de la mise à jour du statut');
+    }
+};
+
+// Au chargement, initialiser les statuts stockés
+onMounted(async () => {
+    try {
+        const response = await axios.get('/api/project-statuses');
+        storedStatuses.value = response.data.reduce((acc, status) => {
+            acc[status.order_number] = status.status;
+            return acc;
+        }, {});
+    } catch (error) {
+        console.error('Erreur lors du chargement des statuts:', error);
+    }
+});
 
 const getStatusColor = (status) => {
     const colors = {
         'pending': 'bg-yellow-100 text-yellow-800',
-        'in_progress': 'bg-blue-100 text-blue-800',
+        'development': 'bg-blue-100 text-blue-800',
+        'production': 'bg-orange-100 text-orange-800',
         'completed': 'bg-green-100 text-green-800'
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
+};
+
+const getStatusLabel = (status) => {
+    const labels = {
+        'pending': 'En attente',
+        'development': 'En cours de développement',
+
+        'production': 'En production',
+        'completed': 'Terminé'
+    };
+    return labels[status] || status;
+};
+
+const updateProgress = async (project, progress) => {
+    try {
+        await axios.patch(route('admin.projects.update-progress', project.order.id), {
+            progress: Math.min(100, Math.max(0, parseInt(progress)))
+        });
+
+        window.location.reload();
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour de la progression:', error);
+        alert('Une erreur est survenue lors de la mise à jour de la progression');
+    }
+};
+
+// Fonction utilitaire pour formater les montants
+const formatAmount = (amount) => {
+    if (!amount) return '0,00';
+
+    // Convertir en nombre si c'est une chaîne
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+    // Formater avec le séparateur de milliers et 2 décimales
+    return new Intl.NumberFormat('fr-FR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(numAmount);
+};
+
+// Fonction pour parser les montants avant envoi à l'API
+const parseAmount = (amount) => {
+    if (typeof amount === 'string') {
+        // Enlever les espaces et remplacer la virgule par un point
+        return parseFloat(amount.replace(/\s/g, '').replace(',', '.'));
+    }
+    return amount;
 };
 </script>
 
@@ -78,7 +200,7 @@ const getStatusColor = (status) => {
 
                     <Link :href="route('projects.index')"
                         class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
-                    <i class='bx bx-briefcase-alt text-2xl'></i>
+                    <i class='bx bx-briefcase text-2xl'></i>
                     <span :class="{ 'hidden': !isSidebarOpen }">Projets</span>
                     </Link>
 
@@ -132,6 +254,10 @@ const getStatusColor = (status) => {
                                                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                                                 Date de paiement
                                                             </th>
+                                                            <th scope="col"
+                                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                                État
+                                                            </th>
                                                             <th scope="col" class="relative px-6 py-3">
                                                                 <span class="sr-only">Actions</span>
                                                             </th>
@@ -168,39 +294,54 @@ const getStatusColor = (status) => {
                                                                 {{ project.order?.selected_forfait }}
                                                             </td>
                                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                                {{ project.order?.total_amount?.toLocaleString() }} €
+                                                                {{
+                                                                    formatAmount(parseAmount(project.order?.total_amount))
+                                                                }} €
                                                             </td>
                                                             <td class="px-6 py-4 whitespace-nowrap">
                                                                 {{ project.order?.paid_at }}
                                                             </td>
-                                                            <td
-                                                                class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                                <div class="flex items-center justify-end space-x-3">
-                                                                    <select :value="project.status"
-                                                                        @change="updateProjectStatus(project.id, $event.target.value)"
-                                                                        class="rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 text-sm">
-                                                                        <option value="pending">En attente</option>
-                                                                        <option value="in_progress">Début du projet
-                                                                        </option>
-                                                                        <option value="completed">Finalisation du projet
-                                                                        </option>
-                                                                    </select>
+                                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                                <div class="flex flex-col space-y-3">
+                                                                    <!-- Status Selector avec Progress -->
+                                                                    <div class="relative group">
+                                                                        <select
+                                                                            :value="project.project_status?.status || getStoredStatus(project.order.order_number)"
+                                                                            @change="updateProjectStatus(project, $event.target.value)"
+                                                                            :class="[
+                                                                                'rounded-md border-gray-300 text-sm',
+                                                                                PROJECT_STATUSES[project.project_status?.status || getStoredStatus(project.order.order_number)].class
+                                                                            ]">
+                                                                            <option
+                                                                                v-for="(details, status) in PROJECT_STATUSES"
+                                                                                :key="status" :value="status">
+                                                                                {{ details.label }}
+                                                                            </option>
+                                                                        </select>
 
-                                                                    <span
-                                                                        :class="['px-2 py-1 rounded-full text-xs', getStatusColor(project.status)]">
-                                                                        {{ project.status === 'pending' ? 'En attente' :
-                                                                            project.status === 'in_progress' ? 'En cours' :
-                                                                                project.status === 'completed' ? 'Terminé' :
-                                                                        project.status }}
-                                                                    </span>
+                                                                        <!-- Barre de progression -->
+                                                                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700"
+                                                                            :data-project-id="project.id">
+                                                                            <div class="progress-bar h-2.5 rounded-full transition-all duration-300"
+                                                                                :style="{ width: `${project.project_status?.progress || getStoredProgress(project.order.order_number)}%` }"
+                                                                                :class="{
+                                                                                    'bg-gray-600': project.project_status?.status === 'pending',
+                                                                                    'bg-blue-600': project.project_status?.status === 'development',
+                                                                                    'bg-purple-600': project.project_status?.status === 'production',
+                                                                                    'bg-green-600': project.project_status?.status === 'completed'
+                                                                                }"></div>
+                                                                        </div>
 
-                                                                    <Link v-if="project.id"
-                                                                        :href="route('projects.show', project.id)"
-                                                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400">
-                                                                    Détails
-                                                                    </Link>
+                                                                        <!-- Pourcentage -->
+                                                                        <span class="text-sm text-gray-600">
+                                                                            {{ project.project_status?.progress ||
+                                                                            getStoredProgress(project.order.order_number)
+                                                                            }}%
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </td>
+
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -216,3 +357,28 @@ const getStatusColor = (status) => {
         </div>
     </AppLayout>
 </template>
+<style scoped>
+/* Styles pour le select */
+select {
+    background-image: none;
+    /* Supprime l'icône par défaut */
+}
+
+
+
+/* Animation de la barre de progression */
+.progress-transition {
+    transition: width 0.5s ease-out;
+}
+
+/* Style pour l'input number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+</style>

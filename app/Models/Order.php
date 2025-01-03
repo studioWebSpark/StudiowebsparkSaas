@@ -40,7 +40,8 @@ class Order extends Model
         'selected_features' => 'array',
         'selected_options' => 'array',
         'template_details' => 'array',
-        'paid_at' => 'datetime'
+        'paid_at' => 'datetime',
+        'total_amount' => 'float'
     ];
 
     public function user()
@@ -54,5 +55,10 @@ class Order extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function projectStatus()
+    {
+        return $this->hasOne(ProjectStatus::class);
     }
 }

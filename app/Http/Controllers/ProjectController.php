@@ -14,6 +14,8 @@ use App\Mail\PaymentFailed;
 use App\Models\Payment;
 use App\Models\Order;
 use App\Models\Project;
+use App\Models\ProjectStatus;
+use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
 {
@@ -42,13 +44,7 @@ class ProjectController extends Controller
                 'last_completed_step' => $validatedData['step']
             ]);
 
-            // Envoyer l'email de projet en attente à la dernière étape
-            if ($validatedData['step'] == 4) {
-                Mail::to($project->email)->send(new ProjectPending(
-                    $project,
-                    auth()->user()
-                ));
-            }
+
 
             return response()->json([
                 'status' => 'success',
@@ -268,10 +264,25 @@ class ProjectController extends Controller
         $totalAmount = Order::where('status', 'completed')
             ->sum('total_amount');
 
+        // Ajout des étapes du projet
+        $projectSteps = [
+            'pending' => 'En attente',
+            'development' => 'En cours de développement',
+            'finalizing' => 'Finalisation du développement',
+            'production' => 'En production',
+            'completed' => 'Terminé'
+        ];
+
+        // Ajoutez ceci temporairement pour déboguer
+        \Log::info('Structure des projets:', [
+            'projects' => $completedOrders->toArray()
+        ]);
+
         return Inertia::render('Projects/Index', [
             'projects' => $completedOrders,
             'successfulPayments' => $successfulPayments,
-            'totalAmount' => $totalAmount
+            'totalAmount' => $totalAmount,
+            'projectSteps' => $projectSteps // Ajout des étapes
         ]);
     }
 
@@ -323,5 +334,21 @@ class ProjectController extends Controller
     private function sendProgressUpdateEmail(Project $project)
     {
         // Logique d'envoi d'email pour la mise à jour du projet
+    }
+
+    public function updateProjectStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'status' => ['required', 'string', Rule::in(array_keys(ProjectStatus::STATUS_DETAILS))],
+            'description' => 'nullable|string'
+        ]);
+
+        $projectStatus = $order->projectStatus;
+        $projectStatus->updateStatus($request->status, $request->description);
+
+        return response()->json([
+            'message' => 'Statut du projet mis à jour avec succès',
+            'project_status' => $projectStatus->fresh()
+        ]);
     }
 }

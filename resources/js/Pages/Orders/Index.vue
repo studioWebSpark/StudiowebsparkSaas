@@ -85,7 +85,7 @@ const getStatusText = (status) => {
                     </Link>
                     <Link :href="route('projects.index')"
                         class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
-                    <i class='bx bx-briefcase-alt text-2xl'></i>
+                    <i class='bx bx-briefcase text-2xl'></i>
                     <span :class="{ 'hidden': !isSidebarOpen }">Projets</span>
                     </Link>
 
