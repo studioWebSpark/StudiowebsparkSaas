@@ -10,6 +10,8 @@ use App\Http\Controllers\StripeController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ClientController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -21,7 +23,7 @@ Route::get('/about', function () {
 
 // Page de gestion des forfaits
 Route::get('/services', function () {
-    return Inertia::render('Website/Ser');
+    return Inertia::render('Website/Services');
 });
 
 // Page de support
@@ -46,9 +48,24 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // Dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    // Nouvelles routes pour le suivi de projet
+    Route::prefix('projects')->group(function () {
+        Route::get('/', [ProjectController::class, 'index'])->name('projects.index');
+        Route::get('/pending', [ProjectController::class, 'pending'])->name('projects.pending');
+        Route::get('/in-progress', [ProjectController::class, 'inProgress'])->name('projects.in-progress');
+        Route::get('/completed', [ProjectController::class, 'completed'])->name('projects.completed');
+        Route::get('/{project}', [ProjectController::class, 'show'])->name('projects.show');
+        Route::put('/{project}/progress', [ProjectController::class, 'updateProgress'])->name('projects.update.progress');
+    });
+
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 });
 
 // Routes pour les services
@@ -95,9 +112,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 Route::get('/project/summary', [ProjectController::class, 'summary'])
     ->name('project.summary');
 
-Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
-    ->middleware(['auth', 'signed'])
-    ->name('verification.verify');
+
 
 Route::post('/stripe/webhook', [StripeController::class, 'webhook'])->name('stripe.webhook');
 
@@ -114,4 +129,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 Route::get('/stripe/check-payment-status', [StripeController::class, 'checkPaymentStatus'])
     ->name('stripe.check-payment-status')
     ->middleware(['auth']);
-// Po
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware(['auth:sanctum', 'verified']);
+
+Route::get('/orders', [OrderController::class, 'index'])
+    ->name('orders.index')
+    ->middleware(['auth:sanctum', 'verified']);
+
+Route::get('/clients', [ClientController::class, 'index'])
+    ->name('clients.index');

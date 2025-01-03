@@ -6,6 +6,7 @@ use App\Models\Order;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -88,6 +89,188 @@ class OrderController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
             throw $e;
+        }
+    }
+
+    public function show(Order $order)
+    {
+        try {
+            // Vérifier si l'utilisateur est autorisé à voir cette commande
+            if (!auth()->user()->is_admin && $order->user_id !== auth()->id()) {
+                abort(403, 'Non autorisé');
+            }
+
+            // Calculer le total des options
+            $optionsTotal = collect($order->selected_options)->sum('price');
+
+            Log::info('Détails des prix de la commande:', [
+                'order_id' => $order->id,
+                'forfait_price' => $order->forfait_price,
+                'options_total' => $optionsTotal,
+                'total_price' => $order->total_amount
+            ]);
+
+            // Utiliser la structure existante de $orderData
+            $orderData = [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'total_amount' => $order->total_amount,
+                'status' => $order->status,
+                'created_at' => $order->created_at->format('d/m/Y'),
+
+                // Informations client
+                'client_type' => $order->client_type,
+                'first_name' => $order->first_name,
+                'last_name' => $order->last_name,
+                'email' => $order->email,
+                'phone' => $order->phone,
+                'company_name' => $order->company_name,
+                'siren' => $order->siren,
+                'activity' => $order->activity,
+
+                // Informations projet
+                'project_type' => $order->project_type,
+                'project_description' => $order->project_description,
+                'selected_features' => $order->selected_features,
+
+                // Forfait et options
+                'selected_forfait' => $order->selected_forfait,
+                'forfait_price' => $order->forfait_price,
+                'selected_options' => $order->selected_options,
+                'maintenance_plan' => $order->maintenance_plan,
+
+                // Template
+                'template_name' => $order->template_name,
+                'template_details' => $order->template_details
+            ];
+
+            return Inertia::render('Orders/Show', [
+                'order' => $orderData,
+                'orderStatus' => [
+                    'pending' => 'En attente',
+                    'completed' => 'Payée',
+                    'cancelled' => 'Annulée'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de l\'affichage de la commande:', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'affichage de la commande.');
+        }
+    }
+
+    public function success(Request $request)
+    {
+        try {
+            $session = $request->session()->get('stripe_session');
+            $order = Order::where('stripe_session_id', $session)->first();
+
+            if (!$order) {
+                abort(404, 'Commande non trouvée');
+            }
+
+            // Calculer le total des options
+            $optionsTotal = collect($order->selected_options)->sum('price');
+
+            Log::info('Détails de la commande après paiement:', [
+                'order_id' => $order->id,
+                'forfait_price' => $order->forfait_price,
+                'options_total' => $optionsTotal,
+                'total_price' => $order->total_amount
+            ]);
+
+            // Utiliser le même format de données que la méthode show
+            $orderData = [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'total_amount' => $order->total_amount,
+                'status' => $order->status,
+                'created_at' => $order->created_at->format('d/m/Y'),
+
+                // Informations client
+                'client_type' => $order->client_type,
+                'first_name' => $order->first_name,
+                'last_name' => $order->last_name,
+                'email' => $order->email,
+                'phone' => $order->phone,
+                'company_name' => $order->company_name,
+                'siren' => $order->siren,
+                'activity' => $order->activity,
+
+                // Informations projet
+                'project_type' => $order->project_type,
+                'project_description' => $order->project_description,
+                'selected_features' => $order->selected_features,
+
+                // Forfait et options
+                'selected_forfait' => $order->selected_forfait,
+                'forfait_price' => $order->forfait_price,
+                'selected_options' => $order->selected_options,
+                'maintenance_plan' => $order->maintenance_plan,
+
+                // Template
+                'template_name' => $order->template_name,
+                'template_details' => $order->template_details
+            ];
+
+            return Inertia::render('Orders/Success', [
+                'order' => $orderData,
+                'orderStatus' => [
+                    'pending' => 'En attente',
+                    'completed' => 'Payée',
+                    'cancelled' => 'Annulée'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de l\'affichage de la confirmation de commande:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->route('dashboard')->with('error', 'Une erreur est survenue lors de l\'affichage de la confirmation de commande.');
+        }
+    }
+
+    public function index()
+    {
+        try {
+            $orders = Order::query()
+                ->when(!auth()->user()->is_admin, function ($query) {
+                    return $query->where('user_id', auth()->id());
+                })
+                ->latest()
+                ->get();
+
+            $stats = [
+                'total_orders' => $orders->count(),
+                'total_amount' => $orders->sum('total_amount'),
+                'pending_orders' => $orders->where('status', 'pending')->count()
+            ];
+
+            return Inertia::render('Orders/Index', [
+                'orders' => $orders->map(function ($order) {
+                    return [
+                        'id' => $order->id,
+                        'order_number' => $order->order_number,
+                        'created_at' => $order->created_at->format('d/m/Y'),
+                        'status' => $order->status,
+                        'total_amount' => $order->total_amount,
+                        'client_name' => $order->first_name . ' ' . $order->last_name
+                    ];
+                }),
+                'stats' => $stats
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la récupération des commandes:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de la récupération des commandes.');
         }
     }
 }

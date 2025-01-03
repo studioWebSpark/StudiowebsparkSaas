@@ -12,6 +12,8 @@ use Inertia\Inertia;
 use App\Mail\PaymentSuccess;
 use App\Mail\PaymentFailed;
 use App\Models\Payment;
+use App\Models\Order;
+use App\Models\Project;
 
 class ProjectController extends Controller
 {
@@ -227,5 +229,99 @@ class ProjectController extends Controller
                 'message' => 'Erreur lors de la sauvegarde des données'
             ], 500);
         }
+    }
+
+    public function index()
+    {
+        $completedOrders = Order::where('status', 'completed')
+            ->with('project')
+            ->latest()
+            ->get()
+            ->map(function ($order) {
+                return [
+                    'id' => $order->project?->id,
+                    'client_name' => $order->first_name . ' ' . $order->last_name,
+                    'status' => $order->project?->status,
+                    'progress' => $order->project?->progress,
+                    'current_step' => $order->project?->current_step_description,
+                    'started_at' => $order->project?->started_at?->format('d/m/Y'),
+                    'order' => [
+                        'order_number' => $order->order_number,
+                        'total_amount' => $order->total_amount,
+                        'project_type' => $order->project_type,
+                        'project_description' => $order->project_description,
+                        'selected_forfait' => $order->selected_forfait,
+                        'selected_features' => $order->selected_features,
+                        'maintenance_plan' => $order->maintenance_plan,
+                        'template_name' => $order->template_name,
+                        'company_name' => $order->company_name,
+                        'email' => $order->email,
+                        'phone' => $order->phone,
+                        'paid_at' => $order->paid_at?->format('d/m/Y'),
+                    ]
+                ];
+            });
+
+        $successfulPayments = Order::where('status', 'completed')
+            ->count();
+
+        $totalAmount = Order::where('status', 'completed')
+            ->sum('total_amount');
+
+        return Inertia::render('Projects/Index', [
+            'projects' => $completedOrders,
+            'successfulPayments' => $successfulPayments,
+            'totalAmount' => $totalAmount
+        ]);
+    }
+
+    public function create(Order $order)
+    {
+        // Créer un nouveau projet quand la commande est payée
+        $project = Project::create([
+            'order_id' => $order->id,
+            'status' => 'pending',
+            'progress' => 0,
+            'milestones' => [
+                'conception' => false,
+                'development' => false,
+                'testing' => false,
+                'deployment' => false
+            ],
+            'started_at' => now(),
+        ]);
+
+        // Envoyer un email au client
+        $this->sendProjectStartedEmail($order);
+
+        return redirect()->route('projects.show', $project);
+    }
+
+    public function updateProgress(Project $project, Request $request)
+    {
+        $request->validate([
+            'progress' => 'required|integer|min:0|max:100',
+            'current_step_description' => 'required|string'
+        ]);
+
+        $project->update([
+            'progress' => $request->progress,
+            'current_step_description' => $request->current_step_description
+        ]);
+
+        // Envoyer un email de mise à jour au client
+        $this->sendProgressUpdateEmail($project);
+
+        return back();
+    }
+
+    private function sendProjectStartedEmail(Order $order)
+    {
+        // Logique d'envoi d'email pour le début du projet
+    }
+
+    private function sendProgressUpdateEmail(Project $project)
+    {
+        // Logique d'envoi d'email pour la mise à jour du projet
     }
 }
