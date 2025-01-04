@@ -11,41 +11,67 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Récupérer TOUTES les commandes (en attente et complétées)
-        $recentOrders = Order::where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($order) {
-                return [
-                    'id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'total_amount' => $order->total_amount,
-                    'status' => $order->status, // 'pending' ou 'completed'
-                    'created_at' => $order->created_at,
-                    'project_type' => $order->project_type, // Ajout du type de projet
-                    'selected_forfait' => $order->selected_forfait // Ajout du forfait
-                ];
-            });
+        $user = auth()->user();
 
-        // Calculer les statistiques
-        $stats = [
-            'total_orders' => Order::where('user_id', auth()->id())->count(),
-            'total_amount' => Order::where('user_id', auth()->id())
-                ->where('status', 'completed')
-                ->sum('total_amount'),
-            'pending_orders' => Order::where('user_id', auth()->id())
-                ->where('status', 'pending')
-                ->count()
-        ];
+        if ($user->is_admin) {
+            return redirect()->route('admin.dashboard');
+        } else {
+            return redirect()->route('client.dashboard');
+        }
+    }
 
-        return Inertia::render('Dashboard', [
-            'recentOrders' => $recentOrders,
-            'stats' => $stats,
+    public function adminDashboard()
+    {
+        if (!auth()->user()->is_admin) {
+            return redirect()->route('client.dashboard');
+        }
+
+        return Inertia::render('DashboardAdmin', [
+            'recentOrders' => [],
+            'stats' => [
+                'total_orders' => 0,
+                'total_amount' => 0,
+                'pending_orders' => 0
+            ],
             'orderStatuses' => [
                 'pending' => 'En attente',
                 'completed' => 'Payée'
+            ],
+            'isAdmin' => true,
+            'jetstream' => [
+                'hasTeamFeatures' => false
+            ],
+            'auth' => [
+                'user' => auth()->user()
             ]
+        ]);
+    }
+
+    public function clientDashboard()
+    {
+        $user = auth()->user();
+
+        $stats = [
+            'total_orders' => Order::where('user_id', $user->id)->count(),
+            'active_projects' => Order::where('user_id', $user->id)
+                ->where('status', 'in_progress')
+                ->count(),
+            'completed_projects' => Order::where('user_id', $user->id)
+                ->where('status', 'completed')
+                ->count()
+        ];
+
+        return Inertia::render('Client/Dashboard', [
+            'orders' => Order::where('user_id', $user->id)
+                ->latest()
+                ->take(5)
+                ->get(),
+            'projects' => Order::where('user_id', $user->id)
+                ->whereIn('status', ['pending', 'in_progress', 'completed'])
+                ->latest()
+                ->take(5)
+                ->get(),
+            'stats' => $stats
         ]);
     }
 }

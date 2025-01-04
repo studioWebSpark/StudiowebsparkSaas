@@ -2,6 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import SideBar from '../Website/componentsDashboard/SideBar.vue';
 
 const props = defineProps({
     orders: {
@@ -54,58 +55,8 @@ const getStatusText = (status) => {
 <template>
     <AppLayout title="Commandes">
         <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
-            <!-- Sidebar -->
-            <div :class="[
-                'transition-all duration-300 ease-in-out',
-                'bg-white dark:bg-gray-800 shadow-xl',
-                'h-screen fixed left-0 top-0 z-30',
-                isSidebarOpen ? 'w-64' : 'w-20'
-            ]">
-                <!-- Toggle Button -->
-                <button @click="toggleSidebar"
-                    class="absolute -right-3 top-10 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md">
-                    <i :class="[
-                        'bx text-xl',
-                        isSidebarOpen ? 'bx-chevron-left' : 'bx-chevron-right'
-                    ]"></i>
-                </button>
-
-                <!-- Menu Items -->
-                <nav class="mt-20 px-4">
-                    <Link :href="route('dashboard')"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <i class='bx bxs-dashboard text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Tableau de bord</span>
-                    </Link>
-
-                    <Link :href="route('orders.index')"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
-                    <i class='bx bx-shopping-bag text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Commandes</span>
-                    </Link>
-                    <Link :href="route('projects.index')"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
-                    <i class='bx bx-briefcase text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Projets</span>
-                    </Link>
-
-
-
-                    <Link href="#"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <i class='bx bx-cog text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Paramètres</span>
-                    </Link>
-                </nav>
-            </div>
-
-            <!-- Main Content -->
-            <div :class="[
-                'transition-all duration-300 ease-in-out',
-                'flex-1',
-                isSidebarOpen ? 'ml-64' : 'ml-20'
-            ]">
-                <div class="py-12 px-6">
+            <SideBar>
+                <div class="p-6 flex-1">
                     <!-- Statistiques -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
@@ -219,7 +170,7 @@ const getStatusText = (status) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </SideBar>
         </div>
     </AppLayout>
 </template>

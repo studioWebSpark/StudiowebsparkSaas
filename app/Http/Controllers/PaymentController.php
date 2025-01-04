@@ -45,7 +45,7 @@ class PaymentController extends Controller
             $projectData
         ));
 
-        return Inertia::render('Website/Project/PaymentSuccess');
+        return Inertia::render('Payment/PaymentSuccess');
     }
 
   
@@ -66,6 +66,6 @@ class PaymentController extends Controller
 
     public function cancel()
     {
-        return Inertia::render('Website/Project/PaymentCancel');
+        return Inertia::render('Payment/PaymentCancel');
     }
 }

@@ -95,13 +95,6 @@ class ProjectStatusController extends Controller
     public function update(Request $request, Order $order)
     {
         try {
-            \Log::info('Début mise à jour statut', [
-                'order_id' => $order->id,
-                'order_number' => $order->order_number,
-                'nouveau_status' => $request->status,
-                'request_data' => $request->all()
-            ]);
-
             $request->validate([
                 'status' => ['required', Rule::in(array_keys(ProjectStatus::STATUS_DETAILS))],
                 'description' => 'nullable|string|max:500'
@@ -110,50 +103,23 @@ class ProjectStatusController extends Controller
             $projectStatus = $order->projectStatus;
 
             if (!$projectStatus) {
-                \Log::info('Création nouveau ProjectStatus car non existant');
-                $projectStatus = $order->projectStatus()->create([
-                    'status' => $request->status,
-                    'progress' => ProjectStatus::STATUS_DETAILS[$request->status]['progress'] ?? 0,
-                    'description' => $request->description,
-                    'order_number' => $order->order_number
-                ]);
-            } else {
-                \Log::info('Mise à jour ProjectStatus existant', [
-                    'ancien_status' => $projectStatus->status,
-                    'nouveau_status' => $request->status,
-                    'project_status_id' => $projectStatus->id
-                ]);
-
-                $projectStatus->fill([
-                    'status' => $request->status,
-                    'progress' => ProjectStatus::STATUS_DETAILS[$request->status]['progress'] ?? $projectStatus->progress,
-                    'description' => $request->description,
-                    'order_number' => $order->order_number
-                ]);
-
-                if ($projectStatus->isDirty()) {
-                    $projectStatus->save();
-                }
+                throw new \Exception('Statut du projet non trouvé');
             }
 
-            $projectStatus->refresh();
-
-            \Log::info('État final du ProjectStatus après mise à jour', [
-                'id' => $projectStatus->id,
-                'order_number' => $projectStatus->order_number,
-                'status' => $projectStatus->status,
-                'progress' => $projectStatus->progress
+            $projectStatus->update([
+                'status' => $request->status,
+                'progress' => ProjectStatus::STATUS_DETAILS[$request->status]['progress'] ?? $projectStatus->progress,
+                'description' => $request->description,
+                'order_number' => $order->order_number
             ]);
 
             return response()->json([
                 'success' => true,
-                'project_status' => $projectStatus->toArray()
+                'project_status' => $projectStatus->fresh()
             ]);
         } catch (\Exception $e) {
             \Log::error('Erreur mise à jour statut', [
                 'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
 

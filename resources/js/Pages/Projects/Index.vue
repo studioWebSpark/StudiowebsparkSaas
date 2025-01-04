@@ -6,6 +6,7 @@ import { Link } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
+import SideBar from '../Website/componentsDashboard/SideBar.vue';
 
 const props = defineProps({
     projects: {
@@ -28,11 +29,7 @@ const props = defineProps({
 
 const projects = ref(props.projects);
 
-const isSidebarOpen = ref(true);
 
-const toggleSidebar = () => {
-    isSidebarOpen.value = !isSidebarOpen.value;
-};
 
 // Définir les statuts avec leurs détails
 const PROJECT_STATUSES = {
@@ -168,58 +165,9 @@ const parseAmount = (amount) => {
 <template>
     <AppLayout title="Projets">
         <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
-            <!-- Sidebar -->
-            <div :class="[
-                'transition-all duration-300 ease-in-out',
-                'bg-white dark:bg-gray-800 shadow-xl',
-                'h-screen fixed left-0 top-0 z-30',
-                isSidebarOpen ? 'w-64' : 'w-20'
-            ]">
-                <!-- Toggle Button -->
-                <button @click="toggleSidebar"
-                    class="absolute -right-3 top-10 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md">
-                    <i :class="[
-                        'bx text-xl',
-                        isSidebarOpen ? 'bx-chevron-left' : 'bx-chevron-right'
-                    ]"></i>
-                </button>
-
-                <!-- Menu Items -->
-                <nav class="mt-20 px-4">
-                    <Link :href="route('dashboard')"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <i class='bx bxs-dashboard text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Tableau de bord</span>
-                    </Link>
-
-                    <Link :href="route('orders.index')"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <i class='bx bx-shopping-bag text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Commandes</span>
-                    </Link>
-
-                    <Link :href="route('projects.index')"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
-                    <i class='bx bx-briefcase text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Projets</span>
-                    </Link>
-
-                    <Link href="#"
-                        class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <i class='bx bx-cog text-2xl'></i>
-                    <span :class="{ 'hidden': !isSidebarOpen }">Paramètres</span>
-                    </Link>
-                </nav>
-            </div>
-
-            <!-- Main Content -->
-            <div :class="[
-                'transition-all duration-300 ease-in-out',
-                'flex-1',
-                isSidebarOpen ? 'ml-64' : 'ml-20'
-            ]">
-                <div class="py-12">
-                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <SideBar>
+                <div class="p-6 flex-1">
+                    <div class="max-w-full">
                         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                             <div class="p-6">
                                 <div class="flex flex-col">
@@ -258,9 +206,7 @@ const parseAmount = (amount) => {
                                                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                                                 État
                                                             </th>
-                                                            <th scope="col" class="relative px-6 py-3">
-                                                                <span class="sr-only">Actions</span>
-                                                            </th>
+
                                                         </tr>
                                                     </thead>
                                                     <tbody
@@ -319,25 +265,7 @@ const parseAmount = (amount) => {
                                                                             </option>
                                                                         </select>
 
-                                                                        <!-- Barre de progression -->
-                                                                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700"
-                                                                            :data-project-id="project.id">
-                                                                            <div class="progress-bar h-2.5 rounded-full transition-all duration-300"
-                                                                                :style="{ width: `${project.project_status?.progress || getStoredProgress(project.order.order_number)}%` }"
-                                                                                :class="{
-                                                                                    'bg-gray-600': project.project_status?.status === 'pending',
-                                                                                    'bg-blue-600': project.project_status?.status === 'development',
-                                                                                    'bg-purple-600': project.project_status?.status === 'production',
-                                                                                    'bg-green-600': project.project_status?.status === 'completed'
-                                                                                }"></div>
-                                                                        </div>
 
-                                                                        <!-- Pourcentage -->
-                                                                        <span class="text-sm text-gray-600">
-                                                                            {{ project.project_status?.progress ||
-                                                                            getStoredProgress(project.order.order_number)
-                                                                            }}%
-                                                                        </span>
                                                                     </div>
                                                                 </div>
                                                             </td>
@@ -353,7 +281,7 @@ const parseAmount = (amount) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </SideBar>
         </div>
     </AppLayout>
 </template>

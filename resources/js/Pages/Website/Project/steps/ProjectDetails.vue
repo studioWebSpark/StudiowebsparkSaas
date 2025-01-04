@@ -139,25 +139,28 @@ const getInitialData = () => {
         const savedData = localStorage.getItem('projectWizardData');
         if (savedData) {
             const parsedData = JSON.parse(savedData);
-            return parsedData?.project || {
-                projectType: '',
-                description: '',
-                selectedFeatures: [],
-                isValidated: false
+            return {
+                projectType: parsedData?.project?.projectType || '',
+                description: parsedData?.project?.description || '',
+                selectedFeatures: parsedData?.project?.selectedFeatures || [],
+                isValidated: parsedData?.project?.isValidated || false
             };
         }
     } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
     }
     return {
-        projectType: '',
-        description: '',
-        selectedFeatures: [],
-        isValidated: false
+        projectType: props.formData?.project?.projectType || '',
+        description: props.formData?.project?.description || '',
+        selectedFeatures: props.formData?.project?.selectedFeatures || [],
+        isValidated: props.formData?.project?.isValidated || false
     };
 };
 
-const localFormData = ref(getInitialData());
+const localFormData = ref({
+    ...getInitialData(),
+    selectedFeatures: getInitialData().selectedFeatures || []
+});
 
 const validateField = (field) => {
     touchedFields.value[field] = true;
@@ -216,14 +219,18 @@ watch(localFormData, (newValue) => {
             ...existingData,
             project: {
                 ...newValue,
+                selectedFeatures: newValue.selectedFeatures || [],
                 lastUpdated: new Date().toISOString()
             }
         };
         localStorage.setItem('projectWizardData', JSON.stringify(dataToSave));
-        // Émettre les mises à jour
+
         emit('update:formData', {
             ...props.formData,
-            project: { ...newValue }
+            project: {
+                ...newValue,
+                selectedFeatures: newValue.selectedFeatures || []
+            }
         });
     } catch (error) {
         console.error('Erreur dans le watcher:', error);
@@ -332,6 +339,40 @@ watch(() => localFormData.value.projectType, (newType) => {
         if (recommendation) {
             localStorage.setItem('projectRecommendation', JSON.stringify(recommendation));
         }
+    }
+});
+
+// Ajoutez ces computed properties après les autres computed
+const isProjectTypeValid = computed(() => {
+    return !!localFormData.value.projectType;
+});
+
+const isDescriptionValid = computed(() => {
+    return !!localFormData.value.description && localFormData.value.description.length >= 10;
+});
+
+// Ajoutez cette méthode après les autres méthodes
+const validateAndEmit = () => {
+    const isValid = isProjectTypeValid.value && isDescriptionValid.value;
+
+    if (isValid) {
+        emit('update:formData', {
+            ...props.formData,
+            project: {
+                ...localFormData.value,
+                isValidated: true
+            }
+        });
+        emit('stepValidated', true);
+    }
+
+    return isValid;
+};
+
+// Ajoutez ce watcher après vos watchers existants
+watch([isProjectTypeValid, isDescriptionValid], ([typeValid, descValid]) => {
+    if (typeValid && descValid) {
+        validateAndEmit();
     }
 });
 </script>

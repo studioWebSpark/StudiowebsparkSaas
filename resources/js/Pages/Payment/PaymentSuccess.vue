@@ -36,7 +36,7 @@ const startCountdown = () => {
 
         if (progress.value >= 100) {
             clearInterval(timer);
-            router.visit(route('dashboard'));
+            router.visit(route('client.dashboard'));
         }
     }, interval);
 };
@@ -51,7 +51,7 @@ const resumeCountdown = () => {
 
 const skipCountdown = () => {
     clearInterval(timer);
-    router.visit(route('dashboard'));
+    router.visit(route('client.dashboard'));
 };
 
 const formatPrice = (price) => {
@@ -91,7 +91,7 @@ const formatPrice = (price) => {
                                             {{ formatPrice(amount) }}€
                                         </p>
                                     </div>
-                                    
+
                                 </div>
                             </div>
 
@@ -133,17 +133,13 @@ const formatPrice = (price) => {
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Forfait</p>
                                         <p class="font-medium text-gray-900 dark:text-white">{{ project.forfait }}</p>
                                     </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Plan de maintenance</p>
-                                        <p class="font-medium text-gray-900 dark:text-white">{{ project.maintenance }}
-                                        </p>
-                                    </div>
+                                    
                                 </div>
                             </div>
 
                             <!-- Message de redirection -->
-                            
-                            
+
+
                         </div>
                     </div>
                 </div>

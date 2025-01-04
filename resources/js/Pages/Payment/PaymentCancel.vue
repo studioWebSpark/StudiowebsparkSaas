@@ -4,9 +4,9 @@ import { router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 onMounted(() => {
-    // Redirection après 10 secondes
+    // Redirection après 10 secondes vers le dashboard client
     setTimeout(() => {
-        router.visit(route('dashboard'));
+        router.visit(route('client.dashboard'));
     }, 10000);
 });
 </script>
@@ -41,7 +41,7 @@ onMounted(() => {
 
                         <!-- Boutons d'action -->
                         <div class="mt-6 space-x-4">
-                            <a :href="route('dashboard')"
+                            <a :href="route('client.dashboard')"
                                 class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500 active:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
                                 Retour au tableau de bord
                                 <i class='bx bx-home ml-2'></i>

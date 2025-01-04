@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Admin\ProjectStatusController;
+use App\Http\Controllers\StatisticsController;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -49,11 +50,6 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
     // Nouvelles routes pour le suivi de projet
     Route::prefix('projects')->group(function () {
         Route::get('/', [ProjectController::class, 'index'])->name('projects.index');
@@ -155,4 +151,46 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::patch('/projects/{order:order_number}/status', [ProjectStatusController::class, 'update'])
         ->name('projects.update-status');
+});
+
+Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // ... autres routes admin ...
+
+    Route::get('/statistics', [App\Http\Controllers\Admin\StatisticsController::class, 'index'])
+        ->name('statistics.index');
+});
+
+// Nouvelles routes pour les dashboards
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    // Dashboard Admin (accessible uniquement aux admins)
+    Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])
+        ->name('admin.dashboard')
+        ->middleware('admin');
+
+    // Dashboard Client (accessible à tous les utilisateurs authentifiés)
+    Route::get('/clientdashboard', [DashboardController::class, 'clientDashboard'])
+        ->name('client.dashboard');
+});
+
+Route::get('/payment/cancel', function () {
+    return Inertia::render('Payment/PaymentCancel');
+})->name('payment.cancel');
+
+Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('dashboard');
+
+    // Projets
+    Route::get('/projects', [ClientController::class, 'projects'])->name('projects');
+    Route::get('/projects/{project}', [ClientController::class, 'showProject'])->name('projects.show');
+
+    // Commandes
+    Route::get('/orders', [ClientController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [ClientController::class, 'showOrder'])->name('orders.show');
+
+    // Support
+    Route::get('/support', [ClientController::class, 'support'])->name('support');
+    Route::post('/support/send', [ClientController::class, 'sendSupport'])->name('support.send');
 });
