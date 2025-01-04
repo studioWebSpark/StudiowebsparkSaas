@@ -365,6 +365,8 @@
                 </div>
             </div>
         </div>
+
+        
     </div>
 </template>
 
@@ -1021,6 +1023,42 @@ watch(paymentStatus, (newStatus) => {
         completeReset();
     }
 }, { deep: true });
+
+// Ajouter cette fonction de vérification
+const checkExistingOrder = async (email) => {
+    try {
+        const response = await axios.get(`/api/check-existing-order/${email}`);
+        return response.data.hasOrder;
+    } catch (error) {
+        console.error('Erreur vérification commande:', error);
+        return false;
+    }
+};
+
+// Modifier votre handlePaymentStart existant
+const handlePaymentStart = async () => {
+    if (state.payment.isProcessing) return;
+
+    try {
+        // Vérifier si l'email a déjà une commande
+        const hasExistingOrder = await checkExistingOrder(props.formData.personal.email);
+
+        if (hasExistingOrder) {
+            showExistingOrderModal.value = true;
+            return;
+        }
+
+        // Continuer avec votre logique de paiement existante
+        state.payment.isProcessing = true;
+        // ... reste de votre code de paiement ...
+    } catch (error) {
+        console.error('Erreur paiement:', error);
+        state.payment.isProcessing = false;
+    }
+};
+
+// Ajouter cette ref pour le modal
+const showExistingOrderModal = ref(false);
 </script>
 <style scoped>
 .scale-150 {

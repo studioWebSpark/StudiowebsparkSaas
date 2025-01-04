@@ -44,12 +44,7 @@
             <span :class="{ 'hidden': !isSidebarOpen }">Statistiques</span>
             </Link>
 
-            <Link :href="route('clients.index')"
-                class="flex items-center space-x-3 mb-6 py-3 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                :class="{ 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white': route().current('clients.index') }">
-            <i class='bx bx-user text-2xl'></i>
-            <span :class="{ 'hidden': !isSidebarOpen }">Clients</span>
-            </Link>
+           
 
             <!-- Déconnexion en bas de la sidebar -->
             <div class="absolute bottom-8 left-0 w-full px-4">

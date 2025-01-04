@@ -11,12 +11,11 @@
                             </label>
                             <div class="relative">
                                 <div class="flex gap-4">
-                                    <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer"
+                                    <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer border bg-white dark:bg-gray-700"
                                         :class="{
                                             'border-gray-300 dark:border-gray-600': !touchedFields.clientType,
-                                            'border-red-300 dark:border-red-500': formErrors.clientType,
-                                            'border-green-500 dark:border-green-400': isFieldValid.clientType && touchedFields.clientType,
-                                            'border bg-white dark:bg-gray-700': true
+                                            'border-red-300 dark:border-red-500': touchedFields.clientType && formErrors.clientType,
+                                            'border-green-500 dark:border-green-400': touchedFields.clientType && isFieldValid.clientType
                                         }">
                                         <input type="radio" v-model="localFormData.clientType" value="individual"
                                             class="sr-only" @change="validateField('clientType')">
@@ -25,12 +24,11 @@
                                         <i v-if="localFormData.clientType === 'individual'"
                                             class="bx bx-check text-green-500 dark:text-green-400 text-xl ml-2"></i>
                                     </label>
-                                    <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer"
+                                    <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer border bg-white dark:bg-gray-700"
                                         :class="{
                                             'border-gray-300 dark:border-gray-600': !touchedFields.clientType,
-                                            'border-red-300 dark:border-red-500': formErrors.clientType,
-                                            'border-green-500 dark:border-green-400': isFieldValid.clientType && touchedFields.clientType,
-                                            'border bg-white dark:bg-gray-700': true
+                                            'border-red-300 dark:border-red-500': touchedFields.clientType && formErrors.clientType,
+                                            'border-green-500 dark:border-green-400': touchedFields.clientType && isFieldValid.clientType
                                         }">
                                         <input type="radio" v-model="localFormData.clientType" value="professional"
                                             class="sr-only" @change="validateField('clientType')">
@@ -59,8 +57,8 @@
                                     class="mt-1 block w-full pr-10 rounded-md shadow-sm bg-white dark:bg-gray-700 dark:text-white"
                                     :class="{
                                         'border-gray-300 dark:border-gray-600': !touchedFields.lastName,
-                                        'border-red-300 dark:border-red-500': formErrors.lastName,
-                                        'border-green-500 dark:border-green-400': isFieldValid.lastName && touchedFields.lastName
+                                        'border-red-300 dark:border-red-500': touchedFields.lastName && formErrors.lastName,
+                                        'border-green-500 dark:border-green-400': touchedFields.lastName && isFieldValid.lastName
                                     }" required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                                     <i v-if="isFieldValid.lastName && touchedFields.lastName"

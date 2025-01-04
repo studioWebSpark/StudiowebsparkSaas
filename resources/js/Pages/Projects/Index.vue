@@ -245,7 +245,14 @@ const parseAmount = (amount) => {
                                                                 }} €
                                                             </td>
                                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                                {{ project.order?.paid_at }}
+                                                                {{ project.order?.paid_at ? new
+                                                                    Date(project.order.paid_at).toLocaleString('fr-FR', {
+                                                                        year: 'numeric',
+                                                                        month: '2-digit',
+                                                                        day: '2-digit',
+                                                                        hour: '2-digit',
+                                                                        minute: '2-digit'
+                                                                }) : '' }}
                                                             </td>
                                                             <td class="px-6 py-4 whitespace-nowrap">
                                                                 <div class="flex flex-col space-y-3">

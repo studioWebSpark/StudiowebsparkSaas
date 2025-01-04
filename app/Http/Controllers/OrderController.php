@@ -44,10 +44,10 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'order_number' => 'CMD-' . strtoupper(Str::random(8)),
-                'total_amount' => $totalAmount, // Utiliser le montant total calculé
-                'status' => 'completed',
+                'total_amount' => $totalAmount,
+                'status' => 'pending',
                 'stripe_session_id' => $sessionId,
-                'paid_at' => now(),
+                'paid_at' => null,
 
                 // Informations client
                 'client_type' => $projectData['personal']['clientType'],
@@ -78,8 +78,7 @@ class OrderController extends Controller
             Log::info('Commande créée avec succès:', [
                 'order_id' => $order->id,
                 'total_amount' => $totalAmount,
-                'forfait_price' => $projectData['forfait']['forfaitDetails']['price'],
-                'options' => $projectData['forfait']['selectedOptions'] ?? []
+                'status' => 'pending'
             ]);
 
             return $order;
@@ -291,6 +290,48 @@ class OrderController extends Controller
                 'hasActiveOrder' => false,
                 'error' => 'Erreur lors de la vérification'
             ]);
+        }
+    }
+
+    public function handleStripeWebhook(Request $request)
+    {
+        $payload = $request->getContent();
+        $sig_header = $request->header('Stripe-Signature');
+        $endpoint_secret = config('services.stripe.webhook_secret');
+
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload,
+                $sig_header,
+                $endpoint_secret
+            );
+
+            if ($event->type === 'checkout.session.completed') {
+                $session = $event->data->object;
+
+                // Mettre à jour la commande une fois le paiement confirmé
+                $order = Order::where('stripe_session_id', $session->id)->first();
+
+                if ($order) {
+                    $order->update([
+                        'status' => 'completed',
+                        'paid_at' => now(),
+                        'payment_intent_id' => $session->payment_intent
+                    ]);
+
+                    Log::info('Paiement confirmé pour la commande:', [
+                        'order_id' => $order->id,
+                        'stripe_session' => $session->id
+                    ]);
+                }
+            }
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            Log::error('Erreur webhook Stripe:', [
+                'error' => $e->getMessage()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 }

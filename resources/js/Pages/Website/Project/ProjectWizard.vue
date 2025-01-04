@@ -120,10 +120,10 @@ const currentComponent = computed(() => {
 
 // Structure correcte des données
 const formData = ref({
-    project: null,
     personal: null,
-    template: null,
-    forfait: null
+    project: null,
+    forfait: null,
+    template: null
 });
 
 // Référence vers le composant actif
@@ -804,6 +804,32 @@ watch(() => page.props.shouldReset, (shouldReset) => {
         resetWizardState();
     }
 });
+
+// Supprimer toute vérification de commande existante
+const validateStep = (stepData) => {
+    if (currentStep.value === 0) {
+        formData.value.personal = stepData;
+    } else if (currentStep.value === 1) {
+        formData.value.project = stepData;
+    } else if (currentStep.value === 2) {
+        formData.value.forfait = stepData;
+    } else if (currentStep.value === 3) {
+        formData.value.template = stepData;
+    }
+
+    nextStep();
+};
+
+// Permettre de recommencer une nouvelle commande
+const startNewOrder = () => {
+    formData.value = {
+        personal: null,
+        project: null,
+        forfait: null,
+        template: null
+    };
+    currentStep.value = 0;
+};
 
 </script>
 <style scoped>

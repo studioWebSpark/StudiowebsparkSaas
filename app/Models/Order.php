@@ -44,6 +44,9 @@ class Order extends Model
         'total_amount' => 'float'
     ];
 
+    /**
+     * Relation avec l'utilisateur
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

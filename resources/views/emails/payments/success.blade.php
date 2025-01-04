@@ -11,7 +11,7 @@ Montant : {{ $amount }} €
 @component('mail::panel')
 **Détails de la commande :**
 - Numéro de commande : {{ $order_number }}
-- Montant total : {{ number_format($projectData['forfait']['forfaitDetails']['price'], 2, ',', ' ') }} €
+- Montant total : {{ $amount }} €
 @endcomponent
 
 @component('mail::panel')
@@ -21,7 +21,7 @@ Montant : {{ $amount }} €
 - Template choisi : {{ $projectData['template']['selectedTemplates'][0] ?? 'Aucun template sélectionné' }}
 @endcomponent
 
-@component('mail::button', ['url' => config('app.url').'/dashboard'])
+@component('mail::button', ['url' => config('app.url').'/client/dashboard'])
 Accéder à mon espace client
 @endcomponent
 

@@ -12,7 +12,7 @@ Nous sommes ravis de vous accueillir sur {{ config('app.name') }}. Votre compte 
 - N'hésitez pas à compléter votre profil
 @endcomponent
 
-@component('mail::button', ['url' => config('app.url').'/dashboard', 'color' => 'primary'])
+@component('mail::button', ['url' => config('app.url').'/client/dashboard', 'color' => 'primary'])
 Accéder à mon espace
 @endcomponent
 

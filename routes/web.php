@@ -14,6 +14,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Admin\ProjectStatusController;
 use App\Http\Controllers\StatisticsController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Models\Order;
 
 Route::get('/home', function () {
     return Inertia::render('Website/Home');
@@ -82,9 +86,24 @@ Route::get('/conseil', function () {
     return Inertia::render('Website/componentsService/Conseil');
 })->name('conseil');
 
-// Route pour le wizard de projet
-Route::get('/demarrer-projet', [ProjectController::class, 'wizard'])
-    ->name('demarrer-projet');
+// Route pour démarrer projet avec vérification
+Route::get('/demarrer-projet', function (Request $request) {
+    // Si l'utilisateur est connecté
+    if (Auth::check()) {
+        $user = Auth::user();
+
+        // Vérifier si l'utilisateur a une commande
+        $hasOrder = $user->orders()->exists();
+
+        if ($hasOrder) {
+            // Rediriger vers la page compte-existant si une commande existe
+            return redirect()->route('compte-existant');
+        }
+    }
+
+    // Si pas de commande, afficher la page démarrer projet
+    return Inertia::render('Website/Project/ProjectWizard');
+})->name('demarrer-projet');
 
 // Route pour soumettre le projet
 Route::post('/demarrer-projet', [ProjectController::class, 'store'])
@@ -170,7 +189,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         ->middleware('admin');
 
     // Dashboard Client (accessible à tous les utilisateurs authentifiés)
-    Route::get('/clientdashboard', [DashboardController::class, 'clientDashboard'])
+    Route::get('/client/dashboard', [DashboardController::class, 'clientDashboard'])
         ->name('client.dashboard');
 });
 
@@ -194,3 +213,56 @@ Route::middleware(['auth'])->prefix('client')->name('client.')->group(function (
     Route::get('/support', [ClientController::class, 'support'])->name('support');
     Route::post('/support/send', [ClientController::class, 'sendSupport'])->name('support.send');
 });
+
+Route::get('/compte-existant', function () {
+    return Inertia::render('Website/CompteExistant');
+})->name('compte-existant');
+
+// Route de connexion personnalisée
+Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        // Si c'est un admin
+        if ($user->is_admin) {
+            return redirect()->intended('/admin/dashboard');
+        }
+
+        // Vérifier si l'utilisateur a une commande payée
+        $hasPaidOrder = Order::where('user_id', $user->id)
+            ->whereNotNull('paid_at')
+            ->exists();
+
+        if ($hasPaidOrder) {
+            return redirect()->intended('/dashboard');
+        }
+
+        // Si pas de commande payée, rediriger vers démarrer-projet
+        return redirect()->intended('/demarrer-projet');
+    }
+
+    return back()->withErrors([
+        'email' => 'Les identifiants fournis ne correspondent pas à nos enregistrements.',
+    ])->withInput($request->except('password'));
+})->middleware('guest')->name('login');
+
+// Route du dashboard admin protégée
+Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.dashboard');
+
+// Route pour afficher le formulaire d'inscription
+Route::get('/register', function () {
+    return Inertia::render('Auth/Register');
+})->middleware('guest')->name('register');
+
+// Route pour traiter l'inscription
+Route::post('/register', [RegisterController::class, 'register'])
+    ->middleware('guest')
+    ->name('register.store');
