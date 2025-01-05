@@ -10,7 +10,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->check() || !auth()->user()->is_admin) {
-            return redirect()->route('client.dashboard');
+            return redirect('/dashboard');
         }
 
         return $next($request);

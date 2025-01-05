@@ -1,5 +1,8 @@
 <template>
-    <div class="min-h-screen bg-white dark:bg-gray-900">
+    <div class="min-h-screen">
+        <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900 -z-10">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        </div>
         <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
             @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu" @toggle-categories="toggleCategories"
             @mouseover-services="handleMouseOver" @mouseleave-services="handleMouseLeave" />
@@ -7,85 +10,86 @@
         <CategoriesMenu v-if="showCategories" :is-dark-mode="isDarkMode" @mouseover="handleMouseOver"
             @mouseleave="handleMouseLeave" />
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div class="max-w-xl px-8 mx-auto text-center md:px-0">
-                <span class="text-base font-semibold tracking-wide text-indigo-600 dark:text-indigo-400 uppercase">
+    
+
+            <div class="max-w-xl px-8 mx-auto text-center md:px-0 relative">
+                <span class="text-base font-semibold tracking-wide text-white uppercase">
                     Service : Marketing Digital
                 </span>
-                <h2 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl xl:text-5xl font-pj">
+                <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl xl:text-5xl font-pj">
                     Boostez votre Visibilité en Ligne
                 </h2>
-                <p class="mt-4 text-lg font-normal text-gray-600 dark:text-gray-300 font-pj mb-14">
+                <p class="mt-4 text-lg font-normal text-white/90 font-pj mb-14">
                     Stratégies marketing personnalisées pour développer votre présence digitale
                 </p>
             </div>
 
             <!-- Services marketing -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 relative">
+                <div class="p-6 border border-white/20 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white mb-4">
                         SEO
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    <p class="text-white/90 mb-4">
                         Optimisez votre visibilité sur les moteurs de recherche.
                     </p>
                     <ul class="space-y-2">
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Audit SEO complet
                         </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Optimisation on-page
                         </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Suivi des performances
                         </li>
                     </ul>
                 </div>
 
-                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                <div class="p-6 border border-white/20 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white mb-4">
                         Réseaux Sociaux
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    <p class="text-white/90 mb-4">
                         Développez votre communauté et votre engagement.
                     </p>
                     <ul class="space-y-2">
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Stratégie social media
                         </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Création de contenu
                         </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Gestion des campagnes
                         </li>
                     </ul>
                 </div>
 
-                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                <div class="p-6 border border-white/20 rounded-xl">
+                    <h3 class="text-xl font-semibold text-white mb-4">
                         Publicité en Ligne
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    <p class="text-white/90 mb-4">
                         Campagnes publicitaires ciblées et performantes.
                     </p>
                     <ul class="space-y-2">
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Google Ads
                         </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Facebook Ads
                         </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                        <li class="flex items-center text-white/90">
+                            <i class='bx bx-check-circle text-white mr-2'></i>
                             Analyse des résultats
                         </li>
                     </ul>
@@ -100,7 +104,7 @@
         </div>
 
         <Footer />
-    </div>
+    
 </template>
 
 <script setup>
@@ -108,7 +112,7 @@ import { ref, onMounted } from 'vue';
 import Header from '../componentsHome/Header.vue';
 import Footer from '../componentsHome/Footer.vue';
 import CategoriesMenu from '../componentsHome/CategoriesMenu.vue';
-import Cta from '../componentsAbout/Cta.vue';
+import Cta from '../componentsHome/Cta.vue';
 import ProcessMarket from '../componentsService/ProcessMarket.vue';
 
 
@@ -155,3 +159,9 @@ const handleMouseLeave = () => {
     showCategories.value = false;
 };
 </script>
+<style scoped>
+.bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+}
+</style>

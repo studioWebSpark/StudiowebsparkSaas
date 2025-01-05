@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Style global pour les sections et divs principaux */
+
+
 [x-cloak] {
     display: none;
 }

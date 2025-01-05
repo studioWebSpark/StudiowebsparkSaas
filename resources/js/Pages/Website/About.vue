@@ -1,25 +1,33 @@
 <template>
-    <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
-        <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
-            :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
-            @toggle-categories="toggleCategories" @show-categories="showCategories = true"
-            @hide-categories="hideCategories" />
+    <div class="overflow-x-hidden relative">
+        <!-- Fond global avec motif -->
+        <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        </div>
 
-        <Vision />
-        <Market />
-        <Solution />
-        <Process />
-        <MarketEvo />
-        <Services />
-        <Cta />
-        <Footer />
+        <!-- Contenu avec position relative -->
+        <div class="relative">
+            <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
+                :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
+                @toggle-categories="toggleCategories" @show-categories="showCategories = true"
+                @hide-categories="hideCategories" />
+
+            <Vision />
+            <Market />
+            <Solution />
+            <Process />
+            <MarketEvo />
+            <Services />
+            <Cta />
+            <Footer />
+        </div>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import Header from './componentsHome/Header.vue';
-import Cta from './componentsAbout/Cta.vue';
+import Cta from './componentsHome/Cta.vue';
 import Market from './componentsAbout/Market.vue';
 import MarketEvo from './componentsAbout/MarketEvo.vue';
 import Process from './componentsAbout/Process.vue';
@@ -77,3 +85,10 @@ const hideCategories = () => {
     showCategories.value = false;
 };
 </script>
+
+<style scoped>
+.bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+}
+</style>

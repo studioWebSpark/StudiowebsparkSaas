@@ -366,14 +366,53 @@
             </div>
         </div>
 
-        
+        <!-- Modal d'avertissement -->
+        <TransitionRoot appear :show="showExistingOrderModal" as="template">
+            <Dialog as="div" @close="showExistingOrderModal = false" class="relative z-50">
+                <TransitionChild enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+                    leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+                    <div class="fixed inset-0 bg-black/25" />
+                </TransitionChild>
+
+                <div class="fixed inset-0 overflow-y-auto">
+                    <div class="flex min-h-full items-center justify-center p-4 text-center">
+                        <DialogPanel
+                            class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-gray-800">
+                            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 dark:text-white">
+                                Commande existante détectée
+                            </DialogTitle>
+
+                            <div class="mt-4">
+                                <p class="text-sm text-gray-500 dark:text-gray-300">
+                                    Une commande existe déjà avec cette adresse email. Pour démarrer un nouveau projet,
+                                    veuillez créer un nouveau compte avec une adresse email différente.
+                                </p>
+                            </div>
+
+                            <div class="mt-6 flex justify-between">
+                                <a href="/register"
+                                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200">
+                                    Créer un nouveau compte
+                                </a>
+                                <button type="button"
+                                    class="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
+                                    @click="showExistingOrderModal = false">
+                                    Fermer
+                                </button>
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </div>
+            </Dialog>
+        </TransitionRoot>
+
     </div>
 </template>
 
 
 <script setup>
 import { computed, ref, onMounted, watch } from 'vue';
-import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
+import { Dialog, DialogPanel, TransitionRoot, TransitionChild, DialogTitle } from '@headlessui/vue';
 import { Link, usePage, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
@@ -854,21 +893,7 @@ const handlePayment = async () => {
 const paymentStatus = ref(null);
 
 // Ajout des logs pour le paiement
-onMounted(async () => {
-    try {
-        await checkPaymentCompletion();
 
-        const response = await axios.get('/stripe/check-payment-status');
-        console.log('État du paiement :', {
-            response: response.data,
-            paymentInfo: response.data?.paymentInfo,
-            status: response.data?.paymentInfo?.status
-        });
-        paymentStatus.value = response.data.paymentInfo;
-    } catch (error) {
-        console.error('Erreur vérification paiement:', error);
-    }
-});
 
 // Surveiller les changements de statut
 watch(paymentStatus, (newStatus) => {
@@ -1059,6 +1084,43 @@ const handlePaymentStart = async () => {
 
 // Ajouter cette ref pour le modal
 const showExistingOrderModal = ref(false);
+
+// Configurer Axios pour inclure le token CSRF
+axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+axios.defaults.withCredentials = true;
+
+const initializePayment = async () => {
+    if (state.payment.isProcessing) return;
+
+    try {
+        state.payment.isProcessing = true;
+
+        // Créer la session de paiement
+        const response = await axios.post('/api/create-payment', {
+            formData: props.formData,
+            amount: calculateTotalAmount()
+        });
+
+        if (response.data.sessionId) {
+            // Configuration Stripe
+            const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+
+            // Redirection vers Stripe Checkout
+            const result = await stripe.redirectToCheckout({
+                sessionId: response.data.sessionId
+            });
+
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
+        }
+    } catch (error) {
+        console.error('Erreur vérification paiement:', error);
+        state.payment.error = "Une erreur est survenue lors de l'initialisation du paiement";
+    } finally {
+        state.payment.isProcessing = false;
+    }
+};
 </script>
 <style scoped>
 .scale-150 {

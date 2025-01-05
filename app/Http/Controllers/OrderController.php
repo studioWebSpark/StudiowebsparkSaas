@@ -293,45 +293,5 @@ class OrderController extends Controller
         }
     }
 
-    public function handleStripeWebhook(Request $request)
-    {
-        $payload = $request->getContent();
-        $sig_header = $request->header('Stripe-Signature');
-        $endpoint_secret = config('services.stripe.webhook_secret');
-
-        try {
-            $event = \Stripe\Webhook::constructEvent(
-                $payload,
-                $sig_header,
-                $endpoint_secret
-            );
-
-            if ($event->type === 'checkout.session.completed') {
-                $session = $event->data->object;
-
-                // Mettre à jour la commande une fois le paiement confirmé
-                $order = Order::where('stripe_session_id', $session->id)->first();
-
-                if ($order) {
-                    $order->update([
-                        'status' => 'completed',
-                        'paid_at' => now(),
-                        'payment_intent_id' => $session->payment_intent
-                    ]);
-
-                    Log::info('Paiement confirmé pour la commande:', [
-                        'order_id' => $order->id,
-                        'stripe_session' => $session->id
-                    ]);
-                }
-            }
-
-            return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
-            Log::error('Erreur webhook Stripe:', [
-                'error' => $e->getMessage()
-            ]);
-            return response()->json(['error' => $e->getMessage()], 400);
-        }
-    }
+    
 }

@@ -1,5 +1,8 @@
 <template>
-    <div class="min-h-screen bg-white dark:bg-gray-900">
+    <div class="min-h-screen">
+        <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900 -z-10">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        </div>
         <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
             @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu" @toggle-categories="toggleCategories"
             @mouseover-services="handleMouseOver" @mouseleave-services="handleMouseLeave" />
@@ -9,8 +12,8 @@
 
         <ProcessMaintenance />
 
-        <Cta /> 
-        
+        <Cta />
+
 
         <Footer />
     </div>
@@ -21,7 +24,7 @@ import { ref, onMounted } from 'vue';
 import Header from '../componentsHome/Header.vue';
 import Footer from '../componentsHome/Footer.vue';
 import CategoriesMenu from '../componentsHome/CategoriesMenu.vue';
-import Cta from '../componentsAbout/Cta.vue';
+import Cta from '../componentsHome/Cta.vue';
 import ProcessMaintenance from '../componentsService/ProcessMaintenance.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
@@ -64,3 +67,9 @@ const handleMouseLeave = () => {
     showCategories.value = false;
 };
 </script>
+<style scoped>
+.bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+}
+</style>

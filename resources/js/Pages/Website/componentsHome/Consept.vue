@@ -1,110 +1,124 @@
 <template>
-    <section class="py-12 bg-gray-50 sm:py-16 lg:py-20 dark:bg-gray-900">
-        <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <section class="py-12 bg-white dark:bg-gray-800 sm:py-16 lg:py-20 relative overflow-hidden">
+        <!-- Effet de fond -->
+        <div class="absolute inset-0 bg-blue-600 dark:bg-blue-900">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        </div>
+
+        <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <!-- Premier bloc -->
-            <div class="grid grid-cols-1 md:items-center gap-y-8 md:grid-cols-2 md:gap-x-16">
-                <div>
-                    <img class="w-full max-w-sm mx-auto transition-all duration-300 hover:scale-105 rounded-2xl shadow-lg dark:opacity-90"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/5/illustration.png"
-                        alt="Illustration développement web" />
+            <div class="grid grid-cols-1 md:items-center gap-y-12 md:grid-cols-2 md:gap-x-16">
+                <!-- Image avec effet -->
+                <div class="relative group">
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur-2xl opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200">
+                    </div>
+                    <div class="relative overflow-hidden rounded-xl">
+                        <img class="w-full transition-transform duration-700 group-hover:scale-105"
+                            src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/5/illustration.png"
+                            alt="Illustration développement web" />
+                    </div>
                 </div>
 
+                <!-- Contenu -->
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl xl:text-5xl font-pj dark:text-white">
-                        Des Sites Web Performants et Modernes
+                    <h2 class="text-3xl font-bold text-white sm:text-4xl xl:text-5xl font-pj dark:text-white">
+                        Des Sites Web
+                        <span class="relative">
+                            <span class="relative z-10">Performants et Modernes</span>
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-3 bg-blue-200 dark:bg-blue-800/50 -z-10 transform -rotate-1">
+                            </div>
+                        </span>
                     </h2>
-                    <p class="mt-4 text-base leading-7 text-gray-600 sm:mt-8 font-pj dark:text-gray-300">
+
+                    <p class="mt-8 text-lg text-white/80 dark:text-gray-300">
                         Nous créons des sites web optimisés pour la performance et l'expérience utilisateur.
                         Notre approche combine design moderne et technologies de pointe pour garantir votre succès en
                         ligne.
                     </p>
 
-                    <div class="h-px w-32 mt-8 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                    <div class="h-px w-32 mt-8 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
 
-                    <ul class="mt-8 space-y-5">
-                        <li class="flex items-center text-gray-900 dark:text-gray-300">
-                            <svg class="w-6 h-6 text-blue-500 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span class="ml-3 text-lg font-bold font-pj">Design Responsive & Mobile First</span>
-                        </li>
-
-                        <li class="flex items-center text-gray-900 dark:text-gray-300">
-                            <svg class="w-6 h-6 text-blue-500 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span class="ml-3 text-lg font-bold font-pj">Optimisation SEO incluse</span>
-                        </li>
-
-                        <li class="flex items-center text-gray-900 dark:text-gray-300">
-                            <svg class="w-6 h-6 text-blue-500 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span class="ml-3 text-lg font-bold font-pj">Performance Optimale</span>
+                    <ul class="mt-8 space-y-6">
+                        <li v-for="(feature, index) in features" :key="index" class="relative group">
+                            <div
+                                class="absolute -inset-4 bg-white/10 dark:bg-blue-900/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            </div>
+                            <div
+                                class="relative flex items-center p-4 bg-white/10 backdrop-blur-sm dark:bg-gray-800/50 rounded-xl shadow-sm group-hover:shadow-md transition-all duration-300">
+                                <div class="flex-shrink-0">
+                                    <div
+                                        class="flex items-center justify-center w-12 h-12 text-white dark:text-blue-400">
+                                        <i :class="feature.icon" class="text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-semibold text-white dark:text-white">
+                                        {{ feature.title }}
+                                    </h3>
+                                    <p class="mt-1.5 text-base text-white/80 dark:text-gray-300">
+                                        {{ feature.description }}
+                                    </p>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
 
             <!-- Deuxième bloc -->
-            <div class="grid grid-cols-1 md:items-center gap-y-8 md:grid-cols-2 md:gap-x-16 mt-20">
-                <div class="text-center md:text-left lg:pr-16 order-2 md:order-1">
-                    <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl xl:text-5xl font-pj dark:text-white">
-                        Une Approche Centrée Client
+            <div class="grid grid-cols-1 md:items-center gap-y-12 md:grid-cols-2 md:gap-x-16 mt-20">
+                <div class="order-2 md:order-1">
+                    <h2 class="text-3xl font-bold text-white sm:text-4xl xl:text-5xl font-pj dark:text-white">
+                        Une Approche
+                        <span class="bg-gradient-to-r from-blue-200 to-white bg-clip-text text-transparent">
+                            Centrée Client
+                        </span>
                     </h2>
-                    <p class="mt-4 text-lg text-gray-600 sm:mt-8 font-pj dark:text-gray-400">
+
+                    <p class="mt-8 text-lg text-white/80 dark:text-gray-300">
                         Notre priorité est votre satisfaction. Nous travaillons en étroite collaboration avec vous pour
                         créer
                         un site web qui répond parfaitement à vos besoins et objectifs commerciaux.
                     </p>
 
-                    <!-- Liste des avantages -->
-                    <div class="mt-8 space-y-4">
-                        <div class="flex items-center space-x-3">
+                    <div class="mt-8 grid gap-6">
+                        <div v-for="(service, index) in services" :key="index" class="relative group">
                             <div
-                                class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                                <i class='bx bx-time text-2xl text-blue-600 dark:text-blue-400'></i>
+                                class="absolute -inset-4 bg-white/10 dark:bg-blue-900/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300">
                             </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Livraison Rapide</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Site web livré en 24h</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center space-x-3">
                             <div
-                                class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                                <i class='bx bx-support text-2xl text-blue-600 dark:text-blue-400'></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Support Premium</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Assistance technique 7j/7</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center space-x-3">
-                            <div
-                                class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                                <i class='bx bx-refresh text-2xl text-blue-600 dark:text-blue-400'></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Mises à jour</h3>
-                                <p class="text-gray-600 dark:text-gray-400">Révisions illimitées pendant 30j</p>
+                                class="relative flex items-center p-4 bg-white/10 backdrop-blur-sm dark:bg-gray-800/50 rounded-xl shadow-sm group-hover:shadow-md transition-all duration-300">
+                                <div class="flex-shrink-0">
+                                    <div
+                                        class="flex items-center justify-center w-12 h-12 text-white dark:text-blue-400">
+                                        <i :class="service.icon" class="text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-semibold text-white dark:text-white">
+                                        {{ service.title }}
+                                    </h3>
+                                    <p class="mt-1 text-white/80 dark:text-gray-300">
+                                        {{ service.description }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="order-1 md:order-2">
-                    <img class="w-full max-w-md mx-auto transition-all duration-300 hover:scale-105 rounded-2xl shadow-lg dark:opacity-90"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features/1/illustration.png"
-                        alt="Illustration approche client" />
+                <!-- Image avec effet -->
+                <div class="relative order-1 md:order-2 group">
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur-2xl opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200">
+                    </div>
+                    <div class="relative overflow-hidden rounded-xl">
+                        <img class="w-full transition-transform duration-700 group-hover:scale-105"
+                            src="https://cdn.rareblocks.xyz/collection/clarity/images/features/1/illustration.png"
+                            alt="Illustration approche client" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -112,5 +126,46 @@
 </template>
 
 <script setup>
+const features = [
+    {
+        icon: 'bx bx-devices',
+        title: 'Design Responsive & Mobile First',
+        description: 'Sites web optimisés pour tous les appareils'
+    },
+    {
+        icon: 'bx bx-search-alt',
+        title: 'Optimisation SEO incluse',
+        description: 'Meilleur référencement naturel'
+    },
+    {
+        icon: 'bx bx-rocket',
+        title: 'Performance Optimale',
+        description: 'Temps de chargement ultra-rapide'
+    }
+];
 
+const services = [
+    {
+        icon: 'bx bx-time',
+        title: 'Livraison Rapide',
+        description: 'Site web livré en 24h'
+    },
+    {
+        icon: 'bx bx-support',
+        title: 'Support Premium',
+        description: 'Assistance technique 7j/7'
+    },
+    {
+        icon: 'bx bx-refresh',
+        title: 'Mises à jour',
+        description: 'Révisions illimitées pendant 30j'
+    }
+];
 </script>
+
+<style scoped>
+.bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+}
+</style>

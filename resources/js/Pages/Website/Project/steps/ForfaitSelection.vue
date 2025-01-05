@@ -30,19 +30,20 @@
                     localFormData.selectedForfait === forfait.id ? 'border-green-500 bg-green-50 dark:bg-green-900/50' : '',
                     'hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/50'
                 ]" @click="selectForfait(forfait)">
+                    <!-- Container pour les badges -->
+                    <div class="absolute -top-3 right-4 flex gap-2">
+                        <!-- Badge "Recommandé" -->
+                        <div v-if="forfait.recommended"
+                            class="px-4 py-1 bg-green-500 text-white rounded-full text-sm font-medium shadow-md">
+                            Recommandé
+                        </div>
 
-                    <!-- Ajouter un badge "Recommandé" -->
-                    <div v-if="forfait.recommended"
-                        class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-green-500 text-white rounded-full text-sm font-medium">
-                        Recommandé
-                    </div>
-
-                    <!-- Badge -->
-                    <div :class="[
-                        'absolute top-0 right-8 px-4 py-1 rounded-b-lg text-sm font-medium text-white',
-                        forfait.popular ? 'bg-green-500' : 'bg-green-700'
-                    ]">
-                        {{ forfait.badge }}
+                        <!-- Badge populaire/autre -->
+                        <div v-if="forfait.badge" class="px-4 py-1 rounded-full text-sm font-medium shadow-md" :class="[
+                            forfait.popular ? 'bg-blue-500 text-white' : 'bg-gray-700 text-white'
+                        ]">
+                            {{ forfait.badge }}
+                        </div>
                     </div>
 
                     <!-- En-tête du forfait -->
@@ -411,7 +412,7 @@ const TemplateSelection = [
         id: 'socialMedia',
         name: 'Réseaux Sociaux',
         description: 'Création Conseil et gestion de vos réseaux sociaux',
-        price: 179,
+        price: 199,
         icon: 'bx-share-alt'
     },
     {
@@ -425,7 +426,7 @@ const TemplateSelection = [
         id: 'ecommerce',
         name: 'E-commerce',
         description: 'Solution complète de vente en ligne',
-        price: 299,
+        price: 349,
         icon: 'bx-store'
     }
 ]

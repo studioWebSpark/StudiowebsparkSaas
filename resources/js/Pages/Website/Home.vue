@@ -1,21 +1,15 @@
 <template>
     <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
-        <Header 
-            :is-dark-mode="isDarkMode" 
-            :is-menu-open="isMenuOpen"
-            :is-mobile="isMobile"
-            :show-categories="showCategories"
-            @toggle-dark-mode="toggleDarkMode"
-            @toggle-menu="toggleMenu"
-            @toggle-categories="toggleCategories"
-            @show-categories="showCategories = true"
-            @hide-categories="hideCategories"
-        />
+        <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
+            :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
+            @toggle-categories="toggleCategories" @show-categories="showCategories = true"
+            @hide-categories="hideCategories" />
         <Hero />
-        <Brands />
         <Process />
         <Consept />
         <Pricing />
+        <Testimonials /> 
+        <Faq />
         <Cta />
         <Footer />
 
@@ -32,7 +26,9 @@ import Pricing from './componentsHome/Pricing.vue';
 import Hero from './componentsHome/Hero.vue';
 
 import Process from './componentsAbout/Process.vue';
-import Cta from './componentsAbout/Cta.vue';
+import Cta from './componentsHome/Cta.vue';
+import Testimonials from './componentsHome/Testimonials.vue';
+import Faq from './componentsHome/Faq.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);

@@ -13,7 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Admin\ProjectStatusController;
-use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\Admin\StatisticsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\RegisterController;
@@ -172,14 +172,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('projects.update-status');
 });
 
+
+
 Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    // ... autres routes admin ...
-
-    Route::get('/statistics', [App\Http\Controllers\Admin\StatisticsController::class, 'index'])
-        ->name('statistics.index');
-});
 
 // Nouvelles routes pour les dashboards
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
@@ -250,7 +245,7 @@ Route::post('/login', function (Request $request) {
     return back()->withErrors([
         'email' => 'Les identifiants fournis ne correspondent pas à nos enregistrements.',
     ])->withInput($request->except('password'));
-})->middleware('guest')->name('login');
+})->middleware('guest')->name('auth.login');
 
 // Route du dashboard admin protégée
 Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])
@@ -266,3 +261,44 @@ Route::get('/register', function () {
 Route::post('/register', [RegisterController::class, 'register'])
     ->middleware('guest')
     ->name('register.store');
+
+// Routes pour les pages légales
+Route::middleware(['web'])->group(function () {
+    Route::get('/mentions-legales', function () {
+        return Inertia::render('Website/Legal/MentionsLegales');
+    })->name('mentions-legales');
+
+    Route::get('/politique-confidentialite', function () {
+        return Inertia::render('Website/Legal/PolitiqueConfidentialite');
+    })->name('politique-confidentialite');
+
+    Route::get('/cgv', function () {
+        return Inertia::render('Website/Legal/Cgv');
+    })->name('cgv');
+
+    // Routes pour la newsletter
+    Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+        ->name('newsletter.subscribe');
+
+    Route::get('/newsletter/confirm/{token}', [NewsletterController::class, 'confirm'])
+        ->name('newsletter.confirm');
+
+    Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])
+        ->name('newsletter.unsubscribe');
+});
+
+Route::get('/mentions-legales', function () {
+    return Inertia::render('Website/Legal/MentionsLegales');
+})->name('mentions-legales');
+
+Route::get('/politique-confidentialite', function () {
+    return Inertia::render('Website/Legal/PolitiqueConfidentialite');
+})->name('politique-confidentialite');
+
+Route::get('/cgv', function () {
+    return Inertia::render('Website/Legal/Cgv');
+})->name('cgv');
+
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/confirm/{token}', [NewsletterController::class, 'confirm'])->name('newsletter.confirm');
+Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])->name('newsletter.unsubscribe');

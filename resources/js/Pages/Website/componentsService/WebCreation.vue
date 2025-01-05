@@ -1,5 +1,9 @@
 <template>
-    <div class="min-h-screen bg-white dark:bg-gray-900">
+    <div class="min-h-screen">
+        <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900 -z-10">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        </div>
+
         <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
             @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu" @toggle-categories="toggleCategories"
             @mouseover-services="handleMouseOver" @mouseleave-services="handleMouseLeave" />
@@ -7,15 +11,17 @@
         <CategoriesMenu v-if="showCategories" :is-dark-mode="isDarkMode" @mouseover="handleMouseOver"
             @mouseleave="handleMouseLeave" />
 
+
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 ">
             <div class="max-w-xl px-8 mx-auto text-center md:px-0 ">
-                <span class="text-base font-semibold tracking-wide text-indigo-600 dark:text-indigo-400 uppercase">
+                <span class="text-base font-semibold tracking-wide text-white uppercase">
                     Service : Création de Sites Web
                 </span>
-                <h2 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl xl:text-5xl font-pj">
+                <h2 class="mt-4 text-3xl font-bold text-white sm:text-4xl xl:text-5xl font-pj">
                     Des Solutions Web Professionnelles
                 </h2>
-                <p class="mt-4 text-lg font-normal text-gray-600 dark:text-gray-300 font-pj mb-14">
+                <p class="mt-4 text-lg font-normal text-white/90 font-pj mb-14">
                     Développement sur mesure de sites web modernes et performants
                 </p>
 
@@ -109,7 +115,7 @@ import { ref, onMounted } from 'vue';
 import Header from '../componentsHome/Header.vue';
 import Footer from '../componentsHome/Footer.vue';
 import CategoriesMenu from '../componentsHome/CategoriesMenu.vue';
-import Cta from '../componentsAbout/Cta.vue';
+import Cta from '../componentsHome/Cta.vue';
 import Process from '../componentsAbout/Process.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
@@ -152,3 +158,9 @@ const handleMouseLeave = () => {
     showCategories.value = false;
 };
 </script>
+<style scoped>
+.bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+}
+</style>

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\InseeTokenController;
 use App\Models\ProjectStatus;
+use App\Http\Controllers\OrderController;
 
 
 Route::post('/projects', [ProjectController::class, 'store']);
@@ -18,4 +19,8 @@ Route::middleware('api')->group(function () {
 
 Route::get('/project-statuses', function () {
     return ProjectStatus::select('order_number', 'status', 'progress')->get();
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/create-payment', [OrderController::class, 'createPaymentSession']);
 });
