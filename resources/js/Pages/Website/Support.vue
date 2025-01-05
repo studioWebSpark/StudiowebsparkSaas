@@ -1,16 +1,23 @@
 <template>
-    <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
-        <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
-            :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
-            @toggle-categories="toggleCategories" @show-categories="showCategories = true"
-            @hide-categories="hideCategories" />
-        <!-- ... reste du contenu ... -->
-    </div>
-    <HeroSupport />
-    <FaqSection />
-    <ContactOptions />
-    <Footer />
+    <div class="overflow-x-hidden relative">
+        <!-- Fond global avec motif -->
+        <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+        </div>
 
+        <!-- Contenu avec position relative -->
+        <div class="relative">
+            <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
+                :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
+                @toggle-categories="toggleCategories" @show-categories="showCategories = true"
+                @hide-categories="hideCategories" />
+
+            <HeroSupport />
+            <FaqSection />
+            <ContactOptions />
+            <Footer />
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -70,3 +77,10 @@ const hideCategories = () => {
     showCategories.value = false;
 };
 </script>
+
+<style scoped>
+.bg-grid-pattern {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+}
+</style>

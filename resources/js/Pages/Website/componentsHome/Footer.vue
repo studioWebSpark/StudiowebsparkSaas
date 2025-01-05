@@ -107,10 +107,8 @@ const isLoading = ref(false);
 const notification = ref({ show: false, message: '', type: '' });
 
 const socials = [
-    { name: 'LinkedIn', icon: 'bx bxl-linkedin', url: '#' },
-    { name: 'GitHub', icon: 'bx bxl-github', url: '#' },
-    { name: 'Twitter', icon: 'bx bxl-twitter', url: '#' },
-    { name: 'Instagram', icon: 'bx bxl-instagram', url: '#' }
+    { name: 'LinkedIn', icon: 'bx bxl-linkedin', url: 'https://www.linkedin.com/in/mesut-k-6a029b288/' },
+    { name: 'Instagram', icon: 'bx bxl-instagram', url: 'https://www.instagram.com/studiowebspark_1/' }
 ];
 
 const services = [
@@ -122,8 +120,8 @@ const services = [
 
 const resources = [
     { name: 'À propos', url: '/about' },
-    { name: 'Contact', url: '/contact' },
-    { name: 'FAQ', url: '/faq' }
+    { name: 'Support', url: '/support' },
+    { name: 'Tarifs', url: '/tarifs' }
 ];
 
 const legalLinks = [

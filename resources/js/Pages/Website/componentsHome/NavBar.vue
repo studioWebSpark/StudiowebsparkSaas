@@ -26,6 +26,7 @@
                 <nav-link href="/about" title="à propos">À propos</nav-link>
                 <nav-link href="#" title="services" @click.prevent="$emit('toggle-categories')">Nos Services</nav-link>
                 <nav-link href="/tarifs" title="tarifs">Tarifs</nav-link>
+                <nav-link href="/support" title="tarifs">Support</nav-link>
               </div>
 
               <!-- Right Side Menu -->

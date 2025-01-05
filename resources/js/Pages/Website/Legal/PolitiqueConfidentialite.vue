@@ -1,155 +1,171 @@
 <template>
-    <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
-    <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
-        @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
-        @toggle-categories="toggleCategories" @show-categories="showCategories = true"
-        @hide-categories="hideCategories" />
-
-   
-
-        <!-- En-tête décoratif -->
-        <div class="relative bg-gradient-to-b from-indigo-600 to-indigo-800 dark:from-indigo-900 dark:to-purple-900">
-            <div class="absolute inset-0 bg-grid-white/[0.05] bg-grid-pattern"></div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-                <h1 class="text-4xl font-bold text-white text-center">
-                    Politique de Confidentialité
-                </h1>
-                <p class="mt-4 text-indigo-100 text-center max-w-2xl mx-auto">
-                    Comment nous protégeons et utilisons vos données personnelles
-                </p>
-            </div>
+    <div class="overflow-x-hidden relative">
+        <!-- Fond global avec motif -->
+        <div class="fixed inset-0 bg-blue-600">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
         </div>
 
-        <!-- Contenu principal -->
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-8">
-                    <!-- Introduction -->
-                    <section class="mb-12">
-                        <div class="flex items-center mb-6">
-                            <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
-                                <i class='bx bx-shield text-2xl text-indigo-600 dark:text-indigo-400'></i>
-                            </div>
-                            <h2 class="ml-4 text-2xl font-semibold text-gray-900 dark:text-white">
-                                Introduction
-                            </h2>
-                        </div>
-                        <div class="prose dark:prose-invert max-w-none">
-                            <p>La protection de vos données personnelles est une priorité pour nous. Cette politique
-                                détaille comment nous collectons, utilisons et protégeons vos informations conformément
-                                au RGPD.</p>
-                        </div>
-                    </section>
+        <div class="relative">
+            <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
+                :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
+                @toggle-categories="toggleCategories" @show-categories="showCategories = true"
+                @hide-categories="hideCategories" />
 
-                    <!-- Données collectées -->
-                    <section class="mb-12">
-                        <div class="flex items-center mb-6">
-                            <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                                <i class='bx bx-data text-2xl text-blue-600 dark:text-blue-400'></i>
-                            </div>
-                            <h2 class="ml-4 text-2xl font-semibold text-gray-900 dark:text-white">
-                                Données collectées
-                            </h2>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="flex items-start space-x-4">
-                                    <div class="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                                        <i class='bx bx-user text-xl text-blue-600 dark:text-blue-400'></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-medium text-gray-900 dark:text-white">Données d'identification
-                                        </h3>
-                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Nom, prénom, email</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4">
-                                    <div class="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                                        <i class='bx bx-phone text-xl text-blue-600 dark:text-blue-400'></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-medium text-gray-900 dark:text-white">Données de contact</h3>
-                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Adresse, téléphone</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4">
-                                    <div class="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                                        <i class='bx bx-network-chart text-xl text-blue-600 dark:text-blue-400'></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-medium text-gray-900 dark:text-white">Données de connexion</h3>
-                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Adresse IP, logs</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start space-x-4">
-                                    <div class="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-                                        <i class='bx bx-cookie text-xl text-blue-600 dark:text-blue-400'></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="font-medium text-gray-900 dark:text-white">Cookies</h3>
-                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Préférences,
-                                            statistiques</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Vos droits -->
-                    <section class="mb-12">
-                        <div class="flex items-center mb-6">
-                            <div class="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
-                                <i class='bx bx-check-shield text-2xl text-green-600 dark:text-green-400'></i>
-                            </div>
-                            <h2 class="ml-4 text-2xl font-semibold text-gray-900 dark:text-white">
-                                Vos droits
-                            </h2>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div v-for="(droit, index) in droits" :key="index"
-                                class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                                <h3 class="font-medium text-gray-900 dark:text-white mb-2">{{ droit.titre }}</h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ droit.description }}</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Contact -->
-                    <section class="mb-12">
-                        <div class="flex items-center mb-6">
-                            <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                                <i class='bx bx-envelope text-2xl text-purple-600 dark:text-purple-400'></i>
-                            </div>
-                            <h2 class="ml-4 text-2xl font-semibold text-gray-900 dark:text-white">
-                                Nous contacter
-                            </h2>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                Pour exercer vos droits ou pour toute question concernant vos données personnelles :
-                            </p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</h3>
-                                    <p class="mt-2 text-gray-900 dark:text-white">contact@devmarketer.fr</p>
-                                </div>
-                                <div>
-                                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Adresse</h3>
-                                    <p class="mt-2 text-gray-900 dark:text-white">[Votre Adresse]</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+            <!-- En-tête -->
+            <div class="relative py-24">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h1 class="text-4xl font-bold text-white text-center">
+                        Politique de Confidentialité
+                    </h1>
+                    <p class="mt-4 text-white/90 text-center max-w-2xl mx-auto">
+                        Comment nous protégeons et utilisons vos données personnelles
+                    </p>
                 </div>
             </div>
 
-            <!-- Pied de page -->
-            <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                Dernière mise à jour : {{ new Date().toLocaleDateString('fr-FR') }}
+            <!-- Contenu principal -->
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-blue-500/20 backdrop-blur-sm rounded-[32px] overflow-hidden">
+                    <div class="p-8">
+                        <!-- Introduction -->
+                        <section class="mb-12">
+                            <div class="flex items-center mb-6">
+                                <div class="p-3 bg-white/10 rounded-[32px]">
+                                    <i class='bx bx-shield text-2xl text-white'></i>
+                                </div>
+                                <h2 class="ml-4 text-2xl font-semibold text-white">
+                                    Introduction
+                                </h2>
+                            </div>
+                            <div class="text-white/90">
+                                <p>La protection de vos données personnelles est une priorité pour nous...</p>
+                            </div>
+                        </section>
+
+                        <!-- Données collectées -->
+                        <section class="mb-12">
+                            <div class="flex items-center mb-6">
+                                <div class="p-3 bg-white/10 rounded-[32px]">
+                                    <i class='bx bx-data text-2xl text-white'></i>
+                                </div>
+                                <h2 class="ml-4 text-2xl font-semibold text-white">
+                                    Données collectées
+                                </h2>
+                            </div>
+                            <div class="bg-blue-500/20 backdrop-blur-sm rounded-[32px] p-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="p-3 bg-white/10 rounded-[32px]">
+                                            <i class='bx bx-user text-xl text-white'></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-white">
+                                                Données d'identification
+                                            </h3>
+                                            <p class="mt-1 text-sm text-white/70">
+                                                Nom, prénom, email
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-4">
+                                        <div class="p-3 bg-white/10 rounded-[32px]">
+                                            <i class='bx bx-phone text-xl text-white'></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-white">
+                                                Données de contact
+                                            </h3>
+                                            <p class="mt-1 text-sm text-white/70">
+                                                Adresse, téléphone
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-4">
+                                        <div class="p-3 bg-white/10 rounded-[32px]">
+                                            <i class='bx bx-network-chart text-xl text-white'></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-white">
+                                                Données de connexion
+                                            </h3>
+                                            <p class="mt-1 text-sm text-white/70">
+                                                Adresse IP, logs
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-4">
+                                        <div class="p-3 bg-white/10 rounded-[32px]">
+                                            <i class='bx bx-cookie text-xl text-white'></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-white">
+                                                Cookies
+                                            </h3>
+                                            <p class="mt-1 text-sm text-white/70">
+                                                Préférences, statistiques
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Vos droits -->
+                        <section class="mb-12">
+                            <div class="flex items-center mb-6">
+                                <div class="p-3 bg-white/10 rounded-[32px]">
+                                    <i class='bx bx-check-shield text-2xl text-white'></i>
+                                </div>
+                                <h2 class="ml-4 text-2xl font-semibold text-white">
+                                    Vos droits
+                                </h2>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div v-for="(droit, index) in droits" :key="index"
+                                    class="bg-blue-500/20 backdrop-blur-sm rounded-[32px] p-6">
+                                    <h3 class="font-medium text-white mb-2">{{ droit.titre }}</h3>
+                                    <p class="text-white/90">{{ droit.description }}</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Contact -->
+                        <section class="mb-12">
+                            <div class="flex items-center mb-6">
+                                <div class="p-3 bg-white/10 rounded-[32px]">
+                                    <i class='bx bx-envelope text-2xl text-white'></i>
+                                </div>
+                                <h2 class="ml-4 text-2xl font-semibold text-white">
+                                    Nous contacter
+                                </h2>
+                            </div>
+                            <div class="bg-blue-500/20 backdrop-blur-sm rounded-[32px] p-6">
+                                <p class="text-white/90 mb-4">
+                                    Pour exercer vos droits ou pour toute question concernant vos données personnelles :
+                                </p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h3 class="text-sm font-medium text-white/70">Email</h3>
+                                        <p class="mt-2 text-white">studiowebspark@gmail.com</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-medium text-white/70">Adresse</h3>
+                                        <p class="mt-2 text-white">Les Merles 62219 Longuenesse</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Pied de page -->
+                <div class="mt-8 text-center text-sm text-white/70">
+                    Dernière mise à jour : {{ new Date().toLocaleDateString('fr-FR') }}
+                </div>
             </div>
         </div>
+        <Footer />
     </div>
-    <Footer />
 </template>
 
 <script setup>
@@ -236,7 +252,7 @@ const hideCategories = () => {
 
 <style scoped>
 .bg-grid-pattern {
-    background-image: radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0);
-    background-size: 32px 32px;
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
 }
 </style>
