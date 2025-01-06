@@ -142,7 +142,7 @@ const features = [
         name: "Maintenance offerte",
         starter: false,
         standard: false,
-        premium: "3 mois"
+        premium: "6 mois"
     }
 ];
 </script>

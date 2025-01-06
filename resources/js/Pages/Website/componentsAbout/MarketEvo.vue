@@ -15,10 +15,8 @@
             <div class="grid grid-cols-1 gap-8 mt-10 text-center lg:mt-24 sm:gap-x-8 md:grid-cols-3">
                 <div
                     class="transform transition-all duration-300 hover:scale-105 p-6 rounded-[32px] bg-blue-500/20 backdrop-blur-sm">
-                    <h3 class="font-bold text-7xl">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-blue-600">
-                            92%
-                        </span>
+                    <h3 class="font-bold text-7xl text-white">
+                        92%
                     </h3>
                     <p class="mt-4 text-xl font-medium text-white">
                         des consommateurs recherchent les entreprises en ligne avant tout achat
@@ -30,10 +28,8 @@
 
                 <div
                     class="transform transition-all duration-300 hover:scale-105 p-6 rounded-[32px] bg-blue-500/20 backdrop-blur-sm">
-                    <h3 class="font-bold text-7xl">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-blue-600">
-                            67%
-                        </span>
+                    <h3 class="font-bold text-7xl text-white">
+                        67%
                     </h3>
                     <p class="mt-4 text-xl font-medium text-white">
                         des PME considèrent leur site web comme crucial pour leur croissance
@@ -45,10 +41,8 @@
 
                 <div
                     class="transform transition-all duration-300 hover:scale-105 p-6 rounded-[32px] bg-blue-500/20 backdrop-blur-sm">
-                    <h3 class="font-bold text-7xl">
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-blue-600">
-                            2.3s
-                        </span>
+                    <h3 class="font-bold text-7xl text-white">
+                        2.3s
                     </h3>
                     <p class="mt-4 text-xl font-medium text-white">
                         temps de chargement maximum attendu par les utilisateurs

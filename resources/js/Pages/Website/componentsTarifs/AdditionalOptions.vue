@@ -31,32 +31,7 @@
             </div>
 
             <!-- Plans de maintenance -->
-            <div class="mt-16">
-                <h3 class="text-2xl font-bold text-center text-white mb-8">
-                    Plans de maintenance annuelle
-                </h3>
-                <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:max-w-4xl lg:mx-auto">
-                    <div v-for="plan in maintenancePlans" :key="plan.id" @click="selectMaintenancePlan(plan)"
-                        class="bg-blue-500/20 backdrop-blur-sm rounded-[32px] p-6 transition-all duration-200 cursor-pointer"
-                        :class="[
-                            selectedPlan === plan.id
-                                ? 'bg-blue-500/30 ring-2 ring-white'
-                                : 'hover:bg-blue-500/30'
-                        ]">
-                        <h4 class="text-xl font-bold text-white mb-4">{{ plan.name }}</h4>
-                        <p class="text-white/90 mb-6">{{ plan.description }}</p>
-                        <div class="text-3xl font-bold text-white mb-6">
-                            {{ plan.price }}€<span class="text-base font-normal text-white/70">/an</span>
-                        </div>
-                        <ul class="space-y-3">
-                            <li v-for="feature in plan.features" :key="feature" class="flex items-start gap-x-3">
-                                <i class='bx bx-check text-emerald-400 text-xl'></i>
-                                <span class="text-white/90">{{ feature }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </section>
 </template>
@@ -69,60 +44,27 @@ const TemplateSelection = [
         id: 'logoPhotos',
         name: 'Création de logo + Photos Pro',
         description: 'Design professionnel de votre identité visuelle',
-        price: 99,
+        price: 199,
         icon: 'bx-palette'
     },
     {
         id: 'socialMedia',
         name: 'Réseaux Sociaux',
         description: 'Création et gestion de vos réseaux sociaux',
-        price: 199,
+        price: 349,
         icon: 'bx-share-alt'
     },
-    {
-        id: 'Dashboard',
-        name: 'Dashboard (CRM)',
-        description: 'Suivi détaillé de vos performances',
-        price: 299,
-        icon: 'bx-line-chart'
-    },
+    
     {
         id: 'ecommerce',
-        name: 'E-commerce',
+        name: 'E-commerce & CRM',
         description: 'Solution complète de vente en ligne',
-        price: 349,
+        price: 899,
         icon: 'bx-store'
     }
 ];
 
-const maintenancePlans = [
-    {
-        id: 'basic',
-        name: 'Essentiel',
-        description: 'Maintenance de base annuelle',
-        price: 129,
-        features: [
-            'Mises à jour de sécurité',
-            'Sauvegardes mensuelles',
-            'Support par email',
-            'Temps de réponse sous 72h',
-            'Modifications mineures'
-        ]
-    },
-    {
-        id: 'pro',
-        name: 'Professionnel',
-        description: 'Maintenance complète annuelle',
-        price: 249,
-        features: [
-            'Mises à jour prioritaires',
-            'Sauvegardes hebdomadaires',
-            'Support prioritaire',
-            'Temps de réponse sous 24h',
-            'Modifications illimitées'
-        ]
-    }
-];
+
 
 const selectedPlan = ref(null);
 

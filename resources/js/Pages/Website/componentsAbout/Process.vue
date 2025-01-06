@@ -16,36 +16,34 @@
             </div>
 
             <div class="flex flex-col items-center max-w-md mx-auto mt-8 lg:mt-20 lg:flex-row lg:max-w-none gap-8">
-                <div v-for="(step, index) in steps" :key="index"
-                    class="relative flex-1 w-full overflow-hidden bg-blue-500/20 backdrop-blur-sm rounded-[32px] min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
-                    <div class="relative py-8 px-9 flex-1 flex flex-col z-10">
-                        <!-- Numéro d'étape -->
-                        <div
-                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-600 rounded-xl font-pj">
-                            {{ index + 1 }}
+                <template v-for="(step, stepIndex) in steps" :key="stepIndex">
+                    <div
+                        class="relative flex-1 w-full overflow-hidden bg-blue-500/20 backdrop-blur-sm rounded-[32px] min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
+                        <div class="relative py-8 px-9 flex-1 flex flex-col z-10">
+                            <div
+                                class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-600 rounded-xl font-pj">
+                                {{ stepIndex + 1 }}
+                            </div>
+
+                            <p class="mt-5 text-xl font-medium text-white font-pj">
+                                {{ step.title }}
+                            </p>
+
+                            <ul class="mt-4 space-y-2 text-white/90 flex-grow">
+                                <li v-for="(item, itemIndex) in step.items" :key="itemIndex" class="flex items-start">
+                                    <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
+                                    <span>{{ item }}</span>
+                                </li>
+                            </ul>
                         </div>
-
-                        <!-- Titre -->
-                        <p class="mt-5 text-xl font-medium text-white font-pj">
-                            {{ step.title }}
-                        </p>
-
-                        <!-- Liste des points -->
-                        <ul class="mt-4 space-y-2 text-white/90 flex-grow">
-                            <li v-for="(item, itemIndex) in step.items" :key="itemIndex" class="flex items-start">
-                                <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
-                                <span>{{ item }}</span>
-                            </li>
-                        </ul>
                     </div>
-                </div>
 
-                <!-- Séparateurs entre les cartes -->
-                <div v-if="index < steps.length - 1" class="hidden lg:block lg:-mx-2">
-                    <svg class="w-auto h-4 text-white/30" viewBox="0 0 81 16" fill="none" stroke="currentColor">
-                        <!-- ... lignes SVG ... -->
-                    </svg>
-                </div>
+                    <div v-if="stepIndex < steps.length - 1" class="hidden lg:block lg:-mx-2">
+                        <svg class="w-auto h-4 text-white/30" viewBox="0 0 81 16" fill="none" stroke="currentColor">
+                            <path d="M80.5 8H0.5" stroke-width="2"></path>
+                        </svg>
+                    </div>
+                </template>
             </div>
         </div>
     </section>

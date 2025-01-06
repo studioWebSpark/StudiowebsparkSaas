@@ -28,7 +28,8 @@
                 <div v-for="(plan, index) in plans" :key="index" class="relative group">
                     <!-- Badge avec z-index augmenté -->
                     <div class="absolute -top-3 right-4 z-10">
-                        <span class="px-3 py-1 text-xs font-medium text-white rounded-full bg-blue-600 shadow-sm">
+                        <span
+                            class="px-3 py-1 text-xs font-medium text-white rounded-full bg-black dark:bg-white dark:text-black shadow-sm">
                             {{ plan.badge }}
                         </span>
                     </div>
@@ -90,53 +91,58 @@ const selectedPeriod = ref('Mensuel');
 const plans = [
     {
         name: 'Starter',
-        description: 'Idéal pour les petites entreprises qui souhaitent établir leur présence en ligne.',
-        price: 990,
+        description: 'Site vitrine professionnel pour démarrer votre présence en ligne.',
+        price: 999,
         badge: 'Essentiel',
         features: [
-            'Site vitrine 3 pages (Accueil, À propos, Contact)',
+            'Site vitrine 3 pages',
             'Design responsive moderne',
+            'Formulaire de contact simple',
             'Optimisation SEO de base',
-            'Support 15 jours',
-            'Délai de livraison : 1-2 jours',
-            'Hébergement (optionnel)'
+            'Support 30 jours',
+            'Délai : 1-2 jours',
+            'Logo & Photos (en option )',
+            'Réseaux sociaux (en option )',
+           
         ]
     },
     {
         name: 'Standard',
-        description: 'Solution complète pour une présence web professionnelle et impactante.',
-        price: 1990,
+        description: 'Solution complète avec design premium et marketing digital.',
+        price: 2299,
         badge: 'Populaire',
         popular: true,
         features: [
-            'Application web 5-7 pages personnalisées',
-            'Design premium responsive avec animations',
-            'SEO avancé + Suivi de base',
-            'Support 30 jours',
-            'Délai de livraison : 3-4 jours',
-            'Intégration réseaux sociaux',
-            'Statistiques Réseaux sociaux + Rapport mensuel',
-            'Formulaire de contact personnalisé multi-pages',
-            'Hébergement (optionnel)',
+            'Site 5-7 pages personnalisées',
+            'Design premium avec animations',
+            'Logo & Photos professionnels inclus',
+            'Réseaux sociaux inclus avec stratégie',
+            'SEO avancé + Suivi mensuel',
+            'Support 60 jours premium',
+            'Délai : 3-4 jours',
+            'Statistiques & rapports mensuels',
+            'E-commerce & CRM (en option )',
         ]
     },
     {
         name: 'Premium',
-        description: 'Solution premium tout inclus avec accompagnement personnalisé pour une présence web exceptionnelle et des résultats garantis.',
-        price: 2990,
-        badge: 'Sur-mesure',
+        description: 'Solution complète premium avec e-commerce et accompagnement personnalisé.',
+        price: 3999,
+        badge: 'Tout Inclus',
         features: [
-            'Application web 10-12 pages personnalisées avec E-commerce inclus',
-            'Design exclusif sur-mesure avec animations premium',
-            'SEO Expert + Suivi mensuel personnalisé',
-            'Support prioritaire illimité 60 jours',
-            'Délai de livraison : 5-7 jours',
-            'Stratégie de contenu personnalisée',
-            'Blog professionnel + Newsletter automatisée',
-            'Maintenance 3 mois offerte',
-            'Audit marketing initial offert',
-            'Système de formulaires avancé',
-            'Hébergement premium 1 an offert'
+            'Site 10-12 pages sur-mesure',
+            'E-commerce & CRM inclus',
+            'Logo & Photos Pro inclus',
+            'Réseaux sociaux inclus',
+            'Design exclusif premium',
+            'SEO Expert avec suivi personnalisé',
+            'Support VIP illimité 90 jours',
+            'Blog professionnel intégré',
+            'Newsletter automatisée',
+            'Audit marketing complet',
+            'Maintenance 1 an incluse',
+            'Hébergement 1 an inclus',
+            'Délai : 1-2 semaines'
         ]
     }
 ];
@@ -155,7 +161,7 @@ const guarantees = [
     {
         icon: 'bx bx-support',
         title: 'Support premium',
-        description: 'Selon forfait choisi'
+        description: 'Support jusqu à 90 jours'
     },
     {
         icon: 'bx bx-lock-alt',

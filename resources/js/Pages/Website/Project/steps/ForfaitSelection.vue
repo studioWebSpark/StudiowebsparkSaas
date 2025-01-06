@@ -344,58 +344,63 @@ const forfaits = [
     {
         id: 'starter',
         name: 'Starter',
-        price: 990,
+        price: 999,
         badge: 'Essentiel',
-        description: 'Idéal pour les petites entreprises qui souhaitent établir leur présence en ligne.',
+        description: 'Site vitrine professionnel pour démarrer votre présence en ligne.',
         popular: false,
         features: [
-            'Site vitrine 3 pages (Accueil, À propos, Contact)',
+            'Site vitrine 3 pages',
             'Design responsive moderne',
+            'Formulaire de contact simple',
             'Optimisation SEO de base',
-            'Support 15 jours',
-            'Délai de livraison : 1-2 jours',
-            'Hébergement (optionnel)'
+            'Support 30 jours',
+            'Délai : 1-2 jours',
+            'Logo & Photos (en option)',
+            'Réseaux sociaux (en option)',
+            'Hébergement (en option)'
         ]
     },
     {
         id: 'standard',
         name: 'Standard',
-        price: 1990,
+        price: 2299,
         badge: 'Populaire',
-        description: 'Solution complète pour une présence web professionnelle et impactante.',
+        description: 'Solution complète avec design premium et marketing digital.',
         popular: true,
         features: [
-            'Application web 5-7 pages personnalisées',
-            'Design premium responsive avec animations',
-            'SEO avancé + Suivi de base',
-            'Support 30 jours',
-            'Délai de livraison : 3-4 jours',
-            'Intégration réseaux sociaux',
-            'Statistiques Réseaux sociaux + Rapport mensuel',
-            'Formulaire de contact personnalisé multi-pages',
-            'Hébergement (optionnel)',
+            'Site 5-7 pages personnalisées',
+            'Design premium avec animations',
+            'Logo & Photos professionnels inclus',
+            'Réseaux sociaux inclus avec stratégie',
+            'SEO avancé + Suivi mensuel',
+            'Support 60 jours premium',
+            'Délai : 3-4 jours',
+            'Statistiques & rapports mensuels',
+            'Audit marketing offert',
+            'E-commerce & CRM (en option)',
+            'Hébergement (en option)'
         ]
     },
     {
         id: 'premium',
         name: 'Premium',
-        price: 2990,
-        badge: 'Sur-mesure',
-        description: 'Solution premium tout inclus avec accompagnement personnalisé pour une présence web exceptionnelle et des résultats garantis.',
+        price: 3999,
+        badge: 'Tout Inclus',
+        description: 'Solution complète premium avec e-commerce et accompagnement personnalisé.',
         popular: false,
         features: [
-            'Application web 10-12 pages personnalisées avec E-commerce inclus',
-            'Design exclusif sur-mesure avec animations premium',
-            'SEO Expert + Suivi mensuel personnalisé',
-            'Support prioritaire illimité 60 jours',
-            'Délai de livraison : 5-7 jours',
-            'Stratégie de contenu personnalisée',
-            'Blog professionnel + Newsletter automatisée',
-            'Maintenance 3 mois offerte',
-            'Audit marketing initial offert',
-            'Stratégie de contenu personnalisée',
-            'Système de formulaires avancé',
-            'Hébergement premium 1 an offert'
+            'Site 10-12 pages sur-mesure',
+            'E-commerce & CRM inclus',
+            'Design exclusif premium',
+            'SEO Expert avec suivi personnalisé',
+            'Support VIP illimité 90 jours',
+            'Délai : 1-2 semaines',
+            'Blog professionnel intégré',
+            'Newsletter automatisée',
+            'Audit marketing complet',
+            'Maintenance 1 an incluse',
+            'Hébergement 1 an inclus',
+            
         ]
     }
 ]
@@ -405,60 +410,27 @@ const TemplateSelection = [
         id: 'logoPhotos',
         name: 'Création de logo + Photos Pro',
         description: 'Design professionnel de votre identité visuelle',
-        price: 99,
+        price: 199,
         icon: 'bx-image'
     },
     {
         id: 'socialMedia',
         name: 'Réseaux Sociaux',
         description: 'Création Conseil et gestion de vos réseaux sociaux',
-        price: 199,
+        price: 349,
         icon: 'bx-share-alt'
     },
-    {
-        id: 'Dashboard',
-        name: 'Dashboard (CRM)',
-        description: 'Suivi détaillé de vos performances',
-        price: 299,
-        icon: 'bx-line-chart'
-    },
+
     {
         id: 'ecommerce',
-        name: 'E-commerce',
-        description: 'Solution complète de vente en ligne',
-        price: 349,
+        name: 'E-commerce & CRM',
+        description: 'Solution complète de vente en ligne avec gestion des stocks (CRM)',
+        price: 899,
         icon: 'bx-store'
     }
 ]
 
-const maintenancePlans = [
-    {
-        id: 'basic',
-        name: 'Essentiel',
-        description: 'Maintenance de base annuelle',
-        price: 79,
-        features: [
-            'Mises à jour de sécurité',
-            'Sauvegardes mensuelles',
-            'Support par email',
-            'Temps de réponse sous 72h',
-            'Modifications mineures'
-        ]
-    },
-    {
-        id: 'pro',
-        name: 'Professionnel',
-        description: 'Maintenance complète annuelle',
-        price: 159,
-        features: [
-            'Mises à jour prioritaires',
-            'Sauvegardes hebdomadaires',
-            'Support prioritaire',
-            'Temps de réponse sous 24h',
-            'Modifications illimitées'
-        ]
-    }
-]
+
 
 const selectForfait = (forfait) => {
     if (forfait.disabled) return;

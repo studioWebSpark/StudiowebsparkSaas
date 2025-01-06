@@ -22,10 +22,10 @@
                     <p class="mt-4 text-base leading-7 text-white/90 font-pj">
                         Site web livré au minimum en 24heures et maximum en 7 jours
                     </p>
-
-                    <img class="object-cover w-full mx-auto mt-10 rounded-[32px] md:mx-0 shadow-lg transition-transform duration-300 hover:scale-105"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature.png"
-                        alt="Rapidité d'exécution illustration" />
+                    <div class="flex items-center justify-center mt-10 md:justify-start">
+                        <i
+                            class='bx bx-time-five text-8xl text-white/90 transition-transform duration-300 hover:scale-110'></i>
+                    </div>
                 </div>
 
                 <div
@@ -36,10 +36,10 @@
                     <p class="mt-4 text-base leading-7 text-white/90 font-pj">
                         Tarification claire et prévisible, sans frais cachés ni mauvaises surprises
                     </p>
-
-                    <img class="object-cover w-full mx-auto mt-10 rounded-[32px] md:mx-0 shadow-lg transition-transform duration-300 hover:scale-105"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature2.png"
-                        alt="Prix transparent illustration" />
+                    <div class="flex items-center justify-center mt-10 md:justify-start">
+                        <i
+                            class='bx bx-euro text-8xl text-white/90 transition-transform duration-300 hover:scale-110'></i>
+                    </div>
                 </div>
 
                 <div
@@ -50,10 +50,10 @@
                     <p class="mt-4 text-base leading-7 text-white/90 font-pj">
                         Technologies modernes et solutions performantes pour un site web optimal
                     </p>
-
-                    <img class="object-cover w-full mx-auto mt-10 md:mx-0 rounded-[32px] shadow-lg transition-transform duration-300 hover:scale-105"
-                        src="https://cdn.rareblocks.xyz/collection/clarity/images/features-v2/3/feature3.png"
-                        alt="Expertise technique illustration" />
+                    <div class="flex items-center justify-center mt-10 md:justify-start">
+                        <i
+                            class='bx bx-code-alt text-8xl text-white/90 transition-transform duration-300 hover:scale-110'></i>
+                    </div>
                 </div>
             </div>
         </div>

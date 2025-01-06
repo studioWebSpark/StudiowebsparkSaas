@@ -18,12 +18,29 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-24 gap-y-12">
-                <div class="">
-                    <img class="w-full rounded-[32px] shadow-xl"
-                        src="https://landingfoliocom.imgix.net/store/collection/saasui/images/features/11/feature-11.png"
-                        alt="Mesut Kircil - Fondateur" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Remplacement de l'image par des icônes animées -->
+                <div class="relative group">
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur-2xl opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200">
+                    </div>
+                    <div class="relative overflow-hidden rounded-xl bg-white/10 backdrop-blur-sm p-8">
+                        <div class="flex items-center justify-center h-80 relative">
+                            <!-- Icônes principales -->
+                            <i class='bx bx-rocket text-8xl text-white animate-float absolute top-8 left-1/4'></i>
+                            <i
+                                class='bx bx-laptop text-7xl text-white/80 animate-float-delayed absolute bottom-8 right-1/4'></i>
+
+                            <!-- Icônes secondaires -->
+                            <i
+                                class='bx bx-code-alt text-6xl text-white/60 animate-float-delayed-2 absolute top-1/3 right-8'></i>
+                            <i
+                                class='bx bx-line-chart text-5xl text-white/60 animate-float absolute bottom-1/3 left-8'></i>
+                            <i class='bx bx-bulb text-6xl text-white/70 animate-float-delayed bottom-16 left-1/2'></i>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div class="xl:pr-8">
                     <div class="max-w-lg lg:max-w-none">
@@ -65,18 +82,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-12">
-                            <a href="#contact" title="Discutons de votre projet"
-                                class="inline-flex items-center text-sm font-semibold text-white transition-all duration-200 group hover:text-white/80">
-                                Parlons de votre projet
-                                <svg class="w-5 h-5 ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200"
-                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="7" y1="17" x2="17" y2="7"></line>
-                                    <polyline points="7 7 17 7 17 17"></polyline>
-                                </svg>
-                            </a>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -88,5 +94,60 @@
 .bg-grid-pattern {
     background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
     background-size: 40px 40px;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+}
+
+@keyframes float-delayed {
+
+    0%,
+    100% {
+        transform: translateY(-20px) rotate(-5deg);
+    }
+
+    50% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+@keyframes float-delayed-2 {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+    animation: float-delayed 4s ease-in-out infinite;
+}
+
+.animate-float-delayed-2 {
+    animation: float-delayed-2 4s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+/* Effet de brillance */
+.group:hover .bx {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+    transition: all 0.3s ease;
 }
 </style>

@@ -55,17 +55,7 @@
                 </div>
             </div>
 
-            <!-- Section de contact -->
-            <div class="mt-12 text-center">
-                <p class="text-base text-white/90">
-                    Vous ne trouvez pas la réponse que vous cherchez ?
-                </p>
-                <a href="/contact"
-                    class="inline-flex items-center mt-4 text-base font-semibold text-white hover:text-blue-100 group">
-                    Contactez-nous
-                    <i class='bx bx-right-arrow-alt ml-2 text-xl transition-transform group-hover:translate-x-1'></i>
-                </a>
-            </div>
+           
         </div>
     </section>
 </template>

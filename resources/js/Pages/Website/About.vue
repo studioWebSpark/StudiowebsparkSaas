@@ -14,10 +14,9 @@
 
             <Vision />
             <Market />
+            <MarketEvo />
             <Solution />
             <Process />
-            <MarketEvo />
-            <Services />
             <Cta />
             <Footer />
         </div>

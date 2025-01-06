@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 const subject = ref('');
@@ -43,6 +43,26 @@ const submitForm = async () => {
         loading.value = false;
     }
 };
+
+// Fonction pour gérer le scroll
+const scrollToContact = () => {
+    const element = document.getElementById('contact-section');
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+    }
+};
+
+// Écouter les événements de hash dans l'URL
+onMounted(() => {
+    if (window.location.hash === '#contact') {
+        scrollToContact();
+    }
+});
+
+// Exposer la fonction pour l'utiliser ailleurs
+defineExpose({
+    scrollToContact
+});
 </script>
 
 <template>
@@ -71,43 +91,36 @@ const submitForm = async () => {
                 </div>
             </div>
 
-            <h2 class="text-3xl font-bold text-center text-white mb-12">Nous Contacter</h2>
+            <h2 class="text-3xl font-bold text-center text-white mb-12"> <a href="#contact" class="text-white">Nous
+                    Contacter </a></h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Chat -->
-                <div
-                    class="text-center p-6 bg-blue-500/20 backdrop-blur-sm rounded-[32px] transition-all duration-300 hover:bg-blue-500/30">
-                    <i class='bx bx-message-dots text-4xl text-white'></i>
-                    <h3 class="mt-4 text-xl font-semibold text-white">Chat en direct</h3>
-                    <p class="mt-2 text-white/90">Disponible 24/7 pour une assistance immédiate</p>
-                    <button
-                        class="mt-4 px-6 py-2 bg-white/20 text-white rounded-[32px] hover:bg-white/30 transition-all">
-                        Démarrer le chat
-                    </button>
-                </div>
+            <div id="contact-section" class="scroll-mt-20">
+                <div class="max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
+                        <!-- Email -->
+                        <div
+                            class="text-center p-6 bg-blue-500/20 backdrop-blur-sm rounded-[32px] transition-all duration-300 hover:bg-blue-500/30">
+                            <i class='bx bx-envelope text-4xl text-white'></i>
+                            <h3 class="mt-4 text-xl font-semibold text-white">Email</h3>
+                            <p class="mt-2 text-white/90">Réponse sous 24h ouvrées</p>
+                            <a href="mailto:studiowebspark@gmail.com"
+                                class="mt-4 inline-block px-6 py-2 bg-white/20 text-white rounded-[32px] hover:bg-white/30 transition-all">
+                                Envoyer un email
+                            </a>
+                        </div>
 
-                <!-- Email -->
-                <div
-                    class="text-center p-6 bg-blue-500/20 backdrop-blur-sm rounded-[32px] transition-all duration-300 hover:bg-blue-500/30">
-                    <i class='bx bx-envelope text-4xl text-white'></i>
-                    <h3 class="mt-4 text-xl font-semibold text-white">Email</h3>
-                    <p class="mt-2 text-white/90">Réponse sous 24h ouvrées</p>
-                    <a href="mailto:studiowebspark@gmail.com"
-                        class="mt-4 inline-block px-6 py-2 bg-white/20 text-white rounded-[32px] hover:bg-white/30 transition-all">
-                        Envoyer un email
-                    </a>
-                </div>
-
-                <!-- Téléphone -->
-                <div
-                    class="text-center p-6 bg-blue-500/20 backdrop-blur-sm rounded-[32px] transition-all duration-300 hover:bg-blue-500/30">
-                    <i class='bx bx-phone text-4xl text-white'></i>
-                    <h3 class="mt-4 text-xl font-semibold text-white">Téléphone</h3>
-                    <p class="mt-2 text-white/90">Lun-Ven, 9h-18h</p>
-                    <a href="tel:+33776717524"
-                        class="mt-4 inline-block px-6 py-2 bg-white/20 text-white rounded-[32px] hover:bg-white/30 transition-all">
-                        Appeler
-                    </a>
+                        <!-- Téléphone -->
+                        <div
+                            class="text-center p-6 bg-blue-500/20 backdrop-blur-sm rounded-[32px] transition-all duration-300 hover:bg-blue-500/30">
+                            <i class='bx bx-phone text-4xl text-white'></i>
+                            <h3 class="mt-4 text-xl font-semibold text-white">Téléphone</h3>
+                            <p class="mt-2 text-white/90">Lun-Ven, 9h-18h</p>
+                            <a href="tel:+33767175724"
+                                class="mt-4 inline-block px-6 py-2 bg-white/20 text-white rounded-[32px] hover:bg-white/30 transition-all">
+                                Appeler
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -134,7 +147,8 @@ const submitForm = async () => {
                             <label class="block text-sm font-medium text-white mb-2">Sujet</label>
                             <select v-model="subject" required
                                 class="w-full px-4 py-2 rounded-[32px] bg-white/20 border-white/20 text-white focus:border-white focus:ring-white">
-                                <option value="" disabled selected class="bg-blue-600">Sélectionnez un sujet</option>
+                                <option value="" disabled selected class="bg-blue-600">Sélectionnez un sujet
+                                </option>
                                 <option value="devis" class="bg-blue-600">Demande de devis</option>
                                 <option value="information" class="bg-blue-600">Demande d'information</option>
                                 <option value="other" class="bg-blue-600">Autre</option>
