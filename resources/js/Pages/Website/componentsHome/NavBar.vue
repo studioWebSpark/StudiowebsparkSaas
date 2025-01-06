@@ -13,10 +13,44 @@
             <div class="flex justify-between h-16 lg:h-[72px]">
               <!-- Logo -->
               <div class="flex items-center flex-shrink-0 -m-1">
-                <a href="#" title="" class="flex">
-                  <span class="sr-only">Rareblocks logo</span>
-                  <img class="w-auto h-8" src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/logo.svg"
-                    alt="" />
+                <a href="/" title="" class="flex items-center gap-3">
+                  <span class="sr-only">StudioWebSpark-logo</span>
+                  <svg class="w-auto h-10" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cercle extérieur -->
+                    <circle cx="20" cy="20" r="18.5" stroke="#111827" stroke-width="2.5"
+                      class="transition-all duration-300 ease-in-out" />
+
+                    <!-- Aiguille de la boussole -->
+                    <g transform="translate(20 20)">
+                      <!-- Flèche Nord -->
+                      <path d="M0 -13L4 0L-4 0Z" fill="#111827" class="transition-all duration-300 ease-in-out" />
+                      <!-- Flèche Sud -->
+                      <path d="M0 13L3 0L-3 0Z" fill="#374151" class="transition-all duration-300 ease-in-out" />
+                    </g>
+
+                    <!-- Point central -->
+                    <circle cx="20" cy="20" r="2" fill="#111827" class="transition-all duration-300 ease-in-out" />
+
+                    <!-- Lignes de repère -->
+                    <path d="M20 4L20 7" stroke="#111827" stroke-width="2" />
+                    <path d="M20 33L20 36" stroke="#111827" stroke-width="2" />
+                    <path d="M33 20L36 20" stroke="#111827" stroke-width="2" />
+                    <path d="M4 20L7 20" stroke="#111827" stroke-width="2" />
+
+                    <!-- Cercle intérieur -->
+                    <circle cx="20" cy="20" r="15" stroke="#111827" stroke-width="0.5"
+                      class="transition-all duration-300 ease-in-out" />
+                  </svg>
+
+                  <!-- Ajout du titre -->
+                  <div class="flex flex-col">
+                    <span class="text-lg font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                      Studio Webspark
+                    </span>
+                    <span class="text-xs text-gray-600 dark:text-gray-300 transition-colors duration-300">
+                      Agence Web
+                    </span>
+                  </div>
                 </a>
               </div>
 

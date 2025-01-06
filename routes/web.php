@@ -114,9 +114,7 @@ Route::get('/project/resume/{projectId}', [ProjectController::class, 'resumeProj
 
 // Routes Stripe publiques (hors middleware auth)
 Route::controller(StripeController::class)->group(function () {
-    Route::post('/stripe/create-session', 'createSession')->name('stripe.create-session');
-    Route::get('/payment/success', 'success')->name('payment.success');
-    Route::get('/payment/cancel', 'cancel')->name('payment.cancel');
+    Route::post('/stripe/create-session', [StripeController::class, 'createSession'])->name('stripe.create-session');
 });
 
 // Routes protégées
@@ -191,6 +189,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 Route::get('/payment/cancel', function () {
     return Inertia::render('Payment/PaymentCancel');
 })->name('payment.cancel');
+
+Route::get('/payment/success', function () {
+    return Inertia::render('Payment/PaymentSuccess');
+})->name('payment.success');
 
 Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
     // Dashboard

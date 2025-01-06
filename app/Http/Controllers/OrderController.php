@@ -45,9 +45,9 @@ class OrderController extends Controller
                 'user_id' => auth()->id(),
                 'order_number' => 'CMD-' . strtoupper(Str::random(8)),
                 'total_amount' => $totalAmount,
-                'status' => 'pending',
+                'status' => 'completed',
                 'stripe_session_id' => $sessionId,
-                'paid_at' => null,
+                'paid_at' => now(),
 
                 // Informations client
                 'client_type' => $projectData['personal']['clientType'],
@@ -292,6 +292,4 @@ class OrderController extends Controller
             ]);
         }
     }
-
-    
 }

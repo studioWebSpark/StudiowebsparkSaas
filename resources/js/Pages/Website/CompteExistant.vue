@@ -27,10 +27,8 @@
 
                 <!-- Boutons d'action -->
                 <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                    <Link href="/register"
-                        class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Créer un nouveau compte
-                    </Link>
+                    
+                    
 
                     <Link href="/"
                         class="inline-flex justify-center items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -39,14 +37,7 @@
                 </div>
 
                 <!-- Note supplémentaire -->
-                <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                    <p>
-                        Si vous avez des questions, n'hésitez pas à
-                        <Link href="/contact" class="text-blue-600 hover:text-blue-500 dark:text-blue-400">
-                        nous contacter
-                        </Link>
-                    </p>
-                </div>
+
             </div>
         </div>
     </div>

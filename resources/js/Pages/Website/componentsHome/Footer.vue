@@ -10,9 +10,46 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                 <!-- Logo et description -->
                 <div class="space-y-4">
-                    <div class="flex items-center space-x-2">
-                        <img src="/logo.svg" alt="Logo" class="h-8 w-auto" />
-                        <span class="text-xl font-bold text-white">StudioWebSpark ✨</span>
+                    <div class="flex items-center flex-shrink-0">
+                        <a href="/" title="" class="flex items-center gap-3">
+                            <span class="sr-only">StudioWebSpark-logo</span>
+                            <svg class="w-auto h-12" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Cercle extérieur -->
+                                <circle cx="20" cy="20" r="18.5" stroke="white" stroke-width="2.5"
+                                    class="transition-all duration-300 ease-in-out" />
+
+                                <!-- Aiguille de la boussole -->
+                                <g transform="translate(20 20)">
+                                    <path d="M0 -13L4 0L-4 0Z" fill="white"
+                                        class="transition-all duration-300 ease-in-out" />
+                                    <path d="M0 13L3 0L-3 0Z" fill="#E5E7EB"
+                                        class="transition-all duration-300 ease-in-out" />
+                                </g>
+
+                                <!-- Point central -->
+                                <circle cx="20" cy="20" r="2" fill="white"
+                                    class="transition-all duration-300 ease-in-out" />
+
+                                <!-- Lignes de repère -->
+                                <path d="M20 4L20 7" stroke="white" stroke-width="2" />
+                                <path d="M20 33L20 36" stroke="white" stroke-width="2" />
+                                <path d="M33 20L36 20" stroke="white" stroke-width="2" />
+                                <path d="M4 20L7 20" stroke="white" stroke-width="2" />
+
+                                <!-- Cercle intérieur -->
+                                <circle cx="20" cy="20" r="15" stroke="white" stroke-width="0.5"
+                                    class="transition-all duration-300 ease-in-out" />
+                            </svg>
+
+                            <div class="flex flex-col">
+                                <span class="text-xl font-bold text-white">
+                                    Studio Webspark
+                                </span>
+                                <span class="text-sm text-gray-200">
+                                    Agence Web
+                                </span>
+                            </div>
+                        </a>
                     </div>
                     <p class="text-white/90">
                         Développeur & Expert Marketing Digital. Transformez votre présence en ligne avec des solutions
@@ -77,7 +114,7 @@
                 </div>
             </div>
 
-            
+
 
             <!-- Copyright et liens légaux -->
             <div class="mt-16 pt-8 border-t border-white/10">

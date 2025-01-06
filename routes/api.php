@@ -7,6 +7,7 @@ use App\Http\Controllers\InseeTokenController;
 use App\Models\ProjectStatus;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\StripeController;
 
 
 Route::post('/projects', [ProjectController::class, 'store']);
@@ -22,8 +23,8 @@ Route::get('/project-statuses', function () {
     return ProjectStatus::select('order_number', 'status', 'progress')->get();
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/create-payment', [OrderController::class, 'createPaymentSession']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/create-payment', [StripeController::class, 'createSession']);
 });
 
 Route::post('/contact', [ContactController::class, 'send']);

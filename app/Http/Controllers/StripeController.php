@@ -12,6 +12,10 @@ use Inertia\Inertia;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaymentSuccessEmail;
+use App\Models\Order;
+use App\Models\Project;
+use App\Models\ProjectStatus;
+use App\Mail\OrderConfirmation;
 
 class StripeController extends Controller
 {
@@ -277,6 +281,68 @@ class StripeController extends Controller
                 'hasCompletedPayment' => false,
                 'error' => 'Erreur lors de la vérification du paiement'
             ], 500);
+        }
+    }
+
+    public function webhook(Request $request)
+    {
+        try {
+            $payload = $request->getContent();
+            $sig_header = $request->header('Stripe-Signature');
+            $endpoint_secret = config('services.stripe.webhook_secret');
+
+            $event = \Stripe\Webhook::constructEvent(
+                $payload,
+                $sig_header,
+                $endpoint_secret
+            );
+
+            if ($event->type === 'checkout.session.completed') {
+                $session = $event->data->object;
+
+                \Log::info('Webhook Stripe reçu:', ['session' => $session]);
+
+                $order = Order::where('stripe_session_id', $session->id)->first();
+
+                if ($order) {
+                    // 1. Mettre à jour le statut de la commande
+                    $order->update([
+                        'status' => 'completed',
+                        'paid_at' => now(),
+                        'payment_id' => $session->payment_intent
+                    ]);
+
+                    // 2. Créer l'entrée dans project_status
+                    $projectStatus = ProjectStatus::create([
+                        'order_id' => $order->id,
+                        'order_number' => $order->order_number,
+                        'status' => 'pending',
+                        'progress' => 0,
+                        'description' => 'Nouveau projet'
+                    ]);
+
+                    \Log::info('ProjectStatus créé:', [
+                        'order_number' => $order->order_number,
+                        'project_status_id' => $projectStatus->id
+                    ]);
+
+                    // 3. Envoyer l'email de confirmation
+                    Mail::to($order->email)->send(new OrderConfirmation($order));
+
+                    \Log::info('Traitement terminé avec succès', [
+                        'order_id' => $order->id,
+                        'project_status_id' => $projectStatus->id
+                    ]);
+                }
+            }
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            \Log::error('Erreur Webhook:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 }
