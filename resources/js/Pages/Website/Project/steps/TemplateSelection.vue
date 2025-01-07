@@ -247,17 +247,9 @@ const templates = [
     },
     {
         id: 'template5',
-        name: 'Agence immobilière Premium',
-        description: 'Template spécialisé pour agences immobilières',
-        image: '/images/templates/template-agence-immobiliere.png',
-        category: 'Business',
-        isPro: true
-    },
-    {
-        id: 'template6',
-        name: 'Agence Marketing',
-        description: 'Template spécialisé pour agences marketing',
-        image: '/images/templates/template-agence-marketing.png',
+        name: 'Restaurant Premium',
+        description: 'Template spécialisé pour restaurants',
+        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Restaurant',
         category: 'Business',
         isPro: true
     },
@@ -270,7 +262,6 @@ const templates = [
         isPro: true
     }
 ];
-
 const localFormData = ref({
     selectedTemplates: [],
     isValidated: false
