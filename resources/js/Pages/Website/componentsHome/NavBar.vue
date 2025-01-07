@@ -45,10 +45,10 @@
                   <!-- Ajout du titre -->
                   <div class="flex flex-col">
                     <span class="text-lg font-bold text-gray-900 dark:text-white transition-colors duration-300">
-                      Studio Webspark
+                      StudioWebspark
                     </span>
                     <span class="text-xs text-gray-600 dark:text-gray-300 transition-colors duration-300">
-                      Agence Web
+                      AgenceWeb
                     </span>
                   </div>
                 </a>
@@ -114,13 +114,41 @@
           <!-- Contenu du menu mobile existant inchangé -->
           <div class="flex items-center justify-between p-4 border-b"
             :class="{ 'border-gray-700': isDarkMode, 'border-gray-200': !isDarkMode }">
-            <img class="w-auto h-8" src="https://cdn.rareblocks.xyz/collection/clarity-ecommerce/images/logo.svg"
-              alt="" />
-            <button @click="toggleMenu" class="p-2" :class="{ 'text-white': isDarkMode, 'text-gray-500': !isDarkMode }">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <a href="/" title="" class="flex items-center gap-2">
+              <svg class="w-auto h-8" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Cercle extérieur -->
+                <circle cx="20" cy="20" r="18.5" stroke="#111827" stroke-width="2.5"
+                  :class="{ 'stroke-gray-100': isDarkMode, 'stroke-gray-900': !isDarkMode }"
+                  class="transition-all duration-300 ease-in-out" />
+
+                <!-- Aiguille de la boussole -->
+                <g transform="translate(20 20)">
+                  <path d="M0 -13L4 0L-4 0Z" :fill="isDarkMode ? '#F9FAFB' : '#111827'"
+                    class="transition-all duration-300 ease-in-out" />
+                  <path d="M0 13L3 0L-3 0Z" :fill="isDarkMode ? '#D1D5DB' : '#374151'"
+                    class="transition-all duration-300 ease-in-out" />
+                </g>
+
+                <!-- Point central -->
+                <circle cx="20" cy="20" r="2" :fill="isDarkMode ? '#F9FAFB' : '#111827'"
+                  class="transition-all duration-300 ease-in-out" />
+
+                <!-- Lignes de repère -->
+                <path d="M20 4L20 7" :stroke="isDarkMode ? '#F9FAFB' : '#111827'" stroke-width="2" />
+                <path d="M20 33L20 36" :stroke="isDarkMode ? '#F9FAFB' : '#111827'" stroke-width="2" />
+                <path d="M33 20L36 20" :stroke="isDarkMode ? '#F9FAFB' : '#111827'" stroke-width="2" />
+                <path d="M4 20L7 20" :stroke="isDarkMode ? '#F9FAFB' : '#111827'" stroke-width="2" />
+
+                <!-- Cercle intérieur -->
+                <circle cx="20" cy="20" r="15" :stroke="isDarkMode ? '#F9FAFB' : '#111827'" stroke-width="0.5"
+                  class="transition-all duration-300 ease-in-out" />
               </svg>
-            </button>
+
+              <!-- Titre pour mobile -->
+              <span class="text-sm font-bold" :class="{ 'text-white': isDarkMode, 'text-gray-900': !isDarkMode }">
+                StudioWebspark
+              </span>
+            </a>
           </div>
 
           <!-- Menu principal -->

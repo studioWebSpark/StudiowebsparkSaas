@@ -16,6 +16,7 @@
     @routes
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
 
 <body class="font-sans antialiased">

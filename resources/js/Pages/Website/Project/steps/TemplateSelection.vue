@@ -217,7 +217,7 @@ const templates = [
         id: 'template1',
         name: 'Business Basic',
         description: 'Template professionnel pour petites entreprises',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Business',
+        image: '/images/templates/template-business.png',
         category: 'Business',
         isPro: false
     },
@@ -225,7 +225,7 @@ const templates = [
         id: 'template2',
         name: 'E-commerce Pro',
         description: 'Solution complète pour boutique en ligne',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+E-commerce',
+        image: '/images/templates/template-ecommerce.png',
         category: 'E-commerce',
         isPro: true
     },
@@ -233,7 +233,7 @@ const templates = [
         id: 'template3',
         name: 'Portfolio Creative',
         description: 'Mise en page moderne pour artistes',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Portfolio',
+        image: '/images/templates/template-portfolio.png',
         category: 'Portfolio',
         isPro: false
     },
@@ -241,7 +241,7 @@ const templates = [
         id: 'template4',
         name: 'Blog Standard',
         description: 'Design épuré pour les blogueurs',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Blog',
+        image: '/images/templates/template-blog.png',
         category: 'Blog',
         isPro: false
     },
@@ -249,12 +249,11 @@ const templates = [
         id: 'template5',
         name: 'Restaurant Premium',
         description: 'Template spécialisé pour restaurants',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Restaurant',
+        image: '/images/templates/template-restaurant.png',
         category: 'Business',
         isPro: true
     }
 ];
-
 const localFormData = ref({
     selectedTemplates: [],
     isValidated: false

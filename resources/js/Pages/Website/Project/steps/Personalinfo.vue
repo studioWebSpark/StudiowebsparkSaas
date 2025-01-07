@@ -1,17 +1,18 @@
 <template>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div class="max-w-[1920px] mx-auto px-8 py-16">
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 sm:p-6">
+        <div class="max-w-[1920px] mx-auto px-4 sm:px-8 py-8 sm:py-16">
+            <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-3 sm:p-6">
                 <form @submit.prevent="validateForm" class="space-y-4 sm:space-y-6">
                     <!-- Type de client -->
-                    <div class="grid grid-cols-1 gap-4">
+                    <div class="grid grid-cols-1 gap-3 sm:gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Vous êtes ? *
                             </label>
                             <div class="relative">
-                                <div class="flex gap-4">
-                                    <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer border bg-white dark:bg-gray-700"
+                                <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                                    <label
+                                        class="relative flex items-center px-4 sm:px-6 py-3 rounded-md cursor-pointer border bg-white dark:bg-gray-700 w-full sm:w-auto"
                                         :class="{
                                             'border-gray-300 dark:border-gray-600': !touchedFields.clientType,
                                             'border-red-300 dark:border-red-500': touchedFields.clientType && formErrors.clientType,
@@ -22,9 +23,10 @@
                                         <span class="text-sm font-medium text-gray-900 dark:text-white">Un
                                             particulier</span>
                                         <i v-if="localFormData.clientType === 'individual'"
-                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl ml-2"></i>
+                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl ml-auto"></i>
                                     </label>
-                                    <label class="relative flex items-center px-6 py-3 rounded-md cursor-pointer border bg-white dark:bg-gray-700"
+                                    <label
+                                        class="relative flex items-center px-4 sm:px-6 py-3 rounded-md cursor-pointer border bg-white dark:bg-gray-700 w-full sm:w-auto"
                                         :class="{
                                             'border-gray-300 dark:border-gray-600': !touchedFields.clientType,
                                             'border-red-300 dark:border-red-500': touchedFields.clientType && formErrors.clientType,
@@ -35,7 +37,7 @@
                                         <span class="text-sm font-medium text-gray-900 dark:text-white">Un
                                             professionnel</span>
                                         <i v-if="localFormData.clientType === 'professional'"
-                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl ml-2"></i>
+                                            class="bx bx-check text-green-500 dark:text-green-400 text-xl ml-auto"></i>
                                     </label>
                                 </div>
                             </div>
@@ -46,7 +48,7 @@
                     </div>
 
                     <!-- Champs communs -->
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-3 sm:gap-4">
                         <!-- Nom -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -252,9 +254,9 @@
                     </template>
 
                     <!-- Navigation -->
-                    <div class="mt-8 flex justify-end">
+                    <div class="mt-6 sm:mt-8 flex justify-end">
                         <button v-if="isFormComplete" @click="handleNext"
-                            class="px-6 py-3 text-base lg:text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 border border-transparent rounded-xl shadow-sm">
+                            class="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 border border-transparent rounded-lg sm:rounded-xl shadow-sm">
                             Suivant
                         </button>
                     </div>
