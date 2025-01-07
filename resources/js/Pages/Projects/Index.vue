@@ -104,15 +104,7 @@ onMounted(async () => {
     }
 });
 
-const getStatusColor = (status) => {
-    const colors = {
-        'pending': 'bg-yellow-100 text-yellow-800',
-        'development': 'bg-blue-100 text-blue-800',
-        'production': 'bg-orange-100 text-orange-800',
-        'completed': 'bg-green-100 text-green-800'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-};
+
 
 const getStatusLabel = (status) => {
     const labels = {
@@ -164,15 +156,84 @@ const parseAmount = (amount) => {
 
 <template>
     <AppLayout title="Projets">
-        <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
-            <SideBar>
-                <div class="p-6 flex-1">
+        <div class="flex min-h-screen bg-gray-100 dark:bg-gray-900">
+            <SideBar />
+
+            <!-- Contenu principal -->
+            <div class="flex-1 w-full overflow-x-hidden mt-14">
+                <div class="p-4 sm:p-6 lg:p-8">
+                    <!-- Stats Cards - Ajout uniquement de cette section -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                        <!-- Total Projets -->
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Projets</h3>
+                                <i class='bx bx-folder text-xl text-blue-500'></i>
+                            </div>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ projects.length }}
+                            </p>
+                        </div>
+
+                        <!-- En Attente -->
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {{ PROJECT_STATUSES.pending.label }}
+                                </h3>
+                                <i class='bx bx-time text-xl text-gray-500'></i>
+                            </div>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ projects.filter(p => p.project_status?.status === 'pending').length }}
+                            </p>
+                        </div>
+
+                        <!-- En Développement -->
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {{ PROJECT_STATUSES.development.label }}
+                                </h3>
+                                <i class='bx bx-code-alt text-xl text-blue-500'></i>
+                            </div>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ projects.filter(p => p.project_status?.status === 'development').length }}
+                            </p>
+                        </div>
+
+                        <!-- En Production -->
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {{ PROJECT_STATUSES.production.label }}
+                                </h3>
+                                <i class='bx bx-loader text-xl text-purple-500'></i>
+                            </div>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ projects.filter(p => p.project_status?.status === 'production').length }}
+                            </p>
+                        </div>
+
+                        <!-- Terminés -->
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    {{ PROJECT_STATUSES.completed.label }}
+                                </h3>
+                                <i class='bx bx-check-circle text-xl text-green-500'></i>
+                            </div>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ projects.filter(p => p.project_status?.status === 'completed').length }}
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="max-w-full">
                         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                            <div class="p-6">
+                            <div class="p-4 sm:p-6">
                                 <div class="flex flex-col">
-                                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                    <div class="overflow-x-auto">
+                                        <div class="inline-block min-w-full align-middle">
                                             <div
                                                 class="shadow overflow-hidden border-b border-gray-200 dark:border-gray-700 sm:rounded-lg">
                                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -252,7 +313,7 @@ const parseAmount = (amount) => {
                                                                         day: '2-digit',
                                                                         hour: '2-digit',
                                                                         minute: '2-digit'
-                                                                }) : '' }}
+                                                                    }) : '' }}
                                                             </td>
                                                             <td class="px-6 py-4 whitespace-nowrap">
                                                                 <div class="flex flex-col space-y-3">
@@ -288,7 +349,7 @@ const parseAmount = (amount) => {
                         </div>
                     </div>
                 </div>
-            </SideBar>
+            </div>
         </div>
     </AppLayout>
 </template>

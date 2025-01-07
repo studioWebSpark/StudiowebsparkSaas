@@ -19,7 +19,7 @@ const formatPrice = (price) => {
     <AppLayout title="Mes Commandes">
         <SideBarClient>
             <div class="py-12 px-4 sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded- mt-10">
                     <div class="p-4 sm:p-6">
                         <h2 class="text-xl font-semibold mb-6">Historique de mes commandes</h2>
 
@@ -53,7 +53,15 @@ const formatPrice = (price) => {
                                 <tbody class="divide-y divide-gray-200">
                                     <tr v-for="order in orders" :key="order.id">
                                         <td class="px-6 py-4 whitespace-nowrap">{{ order.order_number }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ order.created_at }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {{ new Date(order.created_at).toLocaleString('fr-FR', {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                            }) }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ formatPrice(order.total_amount) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -84,7 +92,15 @@ const formatPrice = (price) => {
                                 <div class="flex justify-between items-start mb-2">
                                     <div>
                                         <p class="font-medium">Commande #{{ order.order_number }}</p>
-                                        <p class="text-sm text-gray-500">{{ order.created_at }}</p>
+                                        <p class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                            {{ new Date(order.created_at).toLocaleString('fr-FR', {
+                                                year: 'numeric',
+                                                month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                            }) }}
+                                        </p>
                                     </div>
                                     <span :class="{
                                         'px-2 py-1 text-xs rounded-full': true,

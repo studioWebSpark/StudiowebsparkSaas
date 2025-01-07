@@ -43,16 +43,10 @@
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
                             <!-- Bouton principal -->
                             <a href="/demarrer-projet"
-                                class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 hover:scale-105 hover:shadow-lg dark:shadow-blue-500/25">
-                                <span class="relative z-10">Démarrer Mon Projet</span>
-                                <div
-                                    class="absolute inset-0 bg-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-                                </div>
-                                <svg class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
+                                class="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-900 dark:text-white transition-all duration-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 hover:shadow-md">
+                                Démarrer Mon Projet
+                                <i
+                                    class='bx bx-right-arrow-alt ml-2 text-xl transition-transform group-hover:translate-x-1'></i>
                             </a>
 
                             <!-- Bouton secondaire -->

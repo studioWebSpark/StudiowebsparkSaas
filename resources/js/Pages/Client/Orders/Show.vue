@@ -37,12 +37,8 @@ const getStatusClass = (status) => {
             <div class="py-12 px-4 sm:px-6 lg:px-8">
                 <div class="max-w-7xl mx-auto">
                     <!-- En-tête -->
-                    <div class="mb-6">
-                        <Link :href="route('client.orders')"
-                            class="text-indigo-600 hover:text-indigo-900 mb-4 inline-flex items-center">
-                        <i class='bx bx-arrow-back mr-2'></i>
-                        Retour aux commandes
-                        </Link>
+                    <div class="mb-6 mt-2">
+                       
                         <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
                             Commande #{{ order.order_number }}
                         </h1>

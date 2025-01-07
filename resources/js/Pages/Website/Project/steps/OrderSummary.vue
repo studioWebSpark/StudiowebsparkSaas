@@ -159,8 +159,8 @@
             <div class="flex items-start space-x-6">
                 <!-- Aperçu du template -->
                 <div class="relative group flex-shrink-0 w-1/3">
-                    <img :src="selectedTemplateDetails?.thumbnail || selectedTemplateDetails?.image"
-                        :alt="selectedTemplateDetails?.name" class="w-full h-auto rounded-lg object-cover">
+                    <img :src="selectedTemplateDetails?.image" :alt="selectedTemplateDetails?.name"
+                        class="w-full h-auto rounded-lg object-cover">
 
                     <button @click="openPreview(selectedTemplateDetails)"
                         class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all">
@@ -283,33 +283,30 @@
                         {{ formatPrice(calculateTotal) }}€
                     </span>
                 </div>
-                <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    <p>* Maintenance : 3 premiers mois offerts</p>
-                    <p>Puis {{ forfait.maintenancePlan === 'pro' ? '99' : '49' }}€/an</p>
-                </div>
+                
             </div>
         </div>
 
         <!-- Section Authentification -->
-        <div v-if="isAllValid" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mt-6">
-            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+        <div v-if="isAllValid" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 mt-6">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-4">
                 Dernière étape avant le paiement
             </h2>
 
-            <div v-if="!isAuthenticated" class="space-y-6">
-                <p class="text-gray-600 dark:text-gray-400">
+            <div v-if="!isAuthenticated" class="space-y-4 sm:space-y-6">
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                     Pour finaliser votre commande, vous devez être connecté à votre compte.
                 </p>
 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <button @click="navigateToLogin"
-                        class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700">
+                        class="w-full inline-flex justify-center items-center px-4 sm:px-6 py-2.5 sm:py-3 border border-transparent rounded-md shadow-sm text-sm sm:text-base font-medium text-white bg-green-600 hover:bg-green-700 transition-colors">
                         <i class='bx bx-log-in mr-2'></i>
                         Se connecter
                     </button>
 
                     <button @click="navigateToRegister"
-                        class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        class="w-full inline-flex justify-center items-center px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                         <i class='bx bx-user-plus mr-2'></i>
                         Créer un compte
                     </button>
@@ -317,8 +314,9 @@
             </div>
 
             <div v-else class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div class="flex items-center space-x-4">
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex items-center space-x-4 mb-4 sm:mb-0">
                         <div class="flex-shrink-0">
                             <div
                                 class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-800 flex items-center justify-center">
@@ -335,15 +333,16 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-4">
+                    <div
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
                         <button @click="handleLogout"
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:bg-gray-500">
+                            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 dark:hover:bg-gray-500">
                             <i class='bx bx-transfer text-lg mr-2'></i>
                             Changer de compte
                         </button>
 
                         <button @click="startPaymentProcess"
-                            class="inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors">
                             Procéder au paiement
                             <i class='bx bx-right-arrow-alt ml-2'></i>
                         </button>
@@ -506,7 +505,7 @@ const templates = [
         id: 'template1',
         name: 'Business Basic',
         description: 'Template professionnel pour petites entreprises',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Business',
+        image: '/images/templates/template-business.png',
         category: 'Business',
         isPro: false
     },
@@ -514,7 +513,7 @@ const templates = [
         id: 'template2',
         name: 'E-commerce Pro',
         description: 'Solution complète pour boutique en ligne',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+E-commerce',
+        image: '/images/templates/template-ecommerce.png',
         category: 'E-commerce',
         isPro: true
     },
@@ -522,7 +521,7 @@ const templates = [
         id: 'template3',
         name: 'Portfolio Creative',
         description: 'Mise en page moderne pour artistes',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Portfolio',
+        image: '/images/templates/template-portfolio.png',
         category: 'Portfolio',
         isPro: false
     },
@@ -530,16 +529,32 @@ const templates = [
         id: 'template4',
         name: 'Blog Standard',
         description: 'Design épuré pour les blogueurs',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Blog',
+        image: '/images/templates/template-blog.png',
         category: 'Blog',
         isPro: false
     },
     {
         id: 'template5',
-        name: 'Restaurant Premium',
-        description: 'Template spécialisé pour restaurants',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Restaurant',
+        name: 'Agence immobilière Premium',
+        description: 'Template spécialisé pour agences immobilières',
+        image: '/images/templates/template-agence-immobiliere.png',
         category: 'Business',
+        isPro: true
+    },
+    {
+        id: 'template6',
+        name: 'Agence Marketing',
+        description: 'Template spécialisé pour agences marketing',
+        image: '/images/templates/template-agence-marketing.png',
+        category: 'Business',
+        isPro: true
+    },
+    {
+        id: 'template7',
+        name: 'Agence Web',
+        description: 'Template spécialisé pour agences web',
+        image: '/images/templates/template-agence-web.png',
+        category: 'E-commerce',
         isPro: true
     }
 ];

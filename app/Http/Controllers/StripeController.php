@@ -212,36 +212,63 @@ class StripeController extends Controller
     public function cancel(Request $request)
     {
         try {
-            Log::info('Paiement annulé', [
-                'user' => $request->user()->email,
+            Log::info('Début de l\'annulation du paiement', [
+                'user' => auth()->check() ? auth()->user()->email : 'Non authentifié',
                 'timestamp' => now()
             ]);
 
-            // Mettre à jour le statut du paiement
-            if ($paymentId = session('pending_payment_id')) {
-                Payment::where('id', $paymentId)
-                    ->update(['status' => 'cancelled']);
+            // Vérifier si l'utilisateur est authentifié
+            if (!auth()->check()) {
+                throw new \Exception('Utilisateur non authentifié');
             }
 
-            // Récupérer les données du projet
+            // Mettre à jour le statut du paiement avec plus de logging
+            if ($paymentId = session('pending_payment_id')) {
+                Log::info('Mise à jour du paiement', ['payment_id' => $paymentId]);
+
+                $payment = Payment::where('id', $paymentId)->first();
+                if ($payment) {
+                    $payment->update(['status' => 'cancelled']);
+                }
+            }
+
+            // Récupérer et logger les données du projet
             $projectData = session('projectData');
+            Log::info('Données du projet récupérées', ['projectData' => $projectData]);
 
-            // Envoyer l'email d'annulation
+            // Générer l'ID d'annulation
             $cancelId = 'CLC-' . strtoupper(substr(uniqid(), -6));
-            Mail::to($request->user()->email)->send(new PaymentCancelled(
-                $request->user(),
-                $cancelId,
-                $projectData
-            ));
 
-            // Retourner la vue avec les données
+            // Envoyer l'email avec try/catch dédié
+            try {
+                Mail::to(auth()->user()->email)
+                    ->send(new PaymentCancelled(
+                        auth()->user(),
+                        $cancelId,
+                        $projectData ?? []
+                    ));
+
+                Log::info('Email d\'annulation envoyé avec succès', [
+                    'to' => auth()->user()->email,
+                    'cancelId' => $cancelId
+                ]);
+            } catch (\Exception $emailError) {
+                Log::error('Erreur lors de l\'envoi de l\'email d\'annulation', [
+                    'error' => $emailError->getMessage(),
+                    'trace' => $emailError->getTraceAsString()
+                ]);
+            }
+
             return Inertia::render('Payment/PaymentCancel', [
                 'cancelId' => $cancelId,
                 'projectData' => $projectData,
                 'timestamp' => now()->format('Y-m-d H:i:s')
             ]);
         } catch (\Exception $e) {
-            Log::error('Erreur lors de l\'annulation: ' . $e->getMessage());
+            Log::error('Erreur lors de l\'annulation du paiement', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             return Inertia::render('Payment/PaymentCancel', [
                 'error' => 'Une erreur est survenue lors de l\'annulation'

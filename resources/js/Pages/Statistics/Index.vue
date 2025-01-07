@@ -1,40 +1,42 @@
 <template>
     <AppLayout title="Statistiques">
-        <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="flex flex-col md:flex-row min-h-screen bg-gray-100 dark:bg-gray-900">
             <SideBar>
-                <div class="p-6 flex-1 overflow-y-auto">
+                <div class="p-4 md:p-6 flex-1 overflow-y-auto mt-14">
                     <!-- Vue d'ensemble -->
-                    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mb-6">
+                    <div class="bg-white overflow-hidden shadow-xl rounded-[32px]  sm:rounded-lg p-4 md:p-6 mb-4 md:mb-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">Vue d'ensemble</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                             <!-- CA Total -->
-                            <div class="bg-purple-50 p-4 rounded-lg">
-                                <h4 class="text-lg font-medium text-purple-800">CA Total</h4>
-                                <p class="text-2xl font-bold text-purple-600">{{ formatPrice(stats.totalRevenue) }}</p>
+                            <div class="bg-purple-50 p-3 md:p-4 rounded-lg">
+                                <h4 class="text-base md:text-lg font-medium text-purple-800">CA Total</h4>
+                                <p class="text-xl md:text-2xl font-bold text-purple-600">
+                                    {{ formatPrice(stats.totalRevenue) }}
+                                </p>
                                 <p class="text-sm text-purple-600">Sur l'année {{ currentYear }}</p>
                             </div>
 
                             <!-- Commandes -->
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <h4 class="text-lg font-medium text-blue-800">Commandes</h4>
-                                <p class="text-2xl font-bold text-blue-600">{{ stats.totalOrders }}</p>
+                            <div class="bg-blue-50 p-3 md:p-4 rounded-lg">
+                                <h4 class="text-base md:text-lg font-medium text-blue-800">Commandes</h4>
+                                <p class="text-xl md:text-2xl font-bold text-blue-600">{{ stats.totalOrders }}</p>
                                 <div class="text-sm text-blue-600">
                                     <span class="font-medium">{{ stats.paidOrders }}</span> payées
                                 </div>
                             </div>
 
                             <!-- Panier moyen -->
-                            <div class="bg-green-50 p-4 rounded-lg">
-                                <h4 class="text-lg font-medium text-green-800">Panier moyen</h4>
-                                <p class="text-2xl font-bold text-green-600">
+                            <div class="bg-green-50 p-3 md:p-4 rounded-lg">
+                                <h4 class="text-base md:text-lg font-medium text-green-800">Panier moyen</h4>
+                                <p class="text-xl md:text-2xl font-bold text-green-600">
                                     {{ formatPrice(stats.averageOrderValue) }}
                                 </p>
                             </div>
 
                             <!-- Taux de conversion -->
-                            <div class="bg-yellow-50 p-4 rounded-lg">
-                                <h4 class="text-lg font-medium text-yellow-800">Taux de conversion</h4>
-                                <p class="text-2xl font-bold text-yellow-600">
+                            <div class="bg-yellow-50 p-3 md:p-4 rounded-lg">
+                                <h4 class="text-base md:text-lg font-medium text-yellow-800">Taux de conversion</h4>
+                                <p class="text-xl md:text-2xl font-bold text-yellow-600">
                                     {{ stats.conversionRate }}%
                                 </p>
                             </div>
@@ -308,7 +310,7 @@
                                 <h4 class="text-lg font-medium text-gray-800">Revenu net final</h4>
                                 <p class="text-2xl font-bold text-gray-900">
                                     {{ formatPrice(stats.totalRevenue - stats.charges_sociales.total_charges -
-                                        stats.stripe.fees - 31.99) }}
+                                    stats.stripe.fees - 31.99) }}
                                 </p>
                                 <p class="text-sm text-gray-500">CA - (Charges sociales + Frais + Abonnements)</p>
                             </div>
