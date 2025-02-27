@@ -70,17 +70,18 @@
                 <!-- Mobile Menu Button -->
                 <button type="button"
                   :class="['p-2 -m-2 transition-all duration-200 lg:hidden', isDarkMode ? 'hover:text-gray-300 text-white' : 'hover:text-gray-700 text-gray-900']"
-                  @click="toggleMenu">
+                  @click="toggleMenu" aria-label="Ouvrir le menu de navigation">
                   <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
+                    stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
 
                 <!-- Dark Mode Toggle -->
-                <button @click="$emit('toggle-dark-mode')" class="text-gray-900 dark:text-white">
-                  <i v-if="!isDarkMode" class='bx bx-sun text-yellow-500 text-3xl'></i>
-                  <i v-else class='bx bxs-moon text-3xl'></i>
+                <button @click="$emit('toggle-dark-mode')" class="text-gray-900 dark:text-white"
+                  aria-label="Basculer en mode sombre">
+                  <i v-if="!isDarkMode" class='bx bx-sun text-yellow-500 text-3xl' aria-hidden="true"></i>
+                  <i v-else class='bx bxs-moon text-3xl' aria-hidden="true"></i>
                 </button>
 
                 <!-- Auth Links - Desktop Only -->
@@ -188,7 +189,7 @@
                   Tarifs
                 </nav-link>
               </li>
-               <li>
+              <li>
                 <nav-link href="/support" title="support" class="block py-3 text-lg font-medium border-b" :class="{
                   'text-white border-gray-700': isDarkMode,
                   'text-gray-900 border-gray-200': !isDarkMode

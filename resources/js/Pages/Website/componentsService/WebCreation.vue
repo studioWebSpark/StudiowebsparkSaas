@@ -52,28 +52,7 @@
                     </ul>
                 </div>
 
-                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                        Site E-commerce
-                    </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">
-                        Vendez vos produits en ligne avec une boutique performante.
-                    </p>
-                    <ul class="space-y-2">
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
-                            Gestion des produits
-                        </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
-                            Paiement sécurisé
-                        </li>
-                        <li class="flex items-center text-gray-600 dark:text-gray-400">
-                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
-                            Suivi des commandes
-                        </li>
-                    </ul>
-                </div>
+
 
                 <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -97,6 +76,31 @@
                         </li>
                     </ul>
                 </div>
+
+                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                        CRM
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                        Gérez efficacement vos relations clients et optimisez vos ventes.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                            Suivi client personnalisé
+                        </li>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                            Automatisation des processus
+                        </li>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
+                            Analyses et rapports détaillés
+                        </li>
+                    </ul>
+                </div>
+
+
             </div>
         </div>
 

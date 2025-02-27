@@ -1,0 +1,202 @@
+<template>
+    <div class="loading-screen" v-if="show">
+        <div class="logo-container">
+            <img src="/favicon.svg" alt="StudioWebspark Logo" class="logo">
+            <div class="brand-info">
+                <p class="brand-name">StudioWebspark</p>
+                <p class="brand-tagline">Agence Web</p>
+            </div>
+        </div>
+
+        <div class="badge">
+            <span class="badge-dot"></span>
+            <span class="badge-text">Accompagnement dédié aux auto-entrepreneurs ⚡️</span>
+        </div>
+
+        <h1>Propulsez Votre Activité</h1>
+        <div class="subtitle">dans l'Ère Digitale 🚀</div>
+
+        <div class="loading">
+            Chargement<span class="spinner"></span>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const props = defineProps({
+    delay: {
+        type: Number,
+        default: 200
+    }
+});
+
+const show = ref(false);
+let timer = null;
+
+onMounted(() => {
+    timer = setTimeout(() => {
+        show.value = true;
+    }, props.delay);
+});
+
+onUnmounted(() => {
+    if (timer) clearTimeout(timer);
+});
+</script>
+
+<style scoped>
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #2563eb;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.loading-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+.logo-container {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.brand-name {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(to right, #ffffff, #bfdbfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+}
+
+.brand-tagline {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0.25rem 0 0;
+    color: #bfdbfe;
+    letter-spacing: 1px;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: white;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #bfdbfe;
+    line-height: 1.2;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border-radius: 9999px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.badge-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: linear-gradient(to right, #2563eb, #4f46e5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.loading {
+    margin-top: 2rem;
+    font-size: 0.875rem;
+    color: white;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 0.5rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 768px) {
+
+    h1,
+    .subtitle {
+        font-size: 2rem;
+    }
+
+    .logo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .brand-name {
+        font-size: 1.5rem;
+    }
+
+    .brand-tagline {
+        font-size: 1rem;
+    }
+}
+</style>

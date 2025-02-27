@@ -10,9 +10,8 @@
         <CategoriesMenu v-if="showCategories" :is-dark-mode="isDarkMode" @mouseover="handleMouseOver"
             @mouseleave="handleMouseLeave" />
 
-    
-
-            <div class="max-w-xl px-8 mx-auto text-center md:px-0 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="max-w-xl px-8 mx-auto text-center md:px-0">
                 <span class="text-base font-semibold tracking-wide text-white uppercase">
                     Service : Marketing Digital
                 </span>
@@ -25,86 +24,87 @@
             </div>
 
             <!-- Services marketing -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 relative">
-                <div class="p-6 border border-white/20 rounded-xl">
-                    <h3 class="text-xl font-semibold text-white mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                         SEO
                     </h3>
-                    <p class="text-white/90 mb-4">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
                         Optimisez votre visibilité sur les moteurs de recherche.
                     </p>
                     <ul class="space-y-2">
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Audit SEO complet
                         </li>
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Optimisation on-page
                         </li>
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Suivi des performances
                         </li>
                     </ul>
                 </div>
 
-                <div class="p-6 border border-white/20 rounded-xl">
-                    <h3 class="text-xl font-semibold text-white mb-4">
+                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                         Réseaux Sociaux
                     </h3>
-                    <p class="text-white/90 mb-4">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
                         Développez votre communauté et votre engagement.
                     </p>
                     <ul class="space-y-2">
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Stratégie social media
                         </li>
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Création de contenu
                         </li>
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Gestion des campagnes
                         </li>
                     </ul>
                 </div>
 
-                <div class="p-6 border border-white/20 rounded-xl">
-                    <h3 class="text-xl font-semibold text-white mb-4">
+                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                         Publicité en Ligne
                     </h3>
-                    <p class="text-white/90 mb-4">
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">
                         Campagnes publicitaires ciblées et performantes.
                     </p>
                     <ul class="space-y-2">
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Google Ads
                         </li>
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Facebook Ads
                         </li>
-                        <li class="flex items-center text-white/90">
-                            <i class='bx bx-check-circle text-white mr-2'></i>
+                        <li class="flex items-center text-gray-600 dark:text-gray-400">
+                            <i class='bx bx-check-circle text-green-500 mr-2'></i>
                             Analyse des résultats
                         </li>
                     </ul>
                 </div>
             </div>
-
-            <!-- Notre approche -->
-            <ProcessMarket />
-
-            <!-- CTA -->
-            <Cta />
         </div>
 
-        <Footer />
-    
+        <!-- Notre approche -->
+        <ProcessMarket />
+
+        <!-- CTA -->
+        <Cta />
+    </div>
+
+    <Footer />
+
 </template>
 
 <script setup>

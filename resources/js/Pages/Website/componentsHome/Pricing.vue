@@ -194,7 +194,7 @@ const plans = [
             '⚡️ Délai : 4-5 jours ouvrés',
             '🛟 Support technique premium 60 jours',
             '🔒 Certificat SSL inclus',
-            '📱 Adaptation mobile premium'
+
         ],
         options: [
             '📊 CRM intégré (+599€)',

@@ -1,35 +1,12 @@
 <template>
 
-  <Head>
-        <title>Tarifs - StudioWebspark | Solutions Web Abordables</title>
-        <meta name="description" 
-            content="Découvrez nos forfaits de création de sites web professionnels. Des solutions adaptées à tous les budgets avec un excellent rapport qualité-prix." />
-        <meta name="keywords" 
-            content="tarifs site web, prix site internet, forfaits web, création site web prix" />
-
-        <!-- Meta Tags pour Facebook et Instagram -->
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Tarifs - StudioWebspark | Solutions Web Abordables" />
-        <meta property="og:description" content="Des forfaits web adaptés à votre budget. Site professionnel à partir de X€." />
-        <meta property="og:url" content="https://studiowebspark.fr/tarifs" />
-        <meta property="og:site_name" content="StudioWebspark" />
-        
-        <!-- Meta Tags pour TikTok -->
-        <meta property="bytedance:description" content="Des forfaits web adaptés à votre budget. Site professionnel à partir de X€." />
-    </Head>
+    <Head title="Tarifs" />
 
     <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
-        <Header 
-            :is-dark-mode="isDarkMode" 
-            :is-menu-open="isMenuOpen"
-            :is-mobile="isMobile"
-            :show-categories="showCategories"
-            @toggle-dark-mode="toggleDarkMode"
-            @toggle-menu="toggleMenu"
-            @toggle-categories="toggleCategories"
-            @show-categories="showCategories = true"
-            @hide-categories="hideCategories"
-        />
+        <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
+            :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
+            @toggle-categories="toggleCategories" @show-categories="showCategories = true"
+            @hide-categories="hideCategories" />
         <!-- ... reste du contenu ... -->
         <Pricing />
         <ComparisonTable />
@@ -62,7 +39,7 @@ const checkIfMobile = () => {
 onMounted(() => {
     checkIfMobile();
     window.addEventListener('resize', checkIfMobile);
-    
+
     // Appliquer le mode sombre au document si nécessaire
     if (isDarkMode.value) {
         document.documentElement.classList.add('dark');
@@ -77,7 +54,7 @@ onUnmounted(() => {
 const toggleDarkMode = () => {
     isDarkMode.value = !isDarkMode.value;
     localStorage.setItem('darkMode', isDarkMode.value);
-    
+
     // Mettre à jour la classe sur l'élément HTML
     if (isDarkMode.value) {
         document.documentElement.classList.add('dark');
@@ -98,4 +75,3 @@ const hideCategories = () => {
     showCategories.value = false;
 };
 </script>
-

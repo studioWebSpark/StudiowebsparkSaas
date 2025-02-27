@@ -17,10 +17,10 @@
 
             <div class="flex flex-col items-center max-w-md mx-auto mt-8 lg:mt-20 lg:flex-row lg:max-w-none">
                 <div
-                    class="relative flex-1 w-full overflow-hidden bg-blue-500/20 backdrop-blur-sm rounded-[32px] min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
+                    class="relative flex-1 w-full overflow-hidden border border-white/20 rounded-2xl min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
                     <div class="relative py-8 px-9 flex-1 flex flex-col z-10">
                         <div
-                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-600 rounded-xl font-pj">
+                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-700 rounded-xl font-pj">
                             1
                         </div>
                         <p class="mt-5 text-xl font-medium text-white font-pj">
@@ -71,27 +71,27 @@
                 </div>
 
                 <div
-                    class="relative flex-1 w-full overflow-hidden bg-blue-500/20 backdrop-blur-sm rounded-[32px] min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
+                    class="relative flex-1 w-full overflow-hidden border border-white/20 rounded-2xl min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
                     <div class="relative py-8 px-9 flex-1 flex flex-col z-10">
                         <div
-                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-600 rounded-xl font-pj">
+                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-700 rounded-xl font-pj">
                             2
                         </div>
                         <p class="mt-5 text-xl font-medium text-white font-pj">
-                            Stratégie
+                            Stratégie Digitale
                         </p>
                         <ul class="mt-4 space-y-2 text-white/90 flex-grow">
                             <li class="flex items-start">
                                 <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
-                                <span>Plan d'action</span>
+                                <span>Définition des objectifs</span>
                             </li>
                             <li class="flex items-start">
                                 <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
-                                <span>Solutions proposées</span>
+                                <span>Identification des KPIs</span>
                             </li>
                             <li class="flex items-start">
                                 <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
-                                <span>Objectifs définis</span>
+                                <span>Planification des actions</span>
                             </li>
                         </ul>
                     </div>
@@ -125,10 +125,10 @@
                 </div>
 
                 <div
-                    class="relative flex-1 w-full overflow-hidden bg-blue-500/20 backdrop-blur-sm rounded-[32px] min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
+                    class="relative flex-1 w-full overflow-hidden border border-white/20 rounded-2xl min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
                     <div class="relative py-8 px-9 flex-1 flex flex-col z-10">
                         <div
-                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-600 rounded-xl font-pj">
+                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-700 rounded-xl font-pj">
                             3
                         </div>
                         <p class="mt-5 text-xl font-medium text-white font-pj">
@@ -137,15 +137,15 @@
                         <ul class="mt-4 space-y-2 text-white/90 flex-grow">
                             <li class="flex items-start">
                                 <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
-                                <span>Solutions détaillées</span>
+                                <span>Solutions techniques</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
+                                <span>Optimisations marketing</span>
                             </li>
                             <li class="flex items-start">
                                 <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
                                 <span>Priorisation des actions</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class='bx bx-check-circle text-white mt-1 mr-2'></i>
-                                <span>Budget estimatif</span>
                             </li>
                         </ul>
                     </div>
@@ -179,10 +179,10 @@
                 </div>
 
                 <div
-                    class="relative flex-1 w-full overflow-hidden bg-blue-500/20 backdrop-blur-sm rounded-[32px] min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
+                    class="relative flex-1 w-full overflow-hidden border border-white/20 rounded-2xl min-h-[300px] flex flex-col group transition-all duration-300 hover:scale-105">
                     <div class="relative py-8 px-9 flex-1 flex flex-col z-10">
                         <div
-                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-600 rounded-xl font-pj">
+                            class="inline-flex items-center justify-center w-10 h-10 text-base font-bold text-white bg-blue-700 rounded-xl font-pj">
                             4
                         </div>
                         <p class="mt-5 text-xl font-medium text-white font-pj">

@@ -1,22 +1,6 @@
 <template>
 
- <Head>
-        <title>À propos - StudioWebspark | Votre partenaire web de confiance</title>
-        <meta name="description" 
-            content="Découvrez StudioWebspark, votre agence web experte en création de sites professionnels. Notre vision, notre processus et nos solutions sur mesure." />
-        <meta name="keywords" 
-            content="agence web, à propos studiowebspark, création sites web, expertise web" />
-
-        <!-- Meta Tags pour Facebook et Instagram -->
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="À propos - StudioWebspark | Expertise Web" />
-        <meta property="og:description" content="Découvrez notre vision et notre expertise en création de sites web professionnels." />
-        <meta property="og:url" content="https://studiowebspark.fr/about" />
-        <meta property="og:site_name" content="StudioWebspark" />
-        
-        <!-- Meta Tags pour TikTok -->
-        <meta property="bytedance:description" content="Découvrez notre vision et notre expertise en création de sites web professionnels." />
-    </Head>
+    <Head title="À propos" />
 
     <div class="overflow-x-hidden relative">
         <!-- Fond global avec motif -->
@@ -40,7 +24,7 @@
                 <Cta />
             </main>
             <Footer />
-          <CookieConsent />
+            <CookieConsent />
         </div>
     </div>
 </template>

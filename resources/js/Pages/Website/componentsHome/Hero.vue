@@ -22,14 +22,15 @@
                             </p>
                         </div>
 
-                        <!-- Titre principal avec animation de texte -->
-                        <h1 class="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold">
+                        <!-- Titre principal avec attributs de performance -->
+                        <h1 class="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold" fetchpriority="high"
+                            importance="high" id="main-lcp-element">
                             <span class="text-white">
-                                Propulsez Votre Activité 🚀
+                                Propulsez Votre Activité
                             </span>
                             <br>
                             <span class="text-blue-200">
-                                dans l'Ère Digitale
+                                dans l'Ère Digitale 🚀
                             </span>
                         </h1>
 
@@ -99,18 +100,18 @@
 
                         <!-- Section de différenciation -->
                         <div class="mt-12 bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-blue-200/20">
-                            <h3 class="text-xl font-bold text-white mb-4">Pourquoi nous choisir ?</h3>
+                            <h2 class="text-xl font-bold text-white mb-4">Pourquoi nous choisir ?</h2>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
                                 <div class="flex items-start">
                                     <div class="flex-shrink-0 mr-3">
                                         <div
                                             class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                            <i class='bx bx-code-alt text-xl text-blue-300'></i>
+                                            <i class='bx bx-code-alt text-xl text-blue-300' aria-hidden="true"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 class="font-semibold text-white">Développeur Passionné</h4>
+                                        <h3 class="font-semibold text-white">Développeur Passionné</h3>
                                         <p class="text-blue-100 text-sm mt-1">Un interlocuteur unique qui comprend vos
                                             besoins techniques et business.</p>
                                     </div>
@@ -120,11 +121,11 @@
                                     <div class="flex-shrink-0 mr-3">
                                         <div
                                             class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                                            <i class='bx bx-line-chart text-xl text-green-300'></i>
+                                            <i class='bx bx-line-chart text-xl text-green-300' aria-hidden="true"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 class="font-semibold text-white">Approche ROI</h4>
+                                        <h3 class="font-semibold text-white">Approche ROI</h3>
                                         <p class="text-blue-100 text-sm mt-1">Sites conçus pour convertir vos visiteurs
                                             en clients et générer des revenus.</p>
                                     </div>
@@ -134,11 +135,11 @@
                                     <div class="flex-shrink-0 mr-3">
                                         <div
                                             class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
-                                            <i class='bx bx-rocket text-xl text-purple-300'></i>
+                                            <i class='bx bx-rocket text-xl text-purple-300' aria-hidden="true"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <h4 class="font-semibold text-white">Rapidité d'exécution</h4>
+                                        <h3 class="font-semibold text-white">Rapidité d'exécution</h3>
                                         <p class="text-blue-100 text-sm mt-1">Des délais courts sans compromis sur la
                                             qualité pour lancer votre activité rapidement.</p>
                                     </div>
