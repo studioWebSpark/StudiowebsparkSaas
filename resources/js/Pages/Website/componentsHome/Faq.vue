@@ -29,16 +29,16 @@
 
                         <!-- Question -->
                         <div
-                            class="relative bg-white/90 backdrop-blur-sm rounded-xl shadow-sm transition-all duration-300 group-hover:shadow-lg">
+                            class="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-sm transition-all duration-300 group-hover:shadow-lg">
                             <button @click="toggleFaq(index)"
                                 class="flex items-center justify-between w-full px-6 py-5 text-left">
-                                <span class="text-lg font-semibold text-gray-900">
+                                <span class="text-lg font-semibold text-gray-900 dark:text-white">
                                     {{ faq.question }}
                                 </span>
                                 <span class="flex items-center ml-6 h-7">
                                     <i :class="[
                                         activeFaq === index ? 'rotate-180' : '',
-                                        'bx bx-chevron-down text-2xl text-gray-900 transition-transform duration-300'
+                                        'bx bx-chevron-down text-2xl text-gray-900 dark:text-white transition-transform duration-300'
                                     ]"></i>
                                 </span>
                             </button>
@@ -46,7 +46,7 @@
                             <!-- Réponse -->
                             <div v-show="activeFaq === index" class="px-6 pb-6">
                                 <div class="h-px w-full bg-gradient-to-r from-blue-500/50 to-indigo-500/50 mb-4"></div>
-                                <p class="text-base text-gray-600">
+                                <p class="text-base text-gray-600 dark:text-gray-300">
                                     {{ faq.answer }}
                                 </p>
                             </div>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-           
+
         </div>
     </section>
 </template>

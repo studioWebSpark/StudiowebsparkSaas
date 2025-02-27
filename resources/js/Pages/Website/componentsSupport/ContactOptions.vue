@@ -68,7 +68,7 @@ defineExpose({
 <template>
     <section class="py-12 relative">
         <!-- Fond avec motif -->
-        <div class="absolute inset-0 bg-blue-600">
+        <div class="absolute inset-0 bg-blue-600 dark:bg-blue-900">
             <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
         </div>
 

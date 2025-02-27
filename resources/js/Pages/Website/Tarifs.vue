@@ -1,4 +1,23 @@
 <template>
+
+  <Head>
+        <title>Tarifs - StudioWebspark | Solutions Web Abordables</title>
+        <meta name="description" 
+            content="Découvrez nos forfaits de création de sites web professionnels. Des solutions adaptées à tous les budgets avec un excellent rapport qualité-prix." />
+        <meta name="keywords" 
+            content="tarifs site web, prix site internet, forfaits web, création site web prix" />
+
+        <!-- Meta Tags pour Facebook et Instagram -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Tarifs - StudioWebspark | Solutions Web Abordables" />
+        <meta property="og:description" content="Des forfaits web adaptés à votre budget. Site professionnel à partir de X€." />
+        <meta property="og:url" content="https://studiowebspark.fr/tarifs" />
+        <meta property="og:site_name" content="StudioWebspark" />
+        
+        <!-- Meta Tags pour TikTok -->
+        <meta property="bytedance:description" content="Des forfaits web adaptés à votre budget. Site professionnel à partir de X€." />
+    </Head>
+
     <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
         <Header 
             :is-dark-mode="isDarkMode" 
@@ -16,6 +35,7 @@
         <ComparisonTable />
         <AdditionalOptions />
         <Footer />
+        <CookieConsent />
     </div>
 </template>
 
@@ -26,6 +46,7 @@ import Footer from './componentsHome/Footer.vue';
 import ComparisonTable from './componentsTarifs/ComparisonTable.vue';
 import AdditionalOptions from './componentsTarifs/AdditionalOptions.vue';
 import Pricing from './componentsHome/Pricing.vue';
+import CookieConsent from '@/Components/CookieConsent.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);

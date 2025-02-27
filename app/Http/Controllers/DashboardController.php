@@ -6,27 +6,24 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
-class DashboardController extends Controller
+class DashboardController extends BaseController
 {
-    public function index()
+    public function __construct()
     {
-        $user = auth()->user();
-
-        if ($user->is_admin) {
-            return redirect()->route('admin.dashboard');
-        } else {
-            return redirect()->route('client.dashboard');
-        }
+        $this->middleware(\App\Http\Middleware\AdminMiddleware::class, ['only' => ['adminDashboard']]);
     }
 
+    public function index()
+    {
+        return auth()->user()->is_admin
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('client.dashboard');
+    }
     public function adminDashboard()
     {
-        if (!auth()->user()->is_admin) {
-            return redirect()->route('client.dashboard');
-        }
-
-        return Inertia::render('DashboardAdmin', [
+          return Inertia::render('DashboardAdmin', [
             'recentOrders' => [],
             'stats' => [
                 'total_orders' => 0,

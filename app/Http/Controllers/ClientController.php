@@ -160,39 +160,35 @@ class ClientController extends Controller
         ]);
     }
 
-    public function sendSupport(Request $request)
-    {
-        try {
-            $user = auth()->user();
+ public function sendSupport(Request $request)
+  {
+    try {
+        $user = auth()->user();
 
-            $request->validate([
-                'subject' => 'required|string',
-                'message' => 'required|string'
-            ]);
+        $request->validate([
+            'subject' => 'required|string',
+            'message' => 'required|string'
+        ]);
 
-            Mail::to('studiowebspark@gmail.com')
-                ->send(new ClientSupport(
-                    $user,
-                    $request->subject,
-                    $request->message
-                ));
+        Mail::to('studiowebspark@gmail.com')
+            ->send(new ClientSupport(
+                $user,
+                $request->subject,
+                $request->message
+            ));
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Votre message a été envoyé avec succès.'
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Erreur lors de l\'envoi de l\'email de support', [
-                'error' => $e->getMessage(),
-                'user_id' => auth()->id()
-            ]);
+        // Retourner une réponse Inertia avec redirect()->back()
+        return redirect()->back();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Une erreur est survenue lors de l\'envoi du message.'
-            ], 500);
-        }
+    } catch (\Exception $e) {
+        Log::error('Erreur lors de l\'envoi de l\'email de support', [
+            'error' => $e->getMessage(),
+            'user_id' => auth()->id()
+        ]);
+
+        return redirect()->back();
     }
+}
 
     public function showProject(Order $project)
     {

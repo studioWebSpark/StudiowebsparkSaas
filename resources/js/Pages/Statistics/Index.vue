@@ -405,17 +405,17 @@ const CHARGES_2025 = {
     FIXED_MONTHLY: 32  // Frais fixes mensuels arrondis
 };
 
-// Configuration des forfaits
+// Configuration des forfaits modifiée
 const FORFAITS = [
     {
         id: 'starter',
         name: 'Starter',
-        price: 999,
+        price: 499,
         badge: 'Essentiel',
         description: 'Site vitrine professionnel',
         popular: false,
         deliveryDays: 1,
-        workHours: 8,
+        workHours: 7,
         features: [
             'Site vitrine 3 pages',
             'Design responsive',
@@ -425,38 +425,40 @@ const FORFAITS = [
         ]
     },
     {
+        id: 'starter+',
+        name: 'Starter +',
+        price: 699,
+        badge: 'Recommandé',
+        description: 'Site vitrine professionnel avec Logo et Photos',
+        popular: true,
+        deliveryDays: 2,
+        workHours: 9,
+        features: [
+            'Tout du Starter',
+            'Logo personnalisé inclus',
+            'Photos professionnelles incluses',
+            'Design responsive',
+            'Formulaire de contact',
+            'Optimisation SEO de base'
+        ]
+    },
+    {
         id: 'standard',
         name: 'Standard',
-        price: 2299,
-        badge: 'Populaire',
-        description: 'Solution complète avec options incluses',
-        popular: true,
+        price: 1499,
+        badge: 'Business',
+        description: 'Solution complète avec réseaux sociaux',
+        popular: false,
         deliveryDays: 3,
         workHours: 24,
         features: [
             'Tout du Starter +',
-            'Logo personnalisé',
-            'Photos professionnelles',
-            'Réseaux sociaux',
+            'Logo et Photos inclus',
+            'Réseaux sociaux inclus',
             'SEO avancé',
-            '5-7 pages'
-        ]
-    },
-    {
-        id: 'premium',
-        name: 'Premium',
-        price: 3999,
-        badge: 'Tout inclus',
-        description: 'Solution e-commerce complète',
-        popular: false,
-        deliveryDays: 5,
-        workHours: 40,
-        features: [
-            'Tout du Standard +',
-            'E-commerce complet',
-            'Dashboard administrateur',
-            'Pages illimitées',
-            'Support prioritaire'
+            '5-7 pages',
+            'Formation utilisation',
+            'Support technique'
         ]
     }
 ];
@@ -480,9 +482,9 @@ const OPTIONS = [
     {
         id: 'socialMedia',
         name: 'Réseaux Sociaux',
-        price: 349,
+        price: 299,
         icon: 'bx-share-alt',
-        workHours: 5,
+        workHours: 3,
         availableFor: ['starter'],
         details: [
             'Configuration des profils',
@@ -492,32 +494,44 @@ const OPTIONS = [
         ]
     },
     {
-        id: 'ecommerce',
-        name: 'E-commerce & CRM',
-        price: 899,
-        icon: 'bx-store',
-        workHours: 10,
-        availableFor: ['standard'],
+        id: 'crm',
+        name: 'CRM Intégré',
+        price: 599,
+        icon: 'bx-data',
+        workHours: 5,
+        availableFor: ['starter', 'starter+', 'standard'],
         details: [
-            'Catalogue produits complet',
-            'Système de paiement sécurisé',
-            'Gestion des stocks avancée',
-            'CRM intégré avec tableau de bord',
-            'Gestion des commandes',
-            'Suivi clients',
-            'Rapports et statistiques',
-            'Formation complète incluse'
+            'Gestion des clients',
+            'Suivi des interactions',
+            'Tableau de bord personnalisé',
+            'Formation incluse',
+            'Support technique'
+        ]
+    },
+    {
+        id: 'premium',
+        name: 'Premium Sur Demande',
+        price: 5000,
+        icon: 'bx-diamond',
+        workHours: 59,
+        availableFor: ['starter', 'starter+', 'standard'],
+        details: [
+            'Solution personnalisée',
+            'Fonctionnalités avancées',
+            'Design sur mesure',
+            'Support prioritaire',
+            'Contactez-nous pour un devis'
         ]
     }
 ];
 
-// Ajout d'une computed property pour gérer les options incluses par forfait
+// Modification de la computed property pour gérer les options incluses par forfait
 const includedOptions = computed(() => {
     switch (selectedForfait.value) {
+        case 'starter+':
+            return ['logoPhotos'];
         case 'standard':
             return ['logoPhotos', 'socialMedia'];
-        case 'premium':
-            return ['logoPhotos', 'socialMedia', 'ecommerce'];
         default:
             return [];
     }

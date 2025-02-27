@@ -1,24 +1,46 @@
 <template>
+
+ <Head>
+        <title>À propos - StudioWebspark | Votre partenaire web de confiance</title>
+        <meta name="description" 
+            content="Découvrez StudioWebspark, votre agence web experte en création de sites professionnels. Notre vision, notre processus et nos solutions sur mesure." />
+        <meta name="keywords" 
+            content="agence web, à propos studiowebspark, création sites web, expertise web" />
+
+        <!-- Meta Tags pour Facebook et Instagram -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="À propos - StudioWebspark | Expertise Web" />
+        <meta property="og:description" content="Découvrez notre vision et notre expertise en création de sites web professionnels." />
+        <meta property="og:url" content="https://studiowebspark.fr/about" />
+        <meta property="og:site_name" content="StudioWebspark" />
+        
+        <!-- Meta Tags pour TikTok -->
+        <meta property="bytedance:description" content="Découvrez notre vision et notre expertise en création de sites web professionnels." />
+    </Head>
+
     <div class="overflow-x-hidden relative">
         <!-- Fond global avec motif -->
-        <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900">
+        <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900 min-h-screen">
             <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
         </div>
 
         <!-- Contenu avec position relative -->
-        <div class="relative">
+        <div class="relative flex flex-col min-h-screen">
             <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
                 :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
                 @toggle-categories="toggleCategories" @show-categories="showCategories = true"
                 @hide-categories="hideCategories" />
 
-            <Vision />
-            <Market />
-            <MarketEvo />
-            <Solution />
-            <Process />
-            <Cta />
+            <main class="flex-grow">
+                <Vision />
+                <Market />
+                <MarketEvo />
+                <Solution />
+                <Process />
+                <Cta />
+            </main>
             <Footer />
+          <CookieConsent />
         </div>
     </div>
 </template>
@@ -33,6 +55,7 @@ import Process from './componentsAbout/Process.vue';
 import Solution from './componentsAbout/Solution.vue';
 import Vision from './componentsAbout/Vision.vue';
 import Footer from './componentsHome/Footer.vue';
+import CookieConsent from '@/Components/CookieConsent.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);
@@ -89,5 +112,10 @@ const hideCategories = () => {
 .bg-grid-pattern {
     background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
     background-size: 40px 40px;
+}
+
+/* Assurez-vous que le contenu couvre toute la hauteur */
+.min-h-screen {
+    min-height: 100vh;
 }
 </style>

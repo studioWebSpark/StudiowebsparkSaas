@@ -51,19 +51,18 @@ const TemplateSelection = [
         id: 'socialMedia',
         name: 'Réseaux Sociaux',
         description: 'Création et gestion de vos réseaux sociaux',
-        price: 349,
+        price: 299,
         icon: 'bx-share-alt'
     },
     
     {
         id: 'ecommerce',
-        name: 'E-commerce & CRM',
-        description: 'Solution complète de vente en ligne',
-        price: 899,
+        name: 'CRM Intégré',
+        description: 'Gestion de la relation client et suivi commercial',
+        price: 599,
         icon: 'bx-store'
     }
 ];
-
 
 
 const selectedPlan = ref(null);

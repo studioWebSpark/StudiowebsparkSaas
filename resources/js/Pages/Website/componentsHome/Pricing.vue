@@ -15,6 +15,9 @@
                         <div class="absolute bottom-0 left-0 w-full h-3 bg-blue-200/50 -z-10 transform -rotate-1"></div>
                     </span>
                 </h2>
+                    <p class="mt-4 text-sm text-white/80 text-center">
+                        Offre limitée dans le temps - Profitez de nos tarifs de lancement !
+                    </p>
                 <p class="mt-4 text-lg text-white/90">
                     Choisissez le plan qui correspond le mieux à vos besoins
                 </p>
@@ -87,66 +90,74 @@ import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
 const selectedPeriod = ref('Mensuel');
-
 const plans = [
     {
         name: 'Starter',
         description: 'Site vitrine professionnel pour démarrer votre présence en ligne.',
-        price: 999,
+        price: 499,
         badge: 'Essentiel',
         features: [
-            'Site vitrine 3 pages',
-            'Design responsive moderne',
-            'Formulaire de contact simple',
-            'Optimisation SEO de base',
-            'Support 30 jours',
-            'Délai : 1-2 jours',
-            'Logo & Photos (en option )',
-            'Réseaux sociaux (en option )',
-           
+            '✨ Site vitrine 3 pages',
+            '📱 Design responsive moderne',
+            '📝 Formulaire de contact simple',
+            '🔍 Optimisation SEO de base',
+            '⚡️ Délai : 1 jour ouvré',
+            '🛟 Support technique 30 jours',
+            '🔒 Certificat SSL inclus'
+        ],
+        options: [
+            '🎨 Logo & Photos pro (+199€)',
+            '🌐 Réseaux sociaux (+349€)',
+            '📊 CRM intégré (+599€)'
+        ]
+    },
+    {
+        name: 'Starter +',
+        description: 'Site vitrine professionnel avec identité visuelle complète.',
+        price: 649,
+        badge: 'Recommandé',
+        popular: true,
+        features: [
+            '✨ Site vitrine 3-5 pages',
+            '📱 Design responsive moderne',
+            '📝 Formulaire de contact personnalisé',
+            '🔍 Optimisation SEO de base',
+            '🎨 Logo personnalisé inclus (199€)',
+            '📸 Photos professionnelles incluses',
+            '⚡️ Délai : 2 jours ouvrés',
+            '🛟 Support technique 30 jours',
+            '🔒 Certificat SSL inclus'
+        ],
+        options: [
+            '🌐 Réseaux sociaux (+349€)',
+            '📊 CRM intégré (+599€)'
         ]
     },
     {
         name: 'Standard',
-        description: 'Solution complète avec design premium et marketing digital.',
-        price: 2299,
-        badge: 'Populaire',
-        popular: true,
+        description: 'Solution complète avec réseaux sociaux et marketing digital.',
+        price: 1499,
+        badge: 'Business',
         features: [
-            'Site 5-7 pages personnalisées',
-            'Design premium avec animations',
-            'Logo & Photos professionnels inclus',
-            'Réseaux sociaux inclus avec stratégie',
-            'SEO avancé + Suivi mensuel',
-            'Support 60 jours premium',
-            'Délai : 3-4 jours',
-            'Statistiques & rapports mensuels',
-            'E-commerce & CRM (en option )',
-        ]
-    },
-    {
-        name: 'Premium',
-        description: 'Solution complète premium avec e-commerce et accompagnement personnalisé.',
-        price: 3999,
-        badge: 'Tout Inclus',
-        features: [
-            'Site 10-12 pages sur-mesure',
-            'E-commerce & CRM inclus',
-            'Logo & Photos Pro inclus',
-            'Réseaux sociaux inclus',
-            'Design exclusif premium',
-            'SEO Expert avec suivi personnalisé',
-            'Support VIP illimité 90 jours',
-            'Blog professionnel intégré',
-            'Newsletter automatisée',
-            'Audit marketing complet',
-            'Maintenance 1 an incluse',
-            'Hébergement 1 an inclus',
-            'Délai : 1-2 semaines'
+            '✨ Site vitrine 7-9 pages',
+            '📱 Design responsive premium',
+            '📝 Formulaire de contact avancé',
+            '🎨 Logo personnalisé inclus (199€)',
+            '📸 Photos professionnelles incluses',
+            '🌐 Réseaux sociaux inclus (349€)',
+            '🔍 SEO avancé avec rapport mensuel',
+            '📊 Formation utilisation (2h)',
+            '⚡️ Délai : 4-5 jours ouvrés',
+            '🛟 Support technique premium 60 jours',
+            '🔒 Certificat SSL inclus',
+            '📱 Adaptation mobile premium'
+        ],
+        options: [
+            '📊 CRM intégré (+599€)',
+            '💎 Premium sur demande'
         ]
     }
 ];
-
 const guarantees = [
     {
         icon: 'bx bx-check-shield',

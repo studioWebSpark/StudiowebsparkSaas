@@ -344,7 +344,7 @@ const forfaits = [
     {
         id: 'starter',
         name: 'Starter',
-        price: 999,
+        price: 499,
         badge: 'Essentiel',
         description: 'Site vitrine professionnel pour démarrer votre présence en ligne.',
         popular: false,
@@ -353,82 +353,79 @@ const forfaits = [
             'Design responsive moderne',
             'Formulaire de contact simple',
             'Optimisation SEO de base',
-            'Support 30 jours',
-            'Délai : 1-2 jours',
+            'Support technique 30 jours',
+            'Délai : 1 jour ouvré',
             'Logo & Photos (en option)',
             'Réseaux sociaux (en option)',
-            'Hébergement (en option)'
+            'CRM (en option)'
+        ]
+    },
+    {
+        id: 'starter+',
+        name: 'Starter +',
+        price: 649,
+        badge: 'Recommandé',
+        description: 'Site vitrine professionnel avec identité visuelle complète.',
+        popular: true,
+        features: [
+            'Site vitrine 3-5 pages',
+            'Design responsive moderne',
+            'Formulaire de contact personnalisé',
+            'Optimisation SEO de base',
+            'Logo personnalisé inclus',
+            'Photos professionnelles incluses',
+            'Support technique 30 jours',
+            'Délai : 3 jours ouvrés',
+            'Réseaux sociaux (en option)',
+            'CRM (en option)'
         ]
     },
     {
         id: 'standard',
         name: 'Standard',
-        price: 2299,
-        badge: 'Populaire',
-        description: 'Solution complète avec design premium et marketing digital.',
-        popular: true,
-        features: [
-            'Site 5-7 pages personnalisées',
-            'Design premium avec animations',
-            'Logo & Photos professionnels inclus',
-            'Réseaux sociaux inclus avec stratégie',
-            'SEO avancé + Suivi mensuel',
-            'Support 60 jours premium',
-            'Délai : 3-4 jours',
-            'Statistiques & rapports mensuels',
-            'Audit marketing offert',
-            'E-commerce & CRM (en option)',
-            'Hébergement (en option)'
-        ]
-    },
-    {
-        id: 'premium',
-        name: 'Premium',
-        price: 3999,
-        badge: 'Tout Inclus',
-        description: 'Solution complète premium avec e-commerce et accompagnement personnalisé.',
+        price: 1499,
+        badge: 'Business',
+        description: 'Solution complète avec réseaux sociaux et marketing digital.',
         popular: false,
         features: [
-            'Site 10-12 pages sur-mesure',
-            'E-commerce & CRM inclus',
-            'Design exclusif premium',
-            'SEO Expert avec suivi personnalisé',
-            'Support VIP illimité 90 jours',
-            'Délai : 1-2 semaines',
-            'Blog professionnel intégré',
-            'Newsletter automatisée',
-            'Audit marketing complet',
-            'Maintenance 1 an incluse',
-            'Hébergement 1 an inclus',
-            
+            'Site vitrine 7-9 pages',
+            'Design responsive premium',
+            'Formulaire de contact avancé',
+            'Logo personnalisé inclus',
+            'Photos professionnelles incluses',
+            'Réseaux sociaux inclus',
+            'SEO avancé',
+            'Formation utilisation incluse',
+            'Support technique premium',
+            'Délai : 5 jours ouvrés',
+            'CRM (en option)'
         ]
     }
-]
+];
 
 const TemplateSelection = [
     {
         id: 'logoPhotos',
-        name: 'Création de logo + Photos Pro',
-        description: 'Design professionnel de votre identité visuelle',
+        name: 'Logo + Photos Pro',
+        description: 'Design de logo unique et séance photos professionnelle',
         price: 199,
         icon: 'bx-image'
     },
     {
         id: 'socialMedia',
         name: 'Réseaux Sociaux',
-        description: 'Création Conseil et gestion de vos réseaux sociaux',
-        price: 349,
+        description: 'Configuration et stratégie réseaux sociaux',
+        price: 299,
         icon: 'bx-share-alt'
     },
-
     {
-        id: 'ecommerce',
-        name: 'E-commerce & CRM',
-        description: 'Solution complète de vente en ligne avec gestion des stocks (CRM)',
-        price: 899,
-        icon: 'bx-store'
+        id: 'crm',
+        name: 'CRM Intégré',
+        description: 'Gestion de la relation client et suivi commercial',
+        price: 599,
+        icon: 'bx-data'
     }
-]
+];
 
 
 

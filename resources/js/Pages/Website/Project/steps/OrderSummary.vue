@@ -499,7 +499,6 @@ const paidOptionsOnly = computed(() => {
     ) || [];
 });
 
-// Définition des templates
 const templates = [
     {
         id: 'template1',
@@ -507,15 +506,17 @@ const templates = [
         description: 'Template professionnel pour petites entreprises',
         image: '/images/templates/template-business.png',
         category: 'Business',
-        isPro: false
+        isPro: false,
+        forfaits: ['starter', 'starter+', 'standard']
     },
     {
         id: 'template2',
-        name: 'E-commerce Pro',
-        description: 'Solution complète pour boutique en ligne',
+        name: 'Entreprise Pro',
+        description: 'Solution complète pour entreprises ambitieuses',
         image: '/images/templates/template-ecommerce.png',
-        category: 'E-commerce',
-        isPro: true
+        category: 'Entreprise',
+        isPro: true,
+        forfaits: ['standard']
     },
     {
         id: 'template3',
@@ -523,7 +524,8 @@ const templates = [
         description: 'Mise en page moderne pour artistes',
         image: '/images/templates/template-portfolio.png',
         category: 'Portfolio',
-        isPro: false
+        isPro: false,
+        forfaits: ['starter', 'starter+', 'standard']
     },
     {
         id: 'template4',
@@ -531,34 +533,28 @@ const templates = [
         description: 'Design épuré pour les blogueurs',
         image: '/images/templates/template-blog.png',
         category: 'Blog',
-        isPro: false
+        isPro: false,
+        forfaits: ['starter', 'starter+', 'standard']
     },
     {
         id: 'template5',
-        name: 'Agence immobilière Premium',
-        description: 'Template spécialisé pour agences immobilières',
+        name: 'Immobilier Premium',
+        description: 'Template spécialisé pour le agence immobilière',
         image: '/images/templates/template-agence-immobiliere.png',
-        category: 'Business',
-        isPro: true
-    },
-    {
-        id: 'template6',
-        name: 'Agence Marketing',
-        description: 'Template spécialisé pour agences marketing',
-        image: '/images/templates/template-agence-marketing.png',
-        category: 'Business',
-        isPro: true
+        category: 'Entreprise',
+        isPro: true,
+        forfaits: ['standard']
     },
     {
         id: 'template7',
-        name: 'Agence Web',
-        description: 'Template spécialisé pour agences web',
+        name: 'Corporate Elite',
+        description: 'Template premium pour entreprises établies',
         image: '/images/templates/template-agence-web.png',
-        category: 'E-commerce',
-        isPro: true
+        category: 'Entreprise',
+        isPro: true,
+        forfaits: ['standard']
     }
 ];
-
 const selectedTemplate = ref(null);
 
 const selectedTemplateDetails = computed(() => {

@@ -1,4 +1,20 @@
 <template>
+
+<Head>
+        <title>Mentions Légales - StudioWebspark</title>
+        <meta name="description" 
+            content="Mentions légales de StudioWebspark : informations sur l'entreprise, l'hébergeur et les conditions d'utilisation du site." />
+        <meta name="keywords" 
+            content="mentions légales, studiowebspark, siret, hébergeur, droits" />
+
+        <!-- Meta Tags pour Facebook et Instagram -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Mentions Légales - StudioWebspark" />
+        <meta property="og:description" content="Informations légales et réglementaires de StudioWebspark." />
+        <meta property="og:url" content="https://studiowebspark.fr/mentions-legales" />
+        <meta property="og:site_name" content="StudioWebspark" />
+    </Head>
+
     <div class="overflow-x-hidden relative">
         <!-- Fond global avec motif -->
         <div class="fixed inset-0 bg-blue-600">

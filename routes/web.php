@@ -18,30 +18,48 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Order;
+use App\Http\Middleware\AdminMiddleware;
+
 
 Route::get('/home', function () {
-    return Inertia::render('Website/Home');
+    return Inertia::render('Website/Home', [
+        'title' => 'Accueil'
+    ]);
 });
-// Page À propos
+
 Route::get('/about', function () {
-    return Inertia::render('Website/About');
+    return Inertia::render('Website/About', [
+        'title' => 'À propos'
+    ]);
 });
 
-// Page de gestion des forfaits
 Route::get('/services', function () {
-    return Inertia::render('Website/Services');
+    return Inertia::render('Website/Services', [
+        'title' => 'Services'
+    ]);
 });
 
-// Page de support
 Route::get('/support', function () {
-    return Inertia::render('Website/Support');
+    return Inertia::render('Website/Support', [
+        'title' => 'Support'
+    ]);
 });
-Route::get('/tarifs', function () {
-    return Inertia::render('Website/Tarifs');
+Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
+    // La route pour afficher le formulaire (GET)
+    Route::get('/support', [ClientController::class, 'support'])->name('support');
+    
+    // La route pour envoyer le formulaire (POST)
+    Route::post('/support/send', [ClientController::class, 'sendSupport'])->name('support.send');
 });
 
+Route::get('/tarifs', function () {
+    return Inertia::render('Website/Tarifs', [
+        'title' => 'Nos Tarifs'
+    ]);
+});
 Route::get('/', function () {
     return Inertia::render('Website/Home', [
+        'title' => 'Accueil',
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -174,14 +192,11 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
 
-// Nouvelles routes pour les dashboards
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    // Dashboard Admin (accessible uniquement aux admins)
+    // Plus besoin de spécifier le middleware 'admin' ici car il est dans le constructeur
     Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])
-        ->name('admin.dashboard')
-        ->middleware('admin');
+        ->name('admin.dashboard');
 
-    // Dashboard Client (accessible à tous les utilisateurs authentifiés)
     Route::get('/client/dashboard', [DashboardController::class, 'clientDashboard'])
         ->name('client.dashboard');
 });

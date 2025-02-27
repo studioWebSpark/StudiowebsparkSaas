@@ -15,8 +15,8 @@
                         <tr class="border-b border-white/10">
                             <th class="px-6 py-3 text-left text-white">Fonctionnalité</th>
                             <th class="px-6 py-3 text-center text-white">Starter</th>
+                            <th class="px-6 py-3 text-center text-white">Starter+</th>
                             <th class="px-6 py-3 text-center text-white">Standard</th>
-                            <th class="px-6 py-3 text-center text-white">Premium</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,21 +33,21 @@
                                 </template>
                             </td>
                             <td class="px-6 py-4 text-center text-white/90">
+                                <template v-if="typeof feature.starterPlus === 'boolean'">
+                                    <i v-if="feature.starterPlus" class='bx bx-check text-emerald-400 text-xl'></i>
+                                    <i v-else class='bx bx-x text-red-400 text-xl'></i>
+                                </template>
+                                <template v-else>
+                                    {{ feature.starterPlus }}
+                                </template>
+                            </td>
+                            <td class="px-6 py-4 text-center text-white/90">
                                 <template v-if="typeof feature.standard === 'boolean'">
                                     <i v-if="feature.standard" class='bx bx-check text-emerald-400 text-xl'></i>
                                     <i v-else class='bx bx-x text-red-400 text-xl'></i>
                                 </template>
                                 <template v-else>
                                     {{ feature.standard }}
-                                </template>
-                            </td>
-                            <td class="px-6 py-4 text-center text-white/90">
-                                <template v-if="typeof feature.premium === 'boolean'">
-                                    <i v-if="feature.premium" class='bx bx-check text-emerald-400 text-xl'></i>
-                                    <i v-else class='bx bx-x text-red-400 text-xl'></i>
-                                </template>
-                                <template v-else>
-                                    {{ feature.premium }}
                                 </template>
                             </td>
                         </tr>
@@ -57,92 +57,79 @@
         </div>
     </section>
 </template>
-
 <script setup>
 const features = [
     {
         name: "Nombre de pages",
         starter: "3 pages",
-        standard: "5-7 pages",
-        premium: "10-12 pages"
+        starterPlus: "3-5 pages",
+        standard: "7-9 pages"
     },
     {
         name: "Design",
         starter: "Responsive moderne",
-        standard: "Premium responsive avec animations",
-        premium: "Exclusif sur-mesure avec animations premium"
+        starterPlus: "Responsive moderne",
+        standard: "Premium responsive avec animations"
     },
     {
         name: "SEO",
         starter: "De base",
-        standard: "Avancé + Suivi de base",
-        premium: "Expert + Suivi mensuel personnalisé"
+        starterPlus: "De base",
+        standard: "Avancé"
     },
     {
-        name: "Support client",
-        starter: "15 jours",
-        standard: "30 jours",
-        premium: "60 jours prioritaire"
+        name: "Support technique",
+        starter: "30 jours",
+        starterPlus: "30 jours",
+        standard: "Support premium"
     },
     {
         name: "Délai de livraison",
-        starter: "1-2 jours",
-        standard: "3-4 jours",
-        premium: "5-7 jours"
+        starter: "1 jour",
+        starterPlus: "2 jours",
+        standard: "4-5 jours"
     },
     {
-        name: "Hébergement",
-        starter: "Optionnel",
-        standard: "Optionnel",
-        premium: "1 an offert"
-    },
-    {
-        name: "E-commerce",
+        name: "Logo personnalisé",
         starter: false,
-        standard: false,
-        premium: true
+        starterPlus: true,
+        standard: true
     },
     {
-        name: "Intégration réseaux sociaux",
+        name: "Photos professionnelles",
         starter: false,
-        standard: true,
-        premium: true
+        starterPlus: true,
+        standard: true
     },
     {
-        name: "Statistiques réseaux sociaux",
-        starter: false,
-        standard: true,
-        premium: true
+        name: "Réseaux sociaux",
+        starter: "En option",
+        starterPlus: "En option",
+        standard: "Inclus"
     },
     {
         name: "Formulaire de contact",
-        starter: "Basique",
-        standard: "Multi-pages personnalisé",
-        premium: "Système avancé"
+        starter: "Simple",
+        starterPlus: "Personnalisé",
+        standard: "Avancé"
     },
     {
-        name: "Blog professionnel",
+        name: "Formation utilisation",
         starter: false,
-        standard: true,
-        premium: true
+        starterPlus: false,
+        standard: true
     },
     {
-        name: "Newsletter automatisée",
+        name: "Templates premium",
         starter: false,
-        standard: false,
-        premium: true
+        starterPlus: false,
+        standard: true
     },
     {
-        name: "Audit marketing",
-        starter: false,
-        standard: true,
-        premium: true
-    },
-    {
-        name: "Maintenance offerte",
-        starter: false,
-        standard: false,
-        premium: "6 mois"
+        name: "CRM",
+        starter: "En option",
+        starterPlus: "En option",
+        standard: "En option"
     }
 ];
 </script>

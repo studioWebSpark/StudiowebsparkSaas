@@ -1,4 +1,8 @@
 <template>
+
+
+
+<Head title="Accueil" />
     <div :class="{ 'dark': isDarkMode }" class="overflow-x-hidden bg-gray-50 dark:bg-gray-900">
         <Header :is-dark-mode="isDarkMode" :is-menu-open="isMenuOpen" :is-mobile="isMobile"
             :show-categories="showCategories" @toggle-dark-mode="toggleDarkMode" @toggle-menu="toggleMenu"
@@ -12,7 +16,7 @@
         <Faq />
         <Cta />
         <Footer />
-
+        <CookieConsent />
     </div>
 </template>
 
@@ -29,6 +33,7 @@ import Process from './componentsAbout/Process.vue';
 import Cta from './componentsHome/Cta.vue';
 import Testimonials from './componentsHome/Testimonials.vue';
 import Faq from './componentsHome/Faq.vue';
+import CookieConsent from '@/Components/CookieConsent.vue';
 
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);

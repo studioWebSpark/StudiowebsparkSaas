@@ -1,4 +1,18 @@
 <template>
+<Head>
+        <title>Politique de Confidentialité - StudioWebspark</title>
+        <meta name="description" 
+            content="Découvrez comment StudioWebspark protège et traite vos données personnelles. Informations sur vos droits RGPD et notre utilisation des cookies." />
+        <meta name="keywords" 
+            content="politique confidentialité, rgpd, protection données, cookies, vie privée" />
+
+        <!-- Meta Tags pour Facebook et Instagram -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Politique de Confidentialité - StudioWebspark" />
+        <meta property="og:description" content="Protection et traitement de vos données personnelles chez StudioWebspark." />
+        <meta property="og:url" content="https://studiowebspark.fr/politique-confidentialite" />
+        <meta property="og:site_name" content="StudioWebspark" />
+    </Head>
     <div class="overflow-x-hidden relative">
         <!-- Fond global avec motif -->
         <div class="fixed inset-0 bg-blue-600">

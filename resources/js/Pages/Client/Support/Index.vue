@@ -19,6 +19,16 @@ const submitForm = async () => {
         await router.post(route('client.support.send'), {
             subject: subject.value,
             message: message.value
+        }, {
+            preserveScroll: true,
+            preserveState: true,
+            onError: (errors) => {
+                console.error('Erreur lors de l\'envoi:', errors);
+                showError.value = true;
+                setTimeout(() => {
+                    showError.value = false;
+                }, 6000);
+            }
         });
 
         // Réinitialiser le formulaire
@@ -37,6 +47,7 @@ const submitForm = async () => {
         }, 6000);
 
     } catch (error) {
+        console.error('Erreur:', error);
         showError.value = true;
         setTimeout(() => {
             showError.value = false;
@@ -136,7 +147,7 @@ const submitForm = async () => {
                     <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6">
                         <h3 class="text-lg font-semibold mb-6">Envoyez-nous un message</h3>
 
-                        <form @submit.prevent="submitForm" class="space-y-6">
+                        <form @submit.prevent="submitForm" methode="POST"  class="space-y-6">
                             <div>
                                 <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Sujet

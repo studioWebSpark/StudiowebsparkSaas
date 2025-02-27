@@ -1,4 +1,24 @@
 <template>
+
+<Head>
+        <title>Support - StudioWebspark | Aide et FAQ</title>
+        <meta name="description"
+            content="Besoin d'aide ? Consultez notre FAQ et nos options de support. Notre équipe est là pour vous accompagner dans votre projet web." />
+        <meta name="keywords" content="support studiowebspark, aide site web, faq web, assistance technique" />
+
+        <!-- Meta Tags pour Facebook et Instagram -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Support et FAQ - StudioWebspark" />
+        <meta property="og:description"
+            content="Questions fréquentes et support technique pour votre site web. Notre équipe est à votre écoute." />
+        <meta property="og:url" content="https://studiowebspark.fr/support" />
+        <meta property="og:site_name" content="StudioWebspark" />
+
+        <!-- Meta Tags pour TikTok -->
+        <meta property="bytedance:description"
+            content="Questions fréquentes et support technique pour votre site web. Notre équipe est à votre écoute." />
+    </Head>
+
     <div class="overflow-x-hidden relative">
         <!-- Fond global avec motif -->
         <div class="fixed inset-0 bg-blue-600 dark:bg-blue-900">
@@ -16,6 +36,7 @@
             <FaqSection />
             <ContactOptions />
             <Footer />
+            <CookieConsent />
         </div>
     </div>
 </template>
@@ -27,6 +48,8 @@ import HeroSupport from './componentsSupport/HeroSupport.vue';
 import ContactOptions from './componentsSupport/ContactOptions.vue';
 import FaqSection from './componentsSupport/FaqSection.vue';
 import Footer from './componentsHome/Footer.vue';
+import CookieConsent from '@/Components/CookieConsent.vue';
+
 const isDarkMode = ref(localStorage.getItem('darkMode') === 'true');
 const isMenuOpen = ref(false);
 const showCategories = ref(false);

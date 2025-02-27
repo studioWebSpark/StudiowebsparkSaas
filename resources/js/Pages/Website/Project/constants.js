@@ -1,37 +1,30 @@
 export const includedOptionsByForfait = {
-    premium: ["ecommerce", "logoPhotos", "socialMedia", "Dashboard"],
-    standard: ["logoPhotos", "socialMedia"],
     starter: [],
+    "starter+": ["logoPhotos"],
+    standard: ["logoPhotos", "socialMedia"],
 };
 
 export const templateOptions = [
     {
         id: "logoPhotos",
-        name: "Création de logo + Photos Pro",
-        description: "Design professionnel de votre identité visuelle",
-        price: 99,
+        name: "Logo + Photos Pro",
+        description: "Design de logo unique et séance photos professionnelle",
+        price: 199,
         icon: "bx-image",
     },
     {
         id: "socialMedia",
         name: "Réseaux Sociaux",
-        description: "Création Conseil et gestion de vos réseaux sociaux",
-        price: 179,
+        description: "Configuration et stratégie réseaux sociaux",
+        price: 299,
         icon: "bx-share-alt",
     },
     {
-        id: "Dashboard",
-        name: "Dashboard (CRM)",
-        description: "Suivi détaillé de vos performances",
-        price: 299,
-        icon: "bx-line-chart",
-    },
-    {
-        id: "ecommerce",
-        name: "E-commerce",
-        description: "Solution complète de vente en ligne",
-        price: 299,
-        icon: "bx-store",
+        id: "crm",
+        name: "CRM Intégré",
+        description: "Gestion de la relation client et suivi commercial",
+        price: 599,
+        icon: "bx-data",
     },
 ];
 

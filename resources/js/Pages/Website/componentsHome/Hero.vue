@@ -85,66 +85,6 @@
                         </div>
                     </div>
 
-                    <!-- Grille d'images avec effet de flottement -->
-                    <div class="mt-16 md:mt-20">
-                        <div class="relative overflow-hidden">
-                            <!-- Carrousel -->
-                            <div class="flex transition-transform duration-700 ease-out"
-                                :style="{ transform: `translateX(-${currentGroup * 100}%)` }">
-                                <!-- Premier groupe -->
-                                <div class="w-full flex-shrink-0">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                                        <div v-for="service in firstGroupServices" :key="service.title"
-                                            class="relative group">
-                                            <div
-                                                class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200">
-                                            </div>
-                                            <div class="relative rounded-lg shadow-2xl overflow-hidden">
-                                                <img class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-[1.01] dark:opacity-90"
-                                                    :src="service.image" :alt="service.title" />
-                                                <div
-                                                    class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                                                    <h3 class="text-white text-lg font-semibold">{{ service.title }}
-                                                    </h3>
-                                                    <p class="text-gray-200 text-sm">{{ service.description }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Deuxième groupe -->
-                                <div class="w-full flex-shrink-0">
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                                        <div v-for="service in secondGroupServices" :key="service.title"
-                                            class="relative group">
-                                            <div
-                                                class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200">
-                                            </div>
-                                            <div class="relative rounded-lg shadow-2xl overflow-hidden">
-                                                <img class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-[1.01] dark:opacity-90"
-                                                    :src="service.image" :alt="service.title" />
-                                                <div
-                                                    class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                                                    <h3 class="text-white text-lg font-semibold">{{ service.title }}
-                                                    </h3>
-                                                    <p class="text-gray-200 text-sm">{{ service.description }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Indicateurs -->
-                            <div class="flex justify-center mt-8 gap-3">
-                                <button v-for="index in 2" :key="index" @click="goToGroup(index - 1)"
-                                    class="h-3 rounded-full transition-all duration-300"
-                                    :class="[currentGroup === index - 1 ? 'w-8 bg-blue-600' : 'w-3 bg-gray-300']">
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -152,63 +92,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
 
-const services = ref([
-    {
-        title: 'Site Vitrine Pro',
-        description: 'Design moderne & responsive',
-        image: '/images/web.png'
-    },
-    {
-        title: 'Template Personnalisé',
-        description: 'Sélection de template',
-        image: '/images/template.png'
-    },
-    {
-        title: 'E-commerce Premium',
-        description: 'Gestion complète des ventes',
-        image: '/images/e-commerce.png'
-    },
-    {
-        title: 'CRM Intégré',
-        description: 'Gestion client optimisée',
-        image: '/images/crm.png'
-    },
-    {
-        title: 'SEO Expert',
-        description: 'Optimisation & visibilité',
-        image: '/images/seo.png'
-    },
-    {
-        title: 'Marketing Digital',
-        description: 'Stratégie & performance',
-        image: '/images/marketing.png'
-    }
-]);
-
-const currentGroup = ref(0);
-
-// Utilisation de vos services existants
-const firstGroupServices = computed(() => services.value.slice(0, 3));
-const secondGroupServices = computed(() => services.value.slice(3, 6));
-
-const goToGroup = (index) => {
-    currentGroup.value = index;
-};
-
-// Défilement automatique
-let autoplayInterval = null;
-
-onMounted(() => {
-    autoplayInterval = setInterval(() => {
-        currentGroup.value = currentGroup.value === 0 ? 1 : 0;
-    }, 5000);
-});
-
-onUnmounted(() => {
-    if (autoplayInterval) clearInterval(autoplayInterval);
-});
 </script>
 
 <style scoped>

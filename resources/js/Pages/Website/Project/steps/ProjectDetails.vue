@@ -115,7 +115,6 @@ const touchedFields = ref({
 // Modification des types de projets
 const projectTypes = [
     { id: 'site-vitrine', name: 'Site Vitrine', icon: 'bx-window-alt' },
-    { id: 'e-commerce', name: 'E-commerce', icon: 'bx-store' },
     { id: 'blog', name: 'Blog', icon: 'bx-news' },
     { id: 'application', name: 'Application Web', icon: 'bx-desktop' }
 ];
@@ -312,23 +311,34 @@ const handleNext = () => {
 
 // Définition des recommandations de forfaits selon le type de projet
 const forfaitRecommendations = {
-    'e-commerce': {
-        recommended: 'premium',
-        minimum: 'standard',
-        message: 'Pour un site e-commerce performant, nous recommandons le forfait Premium. Le forfait Standard est également disponible avec les fonctionnalités essentielles.'
-    },
     'application': {
-        recommended: 'premium',
-        minimum: 'standard',
-        message: 'Pour une application web professionnelle, nous recommandons le forfait Premium. Le forfait Standard est également disponible avec les fonctionnalités de base.'
+        recommended: 'standard',
+        minimum: 'starter+',
+        message: 'Pour une application web professionnelle, nous recommandons le forfait Standard avec l\'option CRM. Le forfait Starter+ est le minimum requis.'
     },
     'blog': {
-        recommended: 'standard',
-        message: 'Pour un blog professionnel, nous recommandons le forfait Standard qui offre un excellent rapport qualité-prix.'
+        recommended: 'starter+',
+        minimum: 'starter',
+        message: 'Pour un blog professionnel, nous recommandons le forfait Starter+ qui inclut le logo et les photos professionnelles.'
     },
     'site-vitrine': {
         recommended: 'starter',
-        message: 'Pour un site vitrine, le forfait Starter est un excellent point de départ, mais vous pouvez opter pour plus de fonctionnalités avec nos autres forfaits.'
+        message: 'Pour un site vitrine, le forfait Starter est un excellent point de départ. Vous pouvez ajouter des options selon vos besoins.'
+    },
+    'portfolio': {
+        recommended: 'starter+',
+        minimum: 'starter',
+        message: 'Pour un portfolio professionnel, nous recommandons le forfait Starter+ qui inclut les photos professionnelles.'
+    },
+    'restaurant': {
+        recommended: 'standard',
+        minimum: 'starter+',
+        message: 'Pour un restaurant, nous recommandons le forfait Standard qui inclut les réseaux sociaux et le SEO avancé.'
+    },
+    'services': {
+        recommended: 'starter+',
+        minimum: 'starter',
+        message: 'Pour une entreprise de services, le forfait Starter+ offre un excellent rapport qualité-prix avec logo et photos inclus.'
     }
 };
 

@@ -11,7 +11,7 @@ class AdminController extends Controller
     {
         $this->middleware(function ($request, $next) {
             if (!auth()->check() || !auth()->user()->is_admin) {
-                return redirect('/dashboard');
+                return redirect('/admin/dashboard');
             }
             return $next($request);
         });

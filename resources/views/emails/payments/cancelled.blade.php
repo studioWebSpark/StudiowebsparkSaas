@@ -30,7 +30,7 @@ Notre équipe est là pour vous aider !
 Reprendre mon projet
 @endcomponent
 
-@component('mail::button', ['url' => config('app.url').'/contact', 'color' => 'red'])
+@component('mail::button', ['url' => config('app.url').'/support', 'color' => 'red'])
 Contacter un conseiller
 @endcomponent
 

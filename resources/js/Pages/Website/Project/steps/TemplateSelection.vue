@@ -211,7 +211,6 @@ const selectedCategory = ref('Tous');
 const isPreviewOpen = ref(false);
 const isZoomed = ref(false);
 const selectedTemplate = ref(null);
-
 const templates = [
     {
         id: 'template1',
@@ -219,15 +218,17 @@ const templates = [
         description: 'Template professionnel pour petites entreprises',
         image: '/images/templates/template-business.png',
         category: 'Business',
-        isPro: false
+        isPro: false,
+        forfaits: ['starter', 'starter+', 'standard']
     },
     {
         id: 'template2',
-        name: 'E-commerce Pro',
-        description: 'Solution complète pour boutique en ligne',
+        name: 'Entreprise Pro',
+        description: 'Solution complète pour entreprises ambitieuses',
         image: '/images/templates/template-ecommerce.png',
-        category: 'E-commerce',
-        isPro: true
+        category: 'Entreprise',
+        isPro: true,
+        forfaits: ['standard']
     },
     {
         id: 'template3',
@@ -235,7 +236,8 @@ const templates = [
         description: 'Mise en page moderne pour artistes',
         image: '/images/templates/template-portfolio.png',
         category: 'Portfolio',
-        isPro: false
+        isPro: false,
+        forfaits: ['starter', 'starter+', 'standard']
     },
     {
         id: 'template4',
@@ -243,23 +245,26 @@ const templates = [
         description: 'Design épuré pour les blogueurs',
         image: '/images/templates/template-blog.png',
         category: 'Blog',
-        isPro: false
+        isPro: false,
+        forfaits: ['starter', 'starter+', 'standard']
     },
     {
         id: 'template5',
-        name: 'Restaurant Premium',
-        description: 'Template spécialisé pour restaurants',
-        image: 'https://placehold.co/600x400/e2e8f0/475569?text=Template+Restaurant',
-        category: 'Business',
-        isPro: true
+        name: 'Immobilier Premium',
+        description: 'Template spécialisé pour le agence immobilière',
+        image: '/images/templates/template-agence-immobiliere.png',
+        category: 'Entreprise',
+        isPro: true,
+        forfaits: ['standard']
     },
     {
         id: 'template7',
-        name: 'Agence Web',
-        description: 'Template spécialisé pour agences web',
+        name: 'Corporate Elite',
+        description: 'Template premium pour entreprises établies',
         image: '/images/templates/template-agence-web.png',
-        category: 'E-commerce',
-        isPro: true
+        category: 'Entreprise',
+        isPro: true,
+        forfaits: ['standard']
     }
 ];
 const localFormData = ref({
@@ -282,19 +287,21 @@ const hasForfait = computed(() => {
 const availableTemplates = computed(() => {
     if (!hasForfait.value) return [];
 
-    let filtered = templates;
+    let filtered = templates.filter(template =>
+        template.forfaits.includes(forfaitInfo.value.selectedForfait)
+    );
 
     if (selectedCategory.value !== 'Tous') {
         filtered = filtered.filter(t => t.category === selectedCategory.value);
     }
 
-    // Filtrer selon le forfait sélectionné
+    // Limiter le nombre de templates selon le forfait
     switch (forfaitInfo.value.selectedForfait) {
         case 'starter':
             return filtered.filter(t => !t.isPro).slice(0, 3);
+        case 'starter+':
+            return filtered.filter(t => !t.isPro).slice(0, 5);
         case 'standard':
-            return filtered.slice(0, 5);
-        case 'premium':
             return filtered;
         default:
             return [];
@@ -306,11 +313,11 @@ const forfaitMessage = computed(() => {
 
     switch (forfaitInfo.value.selectedForfait) {
         case 'starter':
-            return 'Forfait Starter : 3 templates disponibles';
+            return 'Forfait Starter : 3 templates basiques disponibles';
+        case 'starter+':
+            return 'Forfait Starter+ : 3 templates basiques disponibles';
         case 'standard':
-            return 'Forfait Standard : 5 templates disponibles';
-        case 'premium':
-            return 'Forfait Premium : Tous les templates disponibles';
+            return 'Forfait Standard : Tous les templates disponibles, y compris les templates premium';
         default:
             return '';
     }

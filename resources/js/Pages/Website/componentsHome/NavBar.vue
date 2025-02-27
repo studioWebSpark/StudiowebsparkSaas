@@ -188,6 +188,14 @@
                   Tarifs
                 </nav-link>
               </li>
+               <li>
+                <nav-link href="/support" title="support" class="block py-3 text-lg font-medium border-b" :class="{
+                  'text-white border-gray-700': isDarkMode,
+                  'text-gray-900 border-gray-200': !isDarkMode
+                }">
+                  Support
+                </nav-link>
+              </li>
 
               <!-- Auth Links intégrés dans la liste principale -->
               <template v-if="$page.props.auth.user">
