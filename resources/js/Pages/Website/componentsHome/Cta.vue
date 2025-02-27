@@ -18,21 +18,39 @@
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
                     <p class="text-sm font-medium text-blue-600 dark:text-blue-300">
-                        Offre Limitée 🚀
+                        Offre Spéciale - Lancement 🚀
                     </p>
                 </div>
 
                 <!-- Titre principal -->
                 <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
-                    Lancez Votre Projet Web
-                    <span class="block text-blue-300 mt-2">En 24 Heures</span>
+                    Votre Site Web Professionnel
+                    <span class="block text-blue-300 mt-2">Prêt en 24-48 Heures</span>
                 </h2>
 
                 <!-- Sous-titre -->
                 <p class="max-w-2xl mx-auto text-lg text-blue-100 mb-10">
-                    Obtenez un site web professionnel, rapide et sécurisé avec notre stack technique moderne :
-                    <span class="font-semibold">Vue.js + Laravel + Tailwind CSS</span>
+                    Démarquez-vous de la concurrence avec un site web optimisé pour convertir vos visiteurs en clients.
+                    <span class="font-semibold">Technologies modernes, design sur mesure, résultats garantis.</span>
                 </p>
+
+                <!-- Compteur -->
+                <div class="flex justify-center mb-10">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-4 text-center">
+                            <span class="block text-3xl font-bold text-white">20+</span>
+                            <span class="text-sm text-blue-200">Projets livrés</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-4 text-center">
+                            <span class="block text-3xl font-bold text-white">97%</span>
+                            <span class="text-sm text-blue-200">Satisfaction</span>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-4 text-center">
+                            <span class="block text-3xl font-bold text-white">24h</span>
+                            <span class="text-sm text-blue-200">Délai moyen</span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Boutons d'action -->
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
@@ -51,12 +69,19 @@
                         <i
                             class='bx bx-right-arrow-alt ml-2 text-xl transition-transform group-hover:translate-x-1'></i>
                     </a>
+
+                    <!-- Bouton Nous appeler -->
+                    <a href="tel:+33767175724"
+                        class="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-900 dark:text-white transition-all duration-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 hover:shadow-md">
+                        Nous appeler
+                        <i class='bx bx-phone ml-2 text-xl transition-transform group-hover:rotate-12'></i>
+                    </a>
                 </div>
 
                 <!-- Partenaires -->
                 <div class="mt-16 border-t border-white/10 pt-8">
                     <p class="text-sm font-semibold text-white/80 uppercase text-center mb-8">
-                        Nos Partenaires Technologiques
+                        Nos Partenaires
                     </p>
                     <div class="relative overflow-hidden">
                         <!-- Premier défilement -->

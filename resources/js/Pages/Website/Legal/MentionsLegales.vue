@@ -1,11 +1,10 @@
 <template>
 
-<Head>
+    <Head>
         <title>Mentions Légales - StudioWebspark</title>
-        <meta name="description" 
+        <meta name="description"
             content="Mentions légales de StudioWebspark : informations sur l'entreprise, l'hébergeur et les conditions d'utilisation du site." />
-        <meta name="keywords" 
-            content="mentions légales, studiowebspark, siret, hébergeur, droits" />
+        <meta name="keywords" content="mentions légales, studiowebspark, siret, hébergeur, droits" />
 
         <!-- Meta Tags pour Facebook et Instagram -->
         <meta property="og:type" content="website" />
@@ -76,6 +75,7 @@
                         </section>
 
                         <!-- Section Hébergement -->
+                        <!-- Section Hébergement -->
                         <section class="mb-12">
                             <div class="flex items-center mb-6">
                                 <div class="p-3 bg-white/10 rounded-[32px]">
@@ -89,11 +89,11 @@
                                 <dl class="grid grid-cols-1 gap-y-4">
                                     <div>
                                         <dt class="text-sm font-medium text-white/70">Hébergeur</dt>
-                                        <dd class="mt-1 text-white">[Nom de l'hébergeur]</dd>
+                                        <dd class="mt-1 text-white">VPS - HOSTINGER</dd>
                                     </div>
                                     <div>
                                         <dt class="text-sm font-medium text-white/70">Adresse</dt>
-                                        <dd class="mt-1 text-white">[Adresse de l'hébergeur]</dd>
+                                        <dd class="mt-1 text-white">France - Paris</dd>
                                     </div>
                                 </dl>
                             </div>
@@ -147,11 +147,7 @@
                                             </div>
                                         </dl>
                                     </div>
-                                    <div class="flex-1">
-                                        <div class="h-48 bg-white/10 rounded-[32px] overflow-hidden">
-                                            <!-- Emplacement pour une carte ou une image -->
-                                        </div>
-                                    </div>
+                               
                                 </div>
                             </div>
                         </section>

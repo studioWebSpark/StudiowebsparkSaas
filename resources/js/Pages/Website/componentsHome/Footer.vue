@@ -52,8 +52,8 @@
                         </a>
                     </div>
                     <p class="text-white/90">
-                        Développeur & Expert Marketing Digital. Transformez votre présence en ligne avec des solutions
-                        sur mesure.
+                        Votre partenaire digital pour une présence web impactante. Sites professionnels, identité
+                        visuelle et stratégies marketing qui transforment les visiteurs en clients fidèles.
                     </p>
                     <div class="flex space-x-4">
                         <a v-for="social in socials" :key="social.name" :href="social.url" :aria-label="social.name"

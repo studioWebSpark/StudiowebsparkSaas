@@ -18,25 +18,31 @@
                             </span>
                             <p
                                 class="text-sm font-medium bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                                Site Web Professionnel en 24h ⚡️
+                                Accompagnement dédié aux auto-entrepreneurs ⚡️
                             </p>
                         </div>
 
                         <!-- Titre principal avec animation de texte -->
                         <h1 class="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold">
                             <span class="text-white">
-                                Transformez Votre Vision
+                                Propulsez Votre Activité 🚀
                             </span>
                             <br>
                             <span class="text-blue-200">
-                                en Réalité Digitale
+                                dans l'Ère Digitale
                             </span>
                         </h1>
 
                         <p class="mt-6 text-lg text-gray-200">
-                            Des solutions web sur mesure et abordables pour les entrepreneurs.
+                            <span class="font-semibold text-white">Sites web professionnels</span> et <span
+                                class="font-semibold text-white">solutions digitales</span> accessibles pour
+                            auto-entrepreneurs.
                             <br>
-                            Un accompagnement personnalisé pour concrétiser vos projets digitaux.
+                            <span class="relative inline-block">
+                                Développez votre activité avec un <span class="text-yellow-300">accompagnement sur
+                                    mesure</span> ✓
+
+                            </span>
                         </p>
 
                         <!-- Boutons d'action -->
@@ -56,6 +62,13 @@
                                 <i
                                     class='bx bx-right-arrow-alt ml-2 text-xl transition-transform group-hover:translate-x-1'></i>
                             </a>
+
+                            <!-- Nouveau bouton Contact -->
+                            <a href="tel:+33767175724"
+                                class="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-900 dark:text-white transition-all duration-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 hover:shadow-md">
+                                Nous Appeler
+                                <i class='bx bx-phone ml-2 text-xl'></i>
+                            </a>
                         </div>
 
                         <!-- Badges de confiance -->
@@ -72,15 +85,64 @@
                             </div>
                             <div class="flex flex-col items-center p-4 bg-white rounded-lg dark:bg-gray-800 shadow-sm">
                                 <span class="text-2xl font-bold text-green-600 dark:text-green-400">100%</span>
-                                <span class="text-sm text-gray-600 dark:text-gray-400">Satisfaction Client</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Engagement Qualité</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-white rounded-lg dark:bg-gray-800 shadow-sm">
-                                <span class="text-2xl font-bold text-purple-600 dark:text-purple-400">7/7</span>
+                                <span class="text-2xl font-bold text-purple-600 dark:text-purple-400">5/7 jours</span>
                                 <span class="text-sm text-gray-600 dark:text-gray-400">Support Disponible</span>
                             </div>
                             <div class="flex flex-col items-center p-4 bg-white rounded-lg dark:bg-gray-800 shadow-sm">
-                                <span class="text-2xl font-bold text-orange-600 dark:text-orange-400">30j</span>
+                                <span class="text-2xl font-bold text-orange-600 dark:text-orange-400">15j</span>
                                 <span class="text-sm text-gray-600 dark:text-gray-400">Suivi Gratuit</span>
+                            </div>
+                        </div>
+
+                        <!-- Section de différenciation -->
+                        <div class="mt-12 bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-blue-200/20">
+                            <h3 class="text-xl font-bold text-white mb-4">Pourquoi nous choisir ?</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mr-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                            <i class='bx bx-code-alt text-xl text-blue-300'></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Développeur Passionné</h4>
+                                        <p class="text-blue-100 text-sm mt-1">Un interlocuteur unique qui comprend vos
+                                            besoins techniques et business.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mr-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                                            <i class='bx bx-line-chart text-xl text-green-300'></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Approche ROI</h4>
+                                        <p class="text-blue-100 text-sm mt-1">Sites conçus pour convertir vos visiteurs
+                                            en clients et générer des revenus.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mr-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                            <i class='bx bx-rocket text-xl text-purple-300'></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-white">Rapidité d'exécution</h4>
+                                        <p class="text-blue-100 text-sm mt-1">Des délais courts sans compromis sur la
+                                            qualité pour lancer votre activité rapidement.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

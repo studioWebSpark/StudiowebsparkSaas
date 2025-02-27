@@ -9,11 +9,9 @@
             @toggle-categories="toggleCategories" @show-categories="showCategories = true"
             @hide-categories="hideCategories" />
         <Hero />
-        <Process />
+       
         <Consept />
         <Pricing />
-        <Testimonials /> 
-        <Faq />
         <Cta />
         <Footer />
         <CookieConsent />
